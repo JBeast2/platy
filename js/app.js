@@ -23,23 +23,27 @@
           <span class="material-symbols-outlined">event</span>
           <span class="nav-label">Événements</span>
         </a>
+        <a href="#/e-staffing" class="nav-item" data-nav>
+          <span class="material-symbols-outlined">groups</span>
+          <span class="nav-label">Staffing</span>
+        </a>
+        <a href="#/e-talent" class="nav-item" data-nav>
+          <span class="material-symbols-outlined">person_search</span>
+          <span class="nav-label">Talents</span>
+        </a>
+        <a href="#/e-approvals" class="nav-item" data-nav>
+          <span class="material-symbols-outlined">rule</span>
+          <span class="nav-label">Approbations</span>
+        </a>
         <a href="#/e-job-offers" class="nav-item" data-nav>
           <span class="material-symbols-outlined">work</span>
-          <span class="nav-label">Offres d'emploi</span>
-        </a>
-        <a href="#/e-applicants" class="nav-item" data-nav>
-          <span class="material-symbols-outlined">person_search</span>
-          <span class="nav-label">Candidatures</span>
-        </a>
-        <a href="#/e-team" class="nav-item" data-nav>
-          <span class="material-symbols-outlined">groups</span>
-          <span class="nav-label">Mon équipe</span>
+          <span class="nav-label">Offres</span>
         </a>
         <a href="#/e-travel" class="nav-item" data-nav>
           <span class="material-symbols-outlined">flight</span>
           <span class="nav-label">Voyages</span>
         </a>
-        <a href="#/e-finance" class="nav-item" data-nav>
+        <a href="#/e-finance-command" class="nav-item" data-nav>
           <span class="material-symbols-outlined">payments</span>
           <span class="nav-label">Finance</span>
         </a>
@@ -53,13 +57,13 @@
           <span class="material-symbols-outlined">event</span>
           <span class="bottom-nav-label">Events</span>
         </a>
-        <a href="#/e-job-offers" class="bottom-nav-item" data-nav>
-          <span class="material-symbols-outlined">work</span>
-          <span class="bottom-nav-label">Jobs</span>
+        <a href="#/e-staffing" class="bottom-nav-item" data-nav>
+          <span class="material-symbols-outlined">groups</span>
+          <span class="bottom-nav-label">Staff</span>
         </a>
-        <a href="#/e-applicants" class="bottom-nav-item" data-nav>
+        <a href="#/e-talent" class="bottom-nav-item" data-nav>
           <span class="material-symbols-outlined">person_search</span>
-          <span class="bottom-nav-label">Candidats</span>
+          <span class="bottom-nav-label">Talents</span>
         </a>
         <a href="#/e-company" class="bottom-nav-item" data-nav>
           <span class="material-symbols-outlined">business</span>
@@ -72,17 +76,17 @@
           <span class="material-symbols-outlined">dashboard</span>
           <span class="nav-label">Dashboard</span>
         </a>
-        <a href="#/jobs" class="nav-item" data-nav>
-          <span class="material-symbols-outlined">work</span>
-          <span class="nav-label">Jobs</span>
+        <a href="#/marketplace" class="nav-item" data-nav>
+          <span class="material-symbols-outlined">explore</span>
+          <span class="nav-label">Marketplace</span>
+        </a>
+        <a href="#/my-gigs" class="nav-item" data-nav>
+          <span class="material-symbols-outlined">event_available</span>
+          <span class="nav-label">My Gigs</span>
         </a>
         <a href="#/events" class="nav-item" data-nav>
           <span class="material-symbols-outlined">event</span>
           <span class="nav-label">Events</span>
-        </a>
-        <a href="#/team" class="nav-item" data-nav>
-          <span class="material-symbols-outlined">groups</span>
-          <span class="nav-label">Team</span>
         </a>
         <a href="#/messages" class="nav-item" data-nav>
           <span class="material-symbols-outlined">chat</span>
@@ -92,9 +96,17 @@
           <span class="material-symbols-outlined">payments</span>
           <span class="nav-label">Finance</span>
         </a>
+        <a href="#/expenses" class="nav-item" data-nav>
+          <span class="material-symbols-outlined">receipt_long</span>
+          <span class="nav-label">Expenses</span>
+        </a>
         <a href="#/travel" class="nav-item" data-nav>
           <span class="material-symbols-outlined">flight</span>
           <span class="nav-label">Travel</span>
+        </a>
+        <a href="#/team" class="nav-item" data-nav>
+          <span class="material-symbols-outlined">groups</span>
+          <span class="nav-label">Team</span>
         </a>
       `;
       bottomNav.innerHTML = `
@@ -102,17 +114,21 @@
           <span class="material-symbols-outlined">dashboard</span>
           <span class="bottom-nav-label">Home</span>
         </a>
-        <a href="#/jobs" class="bottom-nav-item" data-nav>
-          <span class="material-symbols-outlined">work</span>
-          <span class="bottom-nav-label">Jobs</span>
+        <a href="#/marketplace" class="bottom-nav-item" data-nav>
+          <span class="material-symbols-outlined">explore</span>
+          <span class="bottom-nav-label">Find Work</span>
         </a>
-        <a href="#/events" class="bottom-nav-item" data-nav>
-          <span class="material-symbols-outlined">event</span>
-          <span class="bottom-nav-label">Events</span>
+        <a href="#/my-gigs" class="bottom-nav-item" data-nav>
+          <span class="material-symbols-outlined">event_available</span>
+          <span class="bottom-nav-label">My Gigs</span>
         </a>
         <a href="#/messages" class="bottom-nav-item" data-nav>
           <span class="material-symbols-outlined">chat</span>
           <span class="bottom-nav-label">Chat</span>
+        </a>
+        <a href="#/notifications" class="bottom-nav-item" data-nav>
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="bottom-nav-label">Alerts</span>
         </a>
         <a href="#/profile" class="bottom-nav-item" data-nav>
           <span class="material-symbols-outlined">person</span>
@@ -194,6 +210,10 @@
 
   window.selectRole = selectRole;
   window.handleLogin = handleLogin;
+  window.toggleFilters = function() {
+    const filters = document.getElementById('marketplace-filters');
+    if (filters) filters.style.display = filters.style.display === 'none' ? 'block' : 'none';
+  };
 
   function handleLogin() {
     const role = getRole();

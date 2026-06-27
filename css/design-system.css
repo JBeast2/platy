@@ -259,10 +259,8 @@ input, textarea, select {
   color: var(--primary);
 }
 
-.tag-success {
-  background: rgba(22, 163, 74, 0.1);
-  color: var(--success);
-}
+.tag-success { background: rgba(22,163,74,0.1); color: var(--success); }
+.tag-primary { background: var(--primary-bg); color: var(--primary); }
 
 .tag-warning {
   background: rgba(245, 158, 11, 0.1);
