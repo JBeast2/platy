@@ -1,0 +1,24 @@
+{
+  "name": "Platy — Your Digital Agent for Smarter Work",
+  "short_name": "Platy",
+  "description": "The all-in-one platform for motorsports professionals and teams.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#24A2A7",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "lang": "en"
+}
