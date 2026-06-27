@@ -78,91 +78,40 @@ const pages = {
 
   jobs: {
     title: 'Jobs',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Find Work</h1>
-          <div class="flex gap-sm">
-            <button class="btn btn-secondary btn-sm">Filters</button>
-            <button class="btn btn-primary btn-sm">Post a Job</button>
-          </div>
-        </div>
+    render: () => {
+      var jobs = Store.get('jobs') || [];
+      var cardsHtml = jobs.map(function(j) {
+        var badge = j.status === 'New' ? 'tag-success' : (j.status === 'Urgent' ? 'tag-warning' : (j.status === 'Featured' ? 'tag-success' : ''));
+        var badgeHtml = badge ? '<span class="tag ' + badge + '">' + j.status + '</span>' : '';
+        var tagsHtml = (j.tags || []).map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
+        return '<div class="job-card" onclick="router.navigate(\'/job-detail?id=' + j.id + '\')">' +
+          '<div class="job-card-header"><div><h3 class="job-card-title">' + j.title + '</h3><p class="text-sm text-muted">' + j.event + ' • ' + j.dates + '</p></div>' + badgeHtml + '</div>' +
+          '<div class="job-card-tags">' + tagsHtml + '</div>' +
+          '<div class="job-card-meta">' +
+            '<span>📍 ' + j.location + '</span>' +
+            '<span>👥 ' + j.openings + ' position' + (j.openings > 1 ? 's' : '') + '</span>' +
+          '</div>' +
+          '<div class="job-card-footer">' +
+            '<span class="font-bold text-primary">' + j.rate + '</span>' +
+            '<button class="btn btn-primary btn-sm">Apply</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
 
-        <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">All</button>
-          <button class="btn btn-secondary btn-sm">Mechanic</button>
-          <button class="btn btn-secondary btn-sm">Engineer</button>
-          <button class="btn btn-secondary btn-sm">Media</button>
-          <button class="btn btn-secondary btn-sm">Logistics</button>
-        </div>
-
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
-          <div class="job-card">
-            <div class="job-card-header">
-              <div>
-                <h3 class="job-card-title">GT3 Lead Mechanic</h3>
-                <p class="text-sm text-muted">Spa 24H • Jun 26-29</p>
-              </div>
-              <span class="tag tag-success">New</span>
-            </div>
-            <div class="job-card-tags">
-              <span class="tag">Mechanic</span>
-              <span class="tag">GT3</span>
-              <span class="tag">Spa</span>
-            </div>
-            <div class="job-card-meta">
-              <span>📍 Spa, Belgium</span>
-              <span>👥 2 positions</span>
-            </div>
-            <div class="job-card-footer">
-              <span class="font-bold text-primary">€350/day</span>
-              <button class="btn btn-primary btn-sm">Apply</button>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-card-header">
-              <div>
-                <h3 class="job-card-title">Data Engineer - WEC</h3>
-                <p class="text-sm text-muted">Monaco GP • Jul 3-7</p>
-              </div>
-              <span class="tag tag-warning">Urgent</span>
-            </div>
-            <div class="job-card-tags">
-              <span class="tag">Engineering</span>
-              <span class="tag">Data</span>
-            </div>
-            <div class="job-card-meta">
-              <span>📍 Monte Carlo</span>
-              <span>👥 1 position</span>
-            </div>
-            <div class="job-card-footer">
-              <span class="font-bold text-primary">€400/day</span>
-              <button class="btn btn-primary btn-sm">Apply</button>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-card-header">
-              <div>
-                <h3 class="job-card-title">Race Photographer</h3>
-                <p class="text-sm text-muted">Nürburgring 24H • Jul 15-18</p>
-              </div>
-            </div>
-            <div class="job-card-tags">
-              <span class="tag">Media</span>
-              <span class="tag">Photography</span>
-            </div>
-            <div class="job-card-meta">
-              <span>📍 Nürburg, Germany</span>
-              <span>👥 1 position</span>
-            </div>
-            <div class="job-card-footer">
-              <span class="font-bold text-primary">€280/day</span>
-              <button class="btn btn-primary btn-sm">Apply</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+      return '<section class="page-section">' +
+        '<div class="section-header"><h1 class="section-title">Find Work</h1><div class="flex gap-sm"><button class="btn btn-secondary btn-sm">Filters</button><button class="btn btn-primary btn-sm">Post a Job</button></div></div>' +
+        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
+          '<button class="btn btn-primary btn-sm">All</button>' +
+          '<button class="btn btn-secondary btn-sm">Mechanic</button>' +
+          '<button class="btn btn-secondary btn-sm">Engineer</button>' +
+          '<button class="btn btn-secondary btn-sm">Media</button>' +
+          '<button class="btn btn-secondary btn-sm">Logistics</button>' +
+        '</div>' +
+        '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">' +
+          cardsHtml +
+        '</div>' +
+      '</section>';
+    }
   },
 
   events: {
@@ -288,51 +237,20 @@ const pages = {
 
   travel: {
     title: 'Travel',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Travel & Logistics</h1>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Spa 24H</span>
-              <span class="tag tag-success">Confirmed</span>
-            </div>
-            <div class="flex flex-col gap-sm">
-              <div class="flex items-center gap-sm">
-                <span class="material-symbols-outlined text-primary">flight</span>
-                <span class="text-sm">Brussels Airport (BRU) • Jun 26</span>
-              </div>
-              <div class="flex items-center gap-sm">
-                <span class="material-symbols-outlined text-primary">hotel</span>
-                <span class="text-sm">Hotel de la Source • 4 nights</span>
-              </div>
-              <div class="flex items-center gap-sm">
-                <span class="material-symbols-outlined text-primary">directions_car</span>
-                <span class="text-sm">Rental Car • BMW X3</span>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Monaco GP</span>
-              <span class="tag">Planning</span>
-            </div>
-            <div class="flex flex-col gap-sm">
-              <div class="flex items-center gap-sm">
-                <span class="material-symbols-outlined text-muted">flight</span>
-                <span class="text-sm text-muted">Not yet booked</span>
-              </div>
-              <div class="flex items-center gap-sm">
-                <span class="material-symbols-outlined text-muted">hotel</span>
-                <span class="text-sm text-muted">Not yet booked</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var trips = Store.get('travel') || [];
+      var cardsHtml = trips.map(function(t) {
+        var itemsHtml = t.items.map(function(i) {
+          var mutedClass = t.status === 'Planning' ? 'text-muted' : '';
+          return '<div class="flex items-center gap-sm">' +
+            '<span class="material-symbols-outlined text-primary' + (t.status === 'Planning' ? ' text-muted' : '') + '">' + i.icon + '</span>' +
+            '<span class="text-sm ' + mutedClass + '">' + i.label + '</span>' +
+          '</div>';
+        }).join('');
+        return '<div class="card"><div class="card-header"><span class="card-title">' + t.event + '</span><span class="tag tag-' + t.statusColor + '">' + t.status + '</span></div><div class="flex flex-col gap-sm">' + itemsHtml + '</div></div>';
+      }).join('');
+      return '<section class="page-section"><div class="section-header"><h1 class="section-title">Travel & Logistics</h1></div><div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">' + cardsHtml + '</div></section>';
+    }
   },
 
   settings: {

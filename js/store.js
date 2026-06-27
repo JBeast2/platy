@@ -46,6 +46,17 @@
       ],
       totals: { month: 1240, pending: 320, reimbursed: 920, openReports: 3 }
     },
+    travel: [
+      { id: 801, event: 'Spa 24H', status: 'Confirmed', statusColor: 'success', items: [
+        { icon: 'flight', label: 'Brussels Airport (BRU) • Jun 26', detail: '' },
+        { icon: 'hotel', label: 'Hotel de la Source • 4 nights', detail: 'Rue de la Source, Spa' },
+        { icon: 'directions_car', label: 'Rental Car • BMW X3', detail: 'Pickup at BRU' }
+      ]},
+      { id: 802, event: 'Monaco GP', status: 'Planning', statusColor: '', items: [
+        { icon: 'flight', label: 'Not yet booked', detail: '' },
+        { icon: 'hotel', label: 'Not yet booked', detail: '' }
+      ]}
+    ],
     notifications: [
       { id: 401, text: 'New application for GT3 Lead Mechanic', time: '5m ago', type: 'application', read: false },
       { id: 402, text: 'Sarah Mitchell accepted your offer', time: '1h ago', type: 'accept', read: false },
