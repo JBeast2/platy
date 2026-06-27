@@ -14,23 +14,26 @@ class Router {
   }
 
   handleRoute() {
-    const hash = window.location.hash.slice(1) || '/';
-    const handler = this.routes[hash];
+    const fullHash = window.location.hash.slice(1) || '/';
+    const pathOnly = fullHash.split('?')[0];
+    const handler = this.routes[pathOnly];
 
     if (handler) {
       handler();
-      this.currentRoute = hash;
+      this.currentRoute = fullHash;
     } else {
       this.navigate('/');
     }
 
-    this.updateActiveNav(hash);
+    this.updateActiveNav(fullHash);
   }
 
   updateActiveNav(hash) {
+    const pathOnly = hash.split('?')[0];
     document.querySelectorAll('[data-nav]').forEach(link => {
       const href = link.getAttribute('href');
-      const isActive = href === `#${hash}` || (hash === '/' && href === '#/');
+      const linkPath = href.split('?')[0];
+      const isActive = linkPath === `#${pathOnly}` || (hash === '/' && href === '#/');
       link.classList.toggle('active', isActive);
     });
   }

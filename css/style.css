@@ -389,6 +389,22 @@
 
 .bg-primary-bg { background: var(--primary-bg); }
 
+.tab-btn {
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--on-surface); background: var(--surface-dim); }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
 .divide-y > * + * {
   border-top: 1px solid var(--outline-light);
 }

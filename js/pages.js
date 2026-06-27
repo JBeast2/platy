@@ -1439,61 +1439,492 @@ const pages = {
 
   'e-event-detail': {
     title: 'Détail événement',
-    render: () => `
+    render: () => {
+      const tab = new URLSearchParams(window.location.hash.split('?')[1] || '').get('tab') || 'overview';
+      return `
       <section class="page-section">
-        <div class="flex items-center gap-2 mb-4">
+        <div class="flex items-center gap-2 mb-4" style="flex-wrap: wrap;">
           <button class="icon-btn" onclick="router.navigate('/e-dashboard')"><span class="material-symbols-outlined">arrow_back</span></button>
           <div>
             <h1 class="section-title">Spa 24 Hours</h1>
             <p class="text-sm text-muted">Circuit de Spa-Francorchamps • 26-29 Juin 2026</p>
           </div>
-          <div class="ml-auto flex gap-sm">
+          <div class="ml-auto flex gap-sm" style="margin-left:auto;">
             <button class="btn btn-secondary btn-sm">Modifier</button>
             <button class="btn btn-primary btn-sm">Publier</button>
           </div>
         </div>
+
         <div class="stats-row mb-lg">
           <div class="stat-card"><span class="stat-value">12/15</span><span class="stat-label">Postes pourvus</span></div>
           <div class="stat-card"><span class="stat-value">8</span><span class="stat-label">Candidatures</span></div>
           <div class="stat-card"><span class="stat-value">€32k</span><span class="stat-label">Dépensé</span></div>
           <div class="stat-card"><span class="stat-value">€13k</span><span class="stat-label">Restant</span></div>
         </div>
-        <div class="grid grid-2 gap-lg">
-          <div class="card">
-            <div class="card-header"><span class="card-title">Postes à pourvoir</span><button class="btn btn-primary btn-sm">+ Ajouter</button></div>
-            <div class="divide-y" style="border-top: 1px solid var(--outline-light);">
-              <div class="flex items-center justify-between py-3">
-                <div><p class="font-bold text-sm">GT3 Lead Mechanic</p><p class="text-xs text-muted">2 postes • €350/jour</p></div>
-                <span class="tag tag-success">Pourvu</span>
-              </div>
-              <div class="flex items-center justify-between py-3">
-                <div><p class="font-bold text-sm">Data Engineer</p><p class="text-xs text-muted">1 poste • €400/jour</p></div>
-                <span class="tag tag-warning">En cours</span>
-              </div>
-              <div class="flex items-center justify-between py-3">
-                <div><p class="font-bold text-sm">Race Photographer</p><p class="text-xs text-muted">1 poste • €280/jour</p></div>
-                <span class="tag">Ouvert</span>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header"><span class="card-title">Candidats récents</span><a href="#/e-applicants" class="text-sm text-primary" data-nav>Voir tout</a></div>
-            <div class="divide-y" style="border-top: 1px solid var(--outline-light);">
-              <div class="flex items-center gap-3 py-3">
-                <div class="avatar">AK</div>
-                <div class="flex-1"><p class="font-bold text-sm">Alex Krause</p><p class="text-xs text-muted">GT3 Lead Mechanic • 2j</p></div>
-                <button class="btn btn-primary btn-sm">OK</button>
-              </div>
-              <div class="flex items-center gap-3 py-3">
-                <div class="avatar" style="background: rgba(147,51,234,0.1); color: #9333ea;">SM</div>
-                <div class="flex-1"><p class="font-bold text-sm">Sarah Mitchell</p><p class="text-xs text-muted">Data Engineer • 3j</p></div>
-                <button class="btn btn-secondary btn-sm">Voir</button>
-              </div>
-            </div>
-          </div>
+
+        <div class="flex gap-0 mb-lg" style="border-bottom: 2px solid var(--outline-light); overflow-x: auto;">
+          <button class="tab-btn ${tab === 'overview' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=overview')">Overview</button>
+          <button class="tab-btn ${tab === 'schedule' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=schedule')">Programme</button>
+          <button class="tab-btn ${tab === 'team' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=team')">Équipe</button>
+          <button class="tab-btn ${tab === 'budget' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=budget')">Budget</button>
+          <button class="tab-btn ${tab === 'travel' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=travel')">Voyage</button>
+          <button class="tab-btn ${tab === 'documents' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=documents')">Documents</button>
         </div>
+
+        ${tab === 'overview' ? \`
+          <div class="grid grid-2 gap-lg">
+            <div>
+              <div class="card mb-lg">
+                <div class="card-header"><span class="card-title">Postes à pourvoir</span><button class="btn btn-primary btn-sm" onclick="router.navigate('/e-post-job')">+ Ajouter</button></div>
+                <div class="divide-y">
+                  <div class="flex items-center justify-between py-3">
+                    <div><p class="font-bold text-sm">GT3 Lead Mechanic</p><p class="text-xs text-muted">2 postes • €350/jour</p></div>
+                    <span class="tag tag-success">Pourvu</span>
+                  </div>
+                  <div class="flex items-center justify-between py-3">
+                    <div><p class="font-bold text-sm">Data Engineer</p><p class="text-xs text-muted">1 poste • €400/jour</p></div>
+                    <span class="tag tag-warning">En cours</span>
+                  </div>
+                  <div class="flex items-center justify-between py-3">
+                    <div><p class="font-bold text-sm">Race Photographer</p><p class="text-xs text-muted">1 poste • €280/jour</p></div>
+                    <span class="tag">Ouvert</span>
+                  </div>
+                  <div class="flex items-center justify-between py-3">
+                    <div><p class="font-bold text-sm">Tire Technician</p><p class="text-xs text-muted">2 postes • €200/jour</p></div>
+                    <span class="tag">Ouvert</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="card-title">Équipe confirmée</span></div>
+                <div class="flex flex-wrap gap-2">
+                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;">AK</div><span class="text-xs font-bold">Alex K.</span></div>
+                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:rgba(234,88,12,0.1);color:#ea580c;">MB</div><span class="text-xs font-bold">Marco B.</span></div>
+                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:rgba(34,197,94,0.1);color:#22c55e;">LW</div><span class="text-xs font-bold">Lena W.</span></div>
+                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:rgba(99,102,241,0.1);color:#6366f1;">PT</div><span class="text-xs font-bold">Paul T.</span></div>
+                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:rgba(245,158,11,0.1);color:#f59e0b;">CJ</div><span class="text-xs font-bold">Chen J.</span></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card mb-lg">
+                <div class="card-header"><span class="card-title">Candidats récents</span><a href="#/e-applicants" class="text-sm text-primary" data-nav>Voir tout</a></div>
+                <div class="divide-y">
+                  <div class="flex items-center gap-3 py-3">
+                    <div class="avatar">AK</div>
+                    <div class="flex-1"><p class="font-bold text-sm">Alex Krause</p><p class="text-xs text-muted">GT3 Lead Mechanic • 2j</p></div>
+                    <button class="btn btn-primary btn-sm">OK</button>
+                  </div>
+                  <div class="flex items-center gap-3 py-3">
+                    <div class="avatar" style="background: rgba(147,51,234,0.1); color: #9333ea;">SM</div>
+                    <div class="flex-1"><p class="font-bold text-sm">Sarah Mitchell</p><p class="text-xs text-muted">Data Engineer • 3j</p></div>
+                    <button class="btn btn-secondary btn-sm">Voir</button>
+                  </div>
+                  <div class="flex items-center gap-3 py-3">
+                    <div class="avatar" style="background: rgba(245,158,11,0.1); color: #f59e0b;">RJ</div>
+                    <div class="flex-1"><p class="font-bold text-sm">Romain Jacquard</p><p class="text-xs text-muted">Tire Technician • 5j</p></div>
+                    <button class="btn btn-secondary btn-sm">Voir</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="card-title">Prochaine étape</span></div>
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center"><span class="material-symbols-outlined">assignment_turned_in</span></div>
+                  <div class="flex-1">
+                    <p class="font-bold text-sm">Finaliser l'équipe</p>
+                    <p class="text-xs text-muted">3 postes encore ouverts • J-12 avant l'événement</p>
+                  </div>
+                </div>
+                <div class="mt-3 bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-primary h-2 rounded-full" style="width:80%;"></div></div>
+                <p class="text-xs text-muted mt-1">80% des préparatifs complétés</p>
+              </div>
+            </div>
+          </div>
+        \` : tab === 'schedule' ? \`
+          <div class="grid grid-2 gap-lg">
+            <div>
+              <div class="card mb-lg">
+                <div class="card-header"><span class="card-title">Programme général</span><button class="btn btn-secondary btn-sm">Modifier</button></div>
+                <div class="flex flex-col">
+                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--primary); padding-left: 12px;">
+                    <div class="text-center">
+                      <p class="text-xs font-bold text-primary">JUN</p>
+                      <p class="text-lg font-bold text-primary">24</p>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-bold text-sm">Arrivée & Installation</p>
+                      <p class="text-xs text-muted">Paddock setup, check-in technique</p>
+                      <div class="flex items-center gap-2 mt-1"><span class="tag">08:00 - 18:00</span><span class="tag">Paddock</span></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--warning); padding-left: 12px;">
+                    <div class="text-center">
+                      <p class="text-xs font-bold text-warning">JUN</p>
+                      <p class="text-lg font-bold text-warning">25</p>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-bold text-sm">Essais libres & Qualifs</p>
+                      <p class="text-xs text-muted">Free Practice 1-3, Pre-Qualifying</p>
+                      <div class="flex items-center gap-2 mt-1"><span class="tag">09:00 - 17:30</span><span class="tag">Circuit</span></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--error); padding-left: 12px;">
+                    <div class="text-center">
+                      <p class="text-xs font-bold text-error">JUN</p>
+                      <p class="text-lg font-bold text-error">26</p>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-bold text-sm">Course - Jour 1</p>
+                      <p class="text-xs text-muted">Warm-up, Départ 16h00, Phases nocturnes</p>
+                      <div class="flex items-center gap-2 mt-1"><span class="tag">08:00 - 02:00</span><span class="tag">Circuit</span></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--success); padding-left: 12px;">
+                    <div class="text-center">
+                      <p class="text-xs font-bold text-success">JUN</p>
+                      <p class="text-lg font-bold text-success">27</p>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-bold text-sm">Course - Jour 2 & Final</p>
+                      <p class="text-xs text-muted">Suite course, Arrivée 16h00, Podium</p>
+                      <div class="flex items-center gap-2 mt-1"><span class="tag">06:00 - 18:00</span><span class="tag">Circuit</span></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--muted); padding-left: 12px;">
+                    <div class="text-center">
+                      <p class="text-xs font-bold text-muted">JUN</p>
+                      <p class="text-lg font-bold text-muted">28</p>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-bold text-sm">Démontage & Départ</p>
+                      <p class="text-xs text-muted">Pit breakdown, check-out, travel home</p>
+                      <div class="flex items-center gap-2 mt-1"><span class="tag">08:00 - 14:00</span><span class="tag">Paddock</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card mb-lg">
+                <div class="card-header"><span class="card-title">Détail du jour • 26 Juin (Course J1)</span></div>
+                <div class="divide-y">
+                  <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-success"></span><span class="text-sm">Briefing équipe</span></div>
+                    <span class="text-xs text-muted">08:00 - 08:30</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-success"></span><span class="text-sm">Warm-up</span></div>
+                    <span class="text-xs text-muted">09:00 - 09:30</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-warning"></span><span class="text-sm">Pit stop practice</span></div>
+                    <span class="text-xs text-muted">10:00 - 11:00</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Parc fermé</span></div>
+                    <span class="text-xs text-muted">12:00 - 14:00</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-error"></span><span class="text-sm">Départ course</span></div>
+                    <span class="text-xs text-muted">16:00</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 1-4</span></div>
+                    <span class="text-xs text-muted">16:00 - 20:00</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 5-8 (nocturnes)</span></div>
+                    <span class="text-xs text-muted">20:00 - 00:00</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 9-10</span></div>
+                    <span class="text-xs text-muted">00:00 - 02:00</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="background: var(--primary-bg); border-color: var(--primary);">
+                <p class="text-sm font-bold text-primary mb-sm">⏰ Rappels importants</p>
+                <ul class="text-xs text-muted flex flex-col gap-1">
+                  <li>• Briefing obligatoire 45min avant chaque session</li>
+                  <li>• Équipement de sécurité obligatoire dans le paddock</li>
+                  <li>• Créneaux catering : 12:00-14:00 et 19:00-21:00</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        \` : tab === 'team' ? \`
+          <div>
+            <div class="card mb-lg">
+              <div class="card-header"><span class="card-title">Organigramme équipe</span><button class="btn btn-secondary btn-sm">Modifier</button></div>
+              <div class="grid grid-2 gap-md">
+                <div class="p-4 rounded-xl text-center" style="border: 2px solid var(--primary); background: var(--primary-bg);">
+                  <div class="avatar avatar-lg" style="width:56px;height:56px;margin:0 auto 8px;background:var(--primary);color:white;font-size:1.2rem;">JD</div>
+                  <p class="font-bold text-sm">James Donovan</p>
+                  <p class="text-xs text-muted">Team Manager</p>
+                  <span class="tag tag-success mt-2">Confirmé</span>
+                </div>
+                <div class="grid grid-2 gap-md">
+                  <div class="p-3 rounded-xl text-center bg-surface-dim">
+                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;">AK</div>
+                    <p class="font-bold text-xs">Alex Krause</p>
+                    <p class="text-xs text-muted" style="font-size:10px;">Lead Mechanic</p>
+                  </div>
+                  <div class="p-3 rounded-xl text-center bg-surface-dim">
+                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(234,88,12,0.1);color:#ea580c;">MB</div>
+                    <p class="font-bold text-xs">Marco Bellini</p>
+                    <p class="text-xs text-muted" style="font-size:10px;">Race Engineer</p>
+                  </div>
+                  <div class="p-3 rounded-xl text-center bg-surface-dim">
+                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(147,51,234,0.1);color:#9333ea;">SM</div>
+                    <p class="font-bold text-xs">Sarah Mitchell</p>
+                    <p class="text-xs text-muted" style="font-size:10px;">Data Engineer</p>
+                  </div>
+                  <div class="p-3 rounded-xl text-center bg-surface-dim">
+                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(34,197,94,0.1);color:#22c55e;">LW</div>
+                    <p class="font-bold text-xs">Lena Wagner</p>
+                    <p class="text-xs text-muted" style="font-size:10px;">Logistics</p>
+                  </div>
+                  <div class="p-3 rounded-xl text-center bg-surface-dim">
+                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(99,102,241,0.1);color:#6366f1;">PT</div>
+                    <p class="font-bold text-xs">Paul Tan</p>
+                    <p class="text-xs text-muted" style="font-size:10px;">Media</p>
+                  </div>
+                  <div class="p-3 rounded-xl text-center bg-surface-dim">
+                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(245,158,11,0.1);color:#f59e0b;">CJ</div>
+                    <p class="font-bold text-xs">Chen Jiao</p>
+                    <p class="text-xs text-muted" style="font-size:10px;">Catering</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="card-title">Shift Planning</span></div>
+              <div class="divide-y">
+                <div class="flex items-center justify-between py-2">
+                  <div><p class="font-bold text-sm">Pit Crew - Shift A</p><p class="text-xs text-muted">Alex K., Marco B., Paul T.</p></div>
+                  <span class="tag">06:00 - 14:00</span>
+                </div>
+                <div class="flex items-center justify-between py-2">
+                  <div><p class="font-bold text-sm">Pit Crew - Shift B</p><p class="text-xs text-muted">Sarah M., Chen J., David K.</p></div>
+                  <span class="tag">14:00 - 22:00</span>
+                </div>
+                <div class="flex items-center justify-between py-2">
+                  <div><p class="font-bold text-sm">Pit Crew - Shift C</p><p class="text-xs text-muted">Lena W., James D., Fabio R.</p></div>
+                  <span class="tag">22:00 - 06:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        \` : tab === 'budget' ? \`
+          <div class="grid grid-2 gap-lg">
+            <div>
+              <div class="card mb-lg">
+                <div class="card-header"><span class="card-title">Budget Overview</span></div>
+                <div class="flex flex-col gap-3">
+                  <div>
+                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Salaires</span><span class="text-muted">€28,400 / €32,000</span></div>
+                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-primary h-2 rounded-full" style="width:89%;"></div></div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Voyage & Transport</span><span class="text-muted">€8,200 / €10,000</span></div>
+                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-warning h-2 rounded-full" style="width:82%;"></div></div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Hébergement</span><span class="text-muted">€4,200 / €4,000</span></div>
+                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-error h-2 rounded-full" style="width:105%;"></div></div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Équipement & Pièces</span><span class="text-muted">€3,400 / €5,000</span></div>
+                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:68%;"></div></div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Catering & Divers</span><span class="text-muted">€1,800 / €2,000</span></div>
+                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:90%;"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card mb-lg">
+                <div class="card-header"><span class="card-title">Transactions récentes</span></div>
+                <div class="divide-y">
+                  <div class="flex items-center justify-between py-2">
+                    <div><p class="font-bold text-sm">AK - Lead Mechanic</p><p class="text-xs text-muted">Salaire J1-J4</p></div>
+                    <span class="font-bold text-sm">€1,400</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div><p class="font-bold text-sm">Vols Brussels Airlines</p><p class="text-xs text-muted">6 billets aller-retour</p></div>
+                    <span class="font-bold text-sm">€3,600</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div><p class="font-bold text-sm">Hôtel de la Source</p><p class="text-xs text-muted">5 chambres × 4 nuits</p></div>
+                    <span class="font-bold text-sm">€4,200</span>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <div><p class="font-bold text-sm">Pneus Michelin</p><p class="text-xs text-muted">Set qualif + 2 sets course</p></div>
+                    <span class="font-bold text-sm">€2,400</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="card-title">Totaux</span></div>
+                <div class="flex justify-between text-sm mb-1"><span class="text-muted">Budget total</span><span class="font-bold">€45,000</span></div>
+                <div class="flex justify-between text-sm mb-1"><span class="text-muted">Dépensé</span><span class="font-bold">€32,000</span></div>
+                <div class="flex justify-between text-sm"><span class="text-muted">Restant</span><span class="font-bold text-success">€13,000</span></div>
+                <button class="btn btn-primary btn-sm mt-3 w-full">Voir rapport complet</button>
+              </div>
+            </div>
+          </div>
+        \` : tab === 'travel' ? \`
+          <div class="grid grid-2 gap-lg">
+            <div>
+              <div class="card mb-lg">
+                <div class="card-header"><span class="card-title">Transport</span><button class="btn btn-secondary btn-sm">Modifier</button></div>
+                <div class="divide-y">
+                  <div class="flex items-center gap-3 py-3">
+                    <span class="material-symbols-outlined text-primary">flight</span>
+                    <div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2608</p><p class="text-xs text-muted">MIL → BRU • 24 Jun 07:00 • 6 pers</p></div>
+                    <span class="tag tag-success">Confirmé</span>
+                  </div>
+                  <div class="flex items-center gap-3 py-3">
+                    <span class="material-symbols-outlined text-primary">directions_car</span>
+                    <div class="flex-1"><p class="font-bold text-sm">Navette aéroport</p><p class="text-xs text-muted">BRU → Spa • 24 Jun 09:30 • 12 pers</p></div>
+                    <span class="tag tag-success">Confirmé</span>
+                  </div>
+                  <div class="flex items-center gap-3 py-3">
+                    <span class="material-symbols-outlined text-primary">flight</span>
+                    <div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2609</p><p class="text-xs text-muted">BRU → MIL • 28 Jun 14:00 • 6 pers</p></div>
+                    <span class="tag tag-warning">En attente</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="card-title">Hébergement</span><button class="btn btn-secondary btn-sm">Modifier</button></div>
+                <div class="card mb-md p-0">
+                  <div class="flex items-center gap-3 p-3 rounded-lg" style="background: var(--surface-dim);">
+                    <span class="material-symbols-outlined text-primary">hotel</span>
+                    <div class="flex-1"><p class="font-bold text-sm">Hôtel de la Source</p><p class="text-xs text-muted">5 chambres • 24-28 Juin • 4 nuits</p></div>
+                    <span class="tag tag-success">Confirmé</span>
+                  </div>
+                  <div class="flex items-center gap-2 mt-2 text-xs text-muted">
+                    <span class="material-symbols-outlined text-sm">location_on</span>
+                    <span>1.2km du circuit • Rue de la Source, Spa</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card mb-lg">
+                <div class="card-header"><span class="card-title">Équipage logistique</span></div>
+                <div class="divide-y">
+                  <div class="flex items-center gap-3 py-3">
+                    <div class="avatar" style="width:32px;height:32px;font-size:12px;">LW</div>
+                    <div class="flex-1"><p class="font-bold text-sm">Lena Wagner</p><p class="text-xs text-muted">Logistics Coordinator</p></div>
+                    <span class="tag tag-success">Confirmé</span>
+                  </div>
+                  <div class="flex items-center gap-3 py-3">
+                    <div class="avatar" style="width:32px;height:32px;font-size:12px;background:rgba(99,102,241,0.1);color:#6366f1;">FK</div>
+                    <div class="flex-1"><p class="font-bold text-sm">Fabio Rossi</p><p class="text-xs text-muted">Transport Manager</p></div>
+                    <span class="tag tag-success">Confirmé</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="card-title">Documents de voyage</span></div>
+                <div class="divide-y">
+                  <div class="flex items-center gap-3 py-2">
+                    <span class="material-symbols-outlined text-sm text-primary">description</span>
+                    <span class="text-sm flex-1">Itinéraire complet.pdf</span>
+                    <span class="material-symbols-outlined text-sm text-muted">download</span>
+                  </div>
+                  <div class="flex items-center gap-3 py-2">
+                    <span class="material-symbols-outlined text-sm text-primary">description</span>
+                    <span class="text-sm flex-1">Billets avion (x6)</span>
+                    <span class="material-symbols-outlined text-sm text-muted">download</span>
+                  </div>
+                  <div class="flex items-center gap-3 py-2">
+                    <span class="material-symbols-outlined text-sm text-primary">description</span>
+                    <span class="text-sm flex-1">Confirmation hôtel</span>
+                    <span class="material-symbols-outlined text-sm text-muted">download</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        \` : tab === 'documents' ? \`
+          <div>
+            <div class="mb-lg flex gap-sm" style="flex-wrap: wrap;">
+              <button class="btn btn-primary btn-sm">Tous</button>
+              <button class="btn btn-secondary btn-sm">Contrats</button>
+              <button class="btn btn-secondary btn-sm">Certifications</button>
+              <button class="btn btn-secondary btn-sm">Assurances</button>
+              <button class="btn btn-secondary btn-sm">Rapports</button>
+            </div>
+            <div class="grid grid-2 gap-lg">
+              <div class="card">
+                <div class="card-header"><span class="card-title">Contrats & Accords</span><button class="btn btn-primary btn-sm">+ Upload</button></div>
+                <div class="divide-y">
+                  <div class="flex items-center gap-3 py-3">
+                    <span class="material-symbols-outlined text-primary">contract</span>
+                    <div class="flex-1"><p class="font-bold text-sm">Contrat - Alex Krause</p><p class="text-xs text-muted">Signé le 15 Mai 2026</p></div>
+                    <span class="tag tag-success">Signé</span>
+                  </div>
+                  <div class="flex items-center gap-3 py-3">
+                    <span class="material-symbols-outlined text-primary">contract</span>
+                    <div class="flex-1"><p class="font-bold text-sm">Contrat - Marco Bellini</p><p class="text-xs text-muted">Signé le 10 Mai 2026</p></div>
+                    <span class="tag tag-success">Signé</span>
+                  </div>
+                  <div class="flex items-center gap-3 py-3">
+                    <span class="material-symbols-outlined text-primary">contract</span>
+                    <div class="flex-1"><p class="font-bold text-sm">Contrat - Sarah Mitchell</p><p class="text-xs text-muted">En attente de signature</p></div>
+                    <span class="tag tag-warning">En attente</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="card mb-lg">
+                  <div class="card-header"><span class="card-title">Certifications & Licences</span></div>
+                  <div class="divide-y">
+                    <div class="flex items-center gap-3 py-2">
+                      <span class="material-symbols-outlined text-sm text-success">verified</span>
+                      <span class="text-sm flex-1">FIA Mechanic License - Alex K.</span>
+                      <span class="text-xs text-success">Valide</span>
+                    </div>
+                    <div class="flex items-center gap-3 py-2">
+                      <span class="material-symbols-outlined text-sm text-success">verified</span>
+                      <span class="text-sm flex-1">FIA Engineer License - Marco B.</span>
+                      <span class="text-xs text-success">Valide</span>
+                    </div>
+                    <div class="flex items-center gap-3 py-2">
+                      <span class="material-symbols-outlined text-sm text-warning">warning</span>
+                      <span class="text-sm flex-1">Medical Certificate - Lena W.</span>
+                      <span class="text-xs text-warning">Expire 30 Juin</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header"><span class="card-title">Assurances</span></div>
+                  <div class="divide-y">
+                    <div class="flex items-center gap-3 py-2">
+                      <span class="material-symbols-outlined text-sm text-success">shield</span>
+                      <span class="text-sm flex-1">Responsabilité civile circuit</span>
+                      <span class="text-xs text-success">Active</span>
+                    </div>
+                    <div class="flex items-center gap-3 py-2">
+                      <span class="material-symbols-outlined text-sm text-success">shield</span>
+                      <span class="text-sm flex-1">Assurance accident travail</span>
+                      <span class="text-xs text-success">Active</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        \` : ''}
       </section>
-    `
+      `;
+    }
   },
 
   'e-job-offers': {
