@@ -38,23 +38,23 @@
         </a>
       </div>
       <div class="header-center">
-        <div class="search-bar">
+        <div class="search-bar" onclick="router.navigate('/marketplace')" style="cursor:pointer;">
           <span class="material-symbols-outlined search-icon">search</span>
-          <input type="text" class="search-input" placeholder="Search jobs, events, people...">
+          <input type="text" class="search-input" placeholder="Search jobs, events, people..." readonly onfocus="router.navigate('/marketplace')">
         </div>
       </div>
       <div class="header-right">
-        <button class="icon-btn" aria-label="Notifications">
+        <a href="#/notifications" class="icon-btn" aria-label="Notifications" data-nav>
           <span class="material-symbols-outlined">notifications</span>
           <span class="badge">3</span>
-        </button>
-        <button class="icon-btn" aria-label="Messages">
+        </a>
+        <a href="#/messages" class="icon-btn" aria-label="Messages" data-nav>
           <span class="material-symbols-outlined">chat</span>
           <span class="badge">1</span>
-        </button>
-        <div class="avatar-btn" id="avatar-btn">
+        </a>
+        <a href="#/profile" class="avatar-btn" data-nav>
           <div class="avatar">JD</div>
-        </div>
+        </a>
       </div>
     </header>
 
