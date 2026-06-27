@@ -369,6 +369,22 @@
   border-top: 1px solid var(--outline-light);
 }
 
+.divide-y > * + * {
+  border-top: 1px solid var(--outline-light);
+}
+
+.space-y-sm > * + * {
+  margin-top: var(--space-sm);
+}
+
+.space-y-md > * + * {
+  margin-top: var(--space-md);
+}
+
+.space-y-lg > * + * {
+  margin-top: var(--space-lg);
+}
+
 .job-card-tags, .event-card-tags {
   display: flex;
   gap: var(--space-xs);
