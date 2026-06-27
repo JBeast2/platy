@@ -726,12 +726,12 @@ const pages = {
     `
   },
 
-  'my-gigs': {
-    title: 'My Gigs',
+  'my-jobs': {
+    title: 'My Jobs',
     render: () => `
       <section class="page-section">
         <div class="section-header">
-          <h1 class="section-title">My Gigs</h1>
+          <h1 class="section-title">My Jobs</h1>
           <button class="btn btn-primary btn-sm" onclick="router.navigate('/marketplace')">Find Work</button>
         </div>
         <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
@@ -762,7 +762,7 @@ const pages = {
             </div>
             <div class="flex gap-sm justify-end">
               <button class="btn btn-secondary btn-sm">Time Log</button>
-              <button class="btn btn-primary btn-sm">View Details</button>
+              <button class="btn btn-primary btn-sm" onclick="router.navigate('/gig-detail')">View Details</button>
             </div>
           </div>
           <div class="card" style="border-left: 4px solid var(--warning);">
@@ -816,6 +816,96 @@ const pages = {
         </div>
       </section>
     `
+  },
+
+  'gig-detail': {
+    title: 'Job Detail',
+    render: () => {
+      var gigs = Store.get('activeGigs');
+      var g = gigs[0];
+
+      var statusColor = g.status === 'Active' ? 'success' : (g.status === 'Upcoming' ? 'warning' : 'muted');
+      var progressHtml = g.status === 'Active'
+        ? '<div class="flex items-center gap-3 mb-3"><div class="flex-1 bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:' + g.progress + '%;"></div></div><span class="text-xs font-bold">Day ' + g.currentDay + ' of ' + g.totalDays + '</span></div>'
+        : '';
+      var tagsHtml = (g.tags || []).map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="flex items-center gap-2 mb-6">' +
+          '<button class="icon-btn" onclick="router.navigate(\'/my-jobs\')"><span class="material-symbols-outlined">arrow_back</span></button>' +
+          '<h1 class="section-title">Job Details</h1>' +
+        '</div>' +
+        '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
+          '<div>' +
+            '<div class="card mb-lg">' +
+              '<div class="flex items-start justify-between mb-4">' +
+                '<div><h2 class="text-xl font-bold">' + g.title + '</h2><p class="text-sm text-muted">' + g.employer + ' • ' + g.event + '</p></div>' +
+                '<span class="tag tag-' + statusColor + '">' + g.status + '</span>' +
+              '</div>' +
+              '<div class="flex items-center gap-4 mb-4">' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">location_on</span><span class="text-sm">' + g.location + '</span></span>' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">calendar_today</span><span class="text-sm">' + g.dates + '</span></span>' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">payments</span><span class="text-sm font-bold text-primary">' + g.rate + '</span></span>' +
+              '</div>' +
+              progressHtml +
+              '<div class="flex gap-xs flex-wrap mb-4">' + tagsHtml + '</div>' +
+              '<h3 class="font-bold mb-sm">Description</h3>' +
+              '<p class="text-sm text-muted mb-md">' + g.title + ' position for ' + g.event + ' at ' + g.location + '. ' + g.employer + ' requires an experienced professional for this role.</p>' +
+              '<h3 class="font-bold mb-sm">Requirements</h3>' +
+              '<ul class="flex flex-col gap-sm text-sm">' +
+                '<li>• Proven experience in ' + (g.tags || []).slice(0,2).join(' and ') + '</li>' +
+                '<li>• Available for full event duration</li>' +
+                '<li>• Relevant certifications and licenses</li>' +
+                '<li>• Fluent English, additional languages a plus</li>' +
+              '</ul>' +
+            '</div>' +
+            '<div class="card">' +
+              '<h3 class="font-bold mb-md">About the Employer</h3>' +
+              '<div class="flex items-center gap-3 mb-3">' +
+                '<div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center font-bold">' + g.employer.charAt(0) + g.employer.split(' ')[1]?.charAt(0) + '</div>' +
+                '<div><h4 class="font-bold">' + g.employer + '</h4><p class="text-xs text-muted">Motorsport team</p></div>' +
+              '</div>' +
+              '<div class="flex items-center gap-3 text-sm">' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">star</span><span class="text-muted">4.7 rating</span></span>' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">work</span><span class="text-muted">12 jobs posted</span></span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<div class="card mb-lg">' +
+              '<h3 class="font-bold mb-md">Role Details</h3>' +
+              '<div class="flex flex-col gap-3">' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Position</span><span class="font-bold">' + g.title + '</span></div>' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Rate</span><span class="font-bold text-primary">' + g.rate + '</span></div>' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Event</span><span class="font-bold">' + g.event + '</span></div>' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Dates</span><span class="font-bold">' + g.dates + '</span></div>' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Location</span><span class="font-bold">' + g.location + '</span></div>' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Status</span><span class="font-bold tag tag-' + statusColor + '" style="font-size:inherit;">' + g.status + '</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="card mb-lg">' +
+              '<h3 class="font-bold mb-md">Quick Actions</h3>' +
+              '<div class="flex flex-col gap-2">' +
+                '<button class="btn btn-primary btn-lg">Log Hours</button>' +
+                '<button class="btn btn-secondary btn-lg">Contact Employer</button>' +
+                '<button class="btn btn-secondary btn-lg">View Schedule</button>' +
+                '<button class="btn btn-secondary btn-lg">Expenses</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="card">' +
+              '<h3 class="font-bold mb-md">Upcoming Milestones</h3>' +
+              '<div class="divide-y">' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Contract signed</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Travel booked</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-warning text-sm">hourglass_empty</span><span class="text-sm">On-site check-in</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Job completed</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Payment received</span></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</section>';
+    }
   },
 
   'profile-edit': {

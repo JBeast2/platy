@@ -80,9 +80,9 @@
           <span class="material-symbols-outlined">explore</span>
           <span class="nav-label">Marketplace</span>
         </a>
-        <a href="#/my-gigs" class="nav-item" data-nav>
+        <a href="#/my-jobs" class="nav-item" data-nav>
           <span class="material-symbols-outlined">event_available</span>
-          <span class="nav-label">My Gigs</span>
+          <span class="nav-label">My Jobs</span>
         </a>
         <a href="#/events" class="nav-item" data-nav>
           <span class="material-symbols-outlined">event</span>
@@ -118,9 +118,9 @@
           <span class="material-symbols-outlined">explore</span>
           <span class="bottom-nav-label">Find Work</span>
         </a>
-        <a href="#/my-gigs" class="bottom-nav-item" data-nav>
+        <a href="#/my-jobs" class="bottom-nav-item" data-nav>
           <span class="material-symbols-outlined">event_available</span>
-          <span class="bottom-nav-label">My Gigs</span>
+          <span class="bottom-nav-label">My Jobs</span>
         </a>
         <a href="#/messages" class="bottom-nav-item" data-nav>
           <span class="material-symbols-outlined">chat</span>
