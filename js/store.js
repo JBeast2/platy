@@ -57,9 +57,12 @@
       { id: 503, from: 'James Wilson', initials: 'JW', text: 'Great work today! Let\'s discuss the next race...', time: '3h ago', unread: false }
     ],
     team: [
-      { id: 601, name: 'Alex Krause', initials: 'AK', role: 'Lead Mechanic', status: 'Available', events: ['Spa 24H', 'Monaco GP'], rate: '€350/day' },
-      { id: 602, name: 'Sarah Mitchell', initials: 'SM', role: 'Data Engineer', status: 'On Assignment', events: ['Spa 24H'], rate: '€400/day' },
-      { id: 603, name: 'Marco Bellini', initials: 'MB', role: 'Race Engineer', status: 'Available', events: [], rate: '€450/day' }
+      { id: 601, name: 'Alex Krause', initials: 'AK', role: 'Lead Mechanic', status: 'Available', events: ['Spa 24H', 'Monaco GP'], rate: '€350/day', type: 'fulltime' },
+      { id: 602, name: 'Sarah Mitchell', initials: 'SM', role: 'Data Engineer', status: 'On Assignment', events: ['Spa 24H'], rate: '€400/day', type: 'freelance' },
+      { id: 603, name: 'Marco Bellini', initials: 'MB', role: 'Race Engineer', status: 'Available', events: [], rate: '€450/day', type: 'fulltime' },
+      { id: 604, name: 'Lena Wagner', initials: 'LW', role: 'Logistics Coordinator', status: 'Available', events: ['Spa 24H', 'Nürburgring 24H'], rate: '€300/day', type: 'freelance', initialsBg: 'rgba(34,197,94,0.1)', initialsColor: '#22c55e' },
+      { id: 605, name: 'James Donovan', initials: 'JD', role: 'Team Manager', status: 'Active', events: ['Spa 24H', 'Monaco GP', 'Nürburgring 24H'], rate: '€600/day', type: 'fulltime' },
+      { id: 606, name: 'Paul Tan', initials: 'PT', role: 'Media Specialist', status: 'Available', events: ['Monaco GP'], rate: '€320/day', type: 'freelance', initialsBg: 'rgba(99,102,241,0.1)', initialsColor: '#6366f1' }
     ],
     invoices: [
       { id: 701, date: 'Jun 20', job: 'Spa 24H - Practice', amount: 2800, status: 'Paid' },
@@ -67,7 +70,7 @@
     ],
     finance: { earnings: 8400, pending: 12200, ytd: 45000 },
     enterprise: {
-      stats: { events: 3, teamMembers: 24, pendingApps: 8, totalBudget: 89000 },
+      stats: { events: 3, teamMembers: 24, fulltimeEmployees: 14, freelancers: 10, pendingApps: 8, totalBudget: 89000 },
       recentApplicants: [
         { name: 'Alex Krause', initials: 'AK', role: 'GT3 Lead Mechanic', event: 'Spa 24H', status: 'Approuver', statusColor: 'success' },
         { name: 'Sarah Mitchell', initials: 'SM', role: 'Data Engineer', event: 'Monaco GP', status: 'En attente', statusColor: 'warning' }

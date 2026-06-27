@@ -14,10 +14,7 @@ const pages = {
       <div class="login-page">
         <div class="login-card">
           <div class="login-logo">
-            <div class="login-logo-icon">
-              <span class="material-symbols-outlined">bolt</span>
-            </div>
-            <h1 class="login-logo-text">Platy</h1>
+            <img src="assets/logo-platy.jpg" alt="Platy" class="login-logo-img">
           </div>
           <p class="login-subtitle">Your Digital Agent for Smarter Work</p>
 
@@ -1560,74 +1557,70 @@ const pages = {
 
   'e-team': {
     title: 'Mon équipe',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Mon équipe</h1>
-          <button class="btn btn-primary btn-sm">+ Inviter</button>
-        </div>
-        <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">Tous</button>
-          <button class="btn btn-secondary btn-sm">Confirmés</button>
-          <button class="btn btn-secondary btn-sm">En attente</button>
-          <button class="btn btn-secondary btn-sm">Remplaçants</button>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
-          <div class="card">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="avatar avatar-lg" style="width:48px; height:48px; font-size:1rem;">AK</div>
-              <div>
-                <h3 class="font-bold text-sm">Alex Krause</h3>
-                <p class="text-xs text-muted">GT3 Lead Mechanic</p>
-              </div>
-              <span class="ml-auto material-symbols-outlined text-success">check_circle</span>
-            </div>
-            <div class="flex gap-xs flex-wrap">
-              <span class="tag">Spa 24H</span>
-              <span class="tag">Monaco GP</span>
-            </div>
-            <div class="flex justify-between items-center mt-3 pt-3" style="border-top: 1px solid var(--outline-light);">
-              <span class="text-xs text-muted">€350/jour</span>
-              <span class="tag tag-success">Confirmé</span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="avatar avatar-lg" style="width:48px; height:48px; font-size:1rem; background:rgba(147,51,234,0.1); color:#9333ea;">SM</div>
-              <div>
-                <h3 class="font-bold text-sm">Sarah Mitchell</h3>
-                <p class="text-xs text-muted">Data Engineer</p>
-              </div>
-              <span class="ml-auto material-symbols-outlined text-warning">hourglass_empty</span>
-            </div>
-            <div class="flex gap-xs flex-wrap">
-              <span class="tag">Spa 24H</span>
-            </div>
-            <div class="flex justify-between items-center mt-3 pt-3" style="border-top: 1px solid var(--outline-light);">
-              <span class="text-xs text-muted">€400/jour</span>
-              <span class="tag tag-warning">En attente</span>
-            </div>
-          </div>
-          <div class="card">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="avatar avatar-lg" style="width:48px; height:48px; font-size:1rem; background:rgba(234,88,12,0.1); color:#ea580c;">MB</div>
-              <div>
-                <h3 class="font-bold text-sm">Marco Bellini</h3>
-                <p class="text-xs text-muted">Race Engineer</p>
-              </div>
-              <span class="ml-auto material-symbols-outlined text-success">check_circle</span>
-            </div>
-            <div class="flex gap-xs flex-wrap">
-              <span class="tag">Monaco GP</span>
-            </div>
-            <div class="flex justify-between items-center mt-3 pt-3" style="border-top: 1px solid var(--outline-light);">
-              <span class="text-xs text-muted">€500/jour</span>
-              <span class="tag tag-success">Confirmé</span>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      const allMembers = Store.get('team');
+      const fulltime = allMembers.filter(function(m) { return m.type === 'fulltime'; });
+      const freelancers = allMembers.filter(function(m) { return m.type === 'freelance'; });
+
+      function teamCardHtml(m) {
+        var statusIcon = m.status === 'Available' || m.status === 'Active' || m.status === 'Confirmé'
+          ? 'check_circle'
+          : 'hourglass_empty';
+        var statusColor = (m.status === 'Available' || m.status === 'Active' || m.status === 'Confirmé')
+          ? 'text-success'
+          : 'text-warning';
+        var tagClass = (m.status === 'Available' || m.status === 'Active' || m.status === 'Confirmé')
+          ? 'tag-success'
+          : 'tag-warning';
+        var statusLabel = m.status === 'Available' ? 'Confirmé' : (m.status === 'On Assignment' ? 'En mission' : m.status);
+        var bgStyle = m.initialsBg ? 'background:' + m.initialsBg + '; color:' + (m.initialsColor || 'inherit') + ';' : '';
+        var eventsHtml = (m.events || []).map(function(e) { return '<span class="tag">' + e + '</span>'; }).join('');
+
+        return '<div class="card">' +
+          '<div class="flex items-center gap-3 mb-3">' +
+            '<div class="avatar avatar-lg" style="width:48px; height:48px; font-size:1rem;' + bgStyle + '">' + m.initials + '</div>' +
+            '<div>' +
+              '<h3 class="font-bold text-sm">' + m.name + '</h3>' +
+              '<p class="text-xs text-muted">' + m.role + '</p>' +
+            '</div>' +
+            '<span class="ml-auto material-symbols-outlined ' + statusColor + '">' + statusIcon + '</span>' +
+          '</div>' +
+          '<div class="flex gap-xs flex-wrap">' + eventsHtml + '</div>' +
+          '<div class="flex justify-between items-center mt-3 pt-3" style="border-top: 1px solid var(--outline-light);">' +
+            '<span class="text-xs text-muted">' + m.rate + '</span>' +
+            '<span class="tag ' + tagClass + '">' + statusLabel + '</span>' +
+          '</div>' +
+        '</div>';
+      }
+
+      var fulltimeHtml = fulltime.map(teamCardHtml).join('');
+      var freelanceHtml = freelancers.map(teamCardHtml).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header">' +
+          '<h1 class="section-title">Mon équipe</h1>' +
+          '<button class="btn btn-primary btn-sm">+ Inviter</button>' +
+        '</div>' +
+        '<div class="card mb-lg p-md" style="background:var(--primary-bg);">' +
+          '<div class="flex items-center gap-2">' +
+            '<span class="material-symbols-outlined text-primary">info</span>' +
+            '<span class="text-sm">' + allMembers.length + ' membres · ' + fulltime.length + ' temps plein · ' + freelancers.length + ' freelances</span>' +
+          '</div>' +
+        '</div>' +
+        '<h2 class="font-bold mb-md flex items-center gap-2">' +
+          '<span class="material-symbols-outlined text-primary">badge</span> Employés à temps plein <span class="tag tag-primary">' + fulltime.length + '</span>' +
+        '</h2>' +
+        '<div class="grid gap-md mb-xl" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">' +
+          fulltimeHtml +
+        '</div>' +
+        '<h2 class="font-bold mb-md flex items-center gap-2">' +
+          '<span class="material-symbols-outlined text-primary">person_search</span> Freelances <span class="tag tag-primary">' + freelancers.length + '</span>' +
+        '</h2>' +
+        '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">' +
+          freelanceHtml +
+        '</div>' +
+      '</section>';
+    }
   },
 
   'e-applicants': {
@@ -1877,102 +1870,103 @@ const pages = {
 
   'e-staffing': {
     title: 'Staffing & Équipe',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Team Builder</h1>
-          <button class="btn btn-primary btn-sm" onclick="router.navigate('/e-talent')">+ Add Member</button>
-        </div>
-        <div class="flex items-center gap-4 mb-6">
-          <button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">
-            <span class="material-symbols-outlined">event</span>
-            Spa 24 Hours 2026
-          </button>
-          <span class="text-sm text-muted">12/15 positions filled</span>
-        </div>
-        <div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">
-          <div>
-            <div class="card mb-md">
-              <div class="card-header">
-                <span class="card-title">Team Members</span>
-                <span class="tag tag-success">12 confirmed</span>
-              </div>
-              <div class="divide-y">
-                <div class="flex items-center gap-3 py-2">
-                  <div class="avatar" style="width:32px; height:32px; font-size:12px;">AK</div>
-                  <div class="flex-1">
-                    <p class="font-bold text-sm">Alex Krause</p>
-                    <p class="text-xs text-muted">GT3 Lead Mechanic • €350/day</p>
-                  </div>
-                  <span class="tag tag-success">Confirmed</span>
-                </div>
-                <div class="flex items-center gap-3 py-2">
-                  <div class="avatar" style="width:32px; height:32px; font-size:12px; background:rgba(147,51,234,0.1); color:#9333ea;">SM</div>
-                  <div class="flex-1">
-                    <p class="font-bold text-sm">Sarah Mitchell</p>
-                    <p class="text-xs text-muted">Data Engineer • €400/day</p>
-                  </div>
-                  <span class="tag tag-warning">Pending</span>
-                </div>
-                <div class="flex items-center gap-3 py-2">
-                  <div class="avatar" style="width:32px; height:32px; font-size:12px; background:rgba(234,88,12,0.1); color:#ea580c;">MB</div>
-                  <div class="flex-1">
-                    <p class="font-bold text-sm">Marco Bellini</p>
-                    <p class="text-xs text-muted">Race Engineer • €500/day</p>
-                  </div>
-                  <span class="tag tag-success">Confirmed</span>
-                </div>
-                <div class="flex items-center gap-3 py-2">
-                  <div class="avatar" style="width:32px; height:32px; font-size:12px; background:rgba(34,197,94,0.1); color:#22c55e;">LW</div>
-                  <div class="flex-1">
-                    <p class="font-bold text-sm">Lena Wagner</p>
-                    <p class="text-xs text-muted">Logistics Coordinator • €300/day</p>
-                  </div>
-                  <span class="tag tag-success">Confirmed</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="card mb-md">
-              <div class="card-header">
-                <span class="card-title">Open Positions</span>
-                <span class="tag tag-warning">3 remaining</span>
-              </div>
-              <div class="divide-y">
-                <div class="flex items-center justify-between py-2">
-                  <div>
-                    <p class="font-bold text-sm">Tire Technician</p>
-                    <p class="text-xs text-muted">€200-250/day • 2 needed</p>
-                  </div>
-                  <button class="btn btn-primary btn-sm">Find</button>
-                </div>
-                <div class="flex items-center justify-between py-2">
-                  <div>
-                    <p class="font-bold text-sm">Data Engineer</p>
-                    <p class="text-xs text-muted">€400/day • 1 needed</p>
-                  </div>
-                  <button class="btn btn-primary btn-sm">Find</button>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header"><span class="card-title">Budget Summary</span></div>
-              <div class="flex flex-col gap-2">
-                <div class="flex justify-between text-sm"><span class="text-muted">Total Budget</span><span class="font-bold">€45,000</span></div>
-                <div class="flex justify-between text-sm"><span class="text-muted">Salaries</span><span class="font-bold">€28,400</span></div>
-                <div class="flex justify-between text-sm"><span class="text-muted">Travel</span><span class="font-bold">€12,400</span></div>
-                <div class="flex justify-between text-sm"><span class="text-muted">Remaining</span><span class="font-bold text-success">€4,200</span></div>
-              </div>
-              <div class="mt-3 bg-surface-dim rounded-full h-2 overflow-hidden">
-                <div class="bg-primary h-2 rounded-full" style="width:91%;"></div>
-              </div>
-              <p class="text-xs text-muted mt-1">91% allocated</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var allMembers = Store.get('team');
+      var ft = allMembers.filter(function(m) { return m.type === 'fulltime'; });
+      var fl = allMembers.filter(function(m) { return m.type === 'freelance'; });
+
+      function memberRowHtml(m) {
+        var bgStyle = m.initialsBg ? 'background:' + m.initialsBg + '; color:' + (m.initialsColor || 'inherit') + ';' : '';
+        var statusTag = m.status === 'Available' || m.status === 'Active'
+          ? '<span class="tag tag-success">Confirmed</span>'
+          : '<span class="tag tag-warning">Pending</span>';
+        return '<div class="flex items-center gap-3 py-2">' +
+          '<div class="avatar" style="width:32px; height:32px; font-size:12px;' + bgStyle + '">' + m.initials + '</div>' +
+          '<div class="flex-1">' +
+            '<p class="font-bold text-sm">' + m.name + '</p>' +
+            '<p class="text-xs text-muted">' + m.role + ' • ' + m.rate + '</p>' +
+          '</div>' +
+          statusTag +
+        '</div>';
+      }
+
+      var ftHtml = ft.map(memberRowHtml).join('');
+      var flHtml = fl.map(memberRowHtml).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header">' +
+          '<h1 class="section-title">Team Builder</h1>' +
+          '<button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-talent\')">+ Add Member</button>' +
+        '</div>' +
+        '<div class="flex items-center gap-4 mb-6">' +
+          '<button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">' +
+            '<span class="material-symbols-outlined">event</span>' +
+            'Spa 24 Hours 2026' +
+          '</button>' +
+          '<span class="text-sm text-muted">' + allMembers.length + '/' + (allMembers.length + 3) + ' positions filled</span>' +
+        '</div>' +
+        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
+          '<button class="btn btn-primary btn-sm">Tous</button>' +
+          '<button class="btn btn-secondary btn-sm">Temps plein</button>' +
+          '<button class="btn btn-secondary btn-sm">Freelances</button>' +
+        '</div>' +
+        '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
+          '<div>' +
+            '<div class="card mb-md">' +
+              '<div class="card-header">' +
+                '<span class="card-title flex items-center gap-2"><span class="material-symbols-outlined text-primary">badge</span> Employés temps plein</span>' +
+                '<span class="tag tag-primary">' + ft.length + '</span>' +
+              '</div>' +
+              '<div class="divide-y">' + ftHtml + '</div>' +
+            '</div>' +
+            '<div class="card">' +
+              '<div class="card-header">' +
+                '<span class="card-title flex items-center gap-2"><span class="material-symbols-outlined text-primary">person_search</span> Freelances</span>' +
+                '<span class="tag tag-primary">' + fl.length + '</span>' +
+              '</div>' +
+              '<div class="divide-y">' + flHtml + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<div class="card mb-md">' +
+              '<div class="card-header">' +
+                '<span class="card-title">Open Positions</span>' +
+                '<span class="tag tag-warning">3 remaining</span>' +
+              '</div>' +
+              '<div class="divide-y">' +
+                '<div class="flex items-center justify-between py-2">' +
+                  '<div>' +
+                    '<p class="font-bold text-sm">Tire Technician</p>' +
+                    '<p class="text-xs text-muted">€200-250/day • 2 needed</p>' +
+                  '</div>' +
+                  '<button class="btn btn-primary btn-sm">Find</button>' +
+                '</div>' +
+                '<div class="flex items-center justify-between py-2">' +
+                  '<div>' +
+                    '<p class="font-bold text-sm">Data Engineer</p>' +
+                    '<p class="text-xs text-muted">€400/day • 1 needed</p>' +
+                  '</div>' +
+                  '<button class="btn btn-primary btn-sm">Find</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="card">' +
+              '<div class="card-header"><span class="card-title">Budget Summary</span></div>' +
+              '<div class="flex flex-col gap-2">' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Total Budget</span><span class="font-bold">€45,000</span></div>' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Salaries</span><span class="font-bold">€28,400</span></div>' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Travel</span><span class="font-bold">€12,400</span></div>' +
+                '<div class="flex justify-between text-sm"><span class="text-muted">Remaining</span><span class="font-bold text-success">€4,200</span></div>' +
+              '</div>' +
+              '<div class="mt-3 bg-surface-dim rounded-full h-2 overflow-hidden">' +
+                '<div class="bg-primary h-2 rounded-full" style="width:91%;"></div>' +
+              '</div>' +
+              '<p class="text-xs text-muted mt-1">91% allocated</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</section>';
+    }
   },
 
   'e-approvals': {

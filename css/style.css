@@ -57,6 +57,12 @@
   color: var(--on-surface);
 }
 
+.logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
 .header-center {
   flex: 1;
   max-width: 400px;
@@ -496,6 +502,12 @@
   font-size: 2rem;
   font-weight: 800;
   color: var(--on-surface);
+}
+
+.login-logo-img {
+  height: 64px;
+  width: auto;
+  display: block;
 }
 
 .login-subtitle {
