@@ -29,9 +29,9 @@
       { id: 4, title: 'Logistics Coordinator', event: 'Spa 24H + Monaco GP', dates: 'Multi-event', location: 'Multiple locations', rate: '€300-380/day', category: 'Logistics', tags: ['Logistics', 'Coordination', 'Travel', 'Multi-event'], openings: 1, duration: '2 weeks', employer: 'Scuderia Italia Racing', employerInitials: 'SI', status: 'Featured', urgent: false, featured: true }
     ],
     activeGigs: [
-      { id: 101, title: 'GT3 Lead Mechanic', employer: 'Scuderia Italia Racing', event: 'Spa 24H', dates: 'Jun 26-29', location: 'Spa, BE', rate: '€350/day', status: 'Active', progress: 65, currentDay: 3, totalDays: 4 },
-      { id: 102, title: 'Data Engineer', employer: 'AF Corse', event: 'Monaco GP', dates: 'Jul 3-7', location: 'Monte Carlo', rate: '€400/day', status: 'Upcoming', contractPending: true },
-      { id: 103, title: 'Race Photographer', employer: 'GT Media Group', event: 'Nürburgring 24H', dates: 'Jul 15-18', location: 'Nürburg, DE', rate: '€1,120', status: 'Completed', paymentPending: true }
+      { id: 101, title: 'GT3 Lead Mechanic', employer: 'Scuderia Italia Racing', event: 'Spa 24H', dates: 'Jun 26-29', location: 'Spa, BE', rate: '€350/day', status: 'Active', progress: 65, currentDay: 3, totalDays: 4, tags: ['Mechanic', 'GT3', 'Spa'] },
+      { id: 102, title: 'Data Engineer', employer: 'AF Corse', event: 'Monaco GP', dates: 'Jul 3-7', location: 'Monte Carlo', rate: '€400/day', status: 'Upcoming', contractPending: true, tags: ['Engineering', 'Data', 'WEC'] },
+      { id: 103, title: 'Race Photographer', employer: 'GT Media Group', event: 'Nürburgring 24H', dates: 'Jul 15-18', location: 'Nürburg, DE', rate: '€1,120', status: 'Completed', paymentPending: true, tags: ['Media', 'Photography'] }
     ],
     events: [
       { id: 201, title: 'Spa 24 Hours', circuit: 'Circuit de Spa-Francorchamps', location: 'Spa, Belgium', startDate: '2026-06-26', endDate: '2026-06-29', type: 'Endurance 24H', series: 'GT World Challenge', budget: 45000, status: 'Actif', recruited: 12, totalNeeded: 15, color: 'primary' },

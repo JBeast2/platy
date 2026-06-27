@@ -75,7 +75,7 @@ const pages = {
       var finances = Store.get('finance');
 
       function jobCard(j) {
-        return '<div class="job-card"><div class="job-card-header"><h3 class="job-card-title">' + j.title + '</h3><span class="tag tag-' + (j.status === 'Active' ? 'success' : 'warning') + '">' + j.status + '</span></div><p class="text-sm text-muted">' + j.event + ' • ' + j.dates + '</p><div class="job-card-tags">' + j.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') + '</div><div class="job-card-footer"><span class="font-bold text-primary">' + j.rate + '</span><span class="text-sm text-muted">' + j.location + '</span></div></div>';
+        return '<div class="job-card"><div class="job-card-header"><h3 class="job-card-title">' + j.title + '</h3><span class="tag tag-' + (j.status === 'Active' ? 'success' : 'warning') + '">' + j.status + '</span></div><p class="text-sm text-muted">' + j.event + ' • ' + j.dates + '</p><div class="job-card-tags">' + (j.tags || []).map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') + '</div><div class="job-card-footer"><span class="font-bold text-primary">' + j.rate + '</span><span class="text-sm text-muted">' + j.location + '</span></div></div>';
       }
 
       function eventCard(e) {
