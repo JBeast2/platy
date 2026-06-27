@@ -1,4 +1,64 @@
+function handleLogin(role) {
+  localStorage.setItem('platy-logged-in', 'true');
+  localStorage.setItem('platy-role', role);
+  document.body.classList.remove('login-mode');
+  router.navigate('/dashboard');
+}
+
 const pages = {
+  login: {
+    title: 'Connexion',
+    render: () => {
+      document.body.classList.add('login-mode');
+      return `
+      <div class="login-page">
+        <div class="login-card">
+          <div class="login-logo">
+            <div class="login-logo-icon">
+              <span class="material-symbols-outlined">bolt</span>
+            </div>
+            <h1 class="login-logo-text">Platy</h1>
+          </div>
+          <p class="login-subtitle">Your Digital Agent for Smarter Work</p>
+
+          <div class="role-selector">
+            <p class="role-label">Je suis</p>
+            <div class="role-options">
+              <button class="role-btn" onclick="selectRole(this, 'normal')" id="role-normal">
+                <span class="material-symbols-outlined">person</span>
+                <span class="role-btn-title">Normal</span>
+                <span class="role-btn-desc">Freelance, prestataire</span>
+              </button>
+              <button class="role-btn active" onclick="selectRole(this, 'entreprise')" id="role-entreprise">
+                <span class="material-symbols-outlined">business</span>
+                <span class="role-btn-title">Entreprise</span>
+                <span class="role-btn-desc">Équipe, organisateur</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="login-form">
+            <div class="login-field">
+              <label class="login-label">Email</label>
+              <input class="input-field" type="email" placeholder="vous@exemple.com" id="login-email">
+            </div>
+            <div class="login-field">
+              <label class="login-label">Mot de passe</label>
+              <input class="input-field" type="password" placeholder="••••••••" id="login-password">
+            </div>
+            <button class="btn btn-primary btn-lg login-btn" onclick="handleLogin()">
+              Se connecter
+            </button>
+          </div>
+
+          <p class="login-footer">
+            Pas encore de compte ? <a href="#" onclick="event.preventDefault(); alert('Inscription pas encore disponible')">Créer un compte</a>
+          </p>
+        </div>
+      </div>
+      `;
+    }
+  },
   dashboard: {
     title: 'Dashboard',
     render: () => `
