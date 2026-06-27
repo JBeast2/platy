@@ -21,6 +21,10 @@ class Router {
     if (handler) {
       handler();
       this.currentRoute = fullHash;
+      if (typeof handler.afterRender === 'function') {
+        var self = this;
+        setTimeout(function() { handler.afterRender(); }, 0);
+      }
     } else {
       this.navigate('/');
     }

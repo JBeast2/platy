@@ -141,15 +141,19 @@
   function initRouter() {
     Object.entries(pages).forEach(([path, page]) => {
       if (path === 'login') return;
-      router.register('/' + path, () => {
-        document.title = `${page.title} — Platy`;
+      var handler = function () {
+        document.title = page.title + ' — Platy';
         document.body.classList.remove('login-mode');
         document.getElementById('page-content').innerHTML = page.render();
-      });
+      };
+      if (page.afterRender) {
+        handler.afterRender = page.afterRender;
+      }
+      router.register('/' + path, handler);
     });
 
     router.register('/login', () => {
-      document.title = `Connexion — Platy`;
+      document.title = 'Connexion — Platy';
       document.getElementById('page-content').innerHTML = pages.login.render();
     });
 
@@ -203,33 +207,181 @@
   }
 
   function selectRole(el, role) {
-    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.role-btn').forEach(function (b) { b.classList.remove('active'); });
     el.classList.add('active');
     localStorage.setItem('platy-role', role);
   }
 
   window.selectRole = selectRole;
   window.handleLogin = handleLogin;
-  window.toggleFilters = function() {
-    const filters = document.getElementById('marketplace-filters');
+  window.toggleFilters = function () {
+    var filters = document.getElementById('marketplace-filters');
     if (filters) filters.style.display = filters.style.display === 'none' ? 'block' : 'none';
   };
 
   function handleLogin() {
-    const role = getRole();
+    var role = getRole();
     localStorage.setItem('platy-logged-in', 'true');
     updateNav(role);
     document.body.classList.remove('login-mode');
-    const home = role === 'entreprise' ? '/e-dashboard' : '/dashboard';
+    var home = role === 'entreprise' ? '/e-dashboard' : '/dashboard';
     router.navigate(home);
   }
 
-  function initThemeToggle() {
-    const savedTheme = localStorage.getItem('platy-theme') || 'light';
-    document.documentElement.className = savedTheme;
+  function applyTheme(theme) {
+    document.documentElement.className = theme;
+    Store.set('theme', theme);
+    var toggle = document.getElementById('theme-toggle-icon');
+    if (toggle) toggle.textContent = theme === 'dark' ? 'dark_mode' : 'light_mode';
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  function initThemeToggle() {
+    var saved = Store.get('theme') || 'light';
+    applyTheme(saved);
+    var headerRight = document.querySelector('.header-right');
+    if (headerRight) {
+      var btn = document.createElement('button');
+      btn.className = 'icon-btn';
+      btn.setAttribute('aria-label', 'Toggle theme');
+      btn.id = 'theme-toggle-btn';
+      btn.innerHTML = '<span class="material-symbols-outlined" id="theme-toggle-icon">' + (saved === 'dark' ? 'dark_mode' : 'light_mode') + '</span>';
+      btn.addEventListener('click', function () {
+        var current = Store.get('theme') || 'light';
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+      });
+      headerRight.insertBefore(btn, headerRight.firstChild);
+    }
+  }
+
+  function initBadgeCounts() {
+    var notifCount = Store.get('notifications').filter(function (n) { return !n.read; }).length;
+    var msgCount = Store.get('messages').filter(function (m) { return m.unread; }).length;
+    var notifBadge = document.querySelector('a[href="#/notifications"] .badge');
+    var msgBadge = document.querySelector('a[href="#/messages"] .badge');
+    if (notifBadge) notifBadge.textContent = notifCount;
+    if (msgBadge) msgBadge.textContent = msgCount;
+  }
+
+  window._initEventWizard = function () {
+    var prevStep = parseInt(sessionStorage.getItem('platy-wiz-step')) || 0;
+    if (prevStep) {
+      Store.set('eventDraft.step', prevStep);
+      sessionStorage.removeItem('platy-wiz-step');
+    }
+  };
+
+  window._saveWizardFields = function () {
+    var els = document.querySelectorAll('.event-wiz');
+    var draft = Store.get('eventDraft');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var field = el.getAttribute('data-field');
+      if (el.type === 'checkbox') {
+        draft.data[field] = el.checked;
+      } else {
+        draft.data[field] = el.value;
+      }
+    }
+    draft.data.travel = draft.data.travel || {};
+    var travelFields = ['travelFlight', 'travelHotel', 'travelNights', 'travelTransfer'];
+    for (var ti = 0; ti < travelFields.length; ti++) {
+      var tf = travelFields[ti];
+      var key = tf.replace('travel', '').toLowerCase();
+      draft.data.travel[key] = draft.data[tf] || '';
+    }
+    Store.set('eventDraft', draft);
+    return draft;
+  };
+
+  window._wizardNextStep = function () {
+    var draft = window._saveWizardFields();
+    draft.step = Math.min(draft.step + 1, 4);
+    Store.set('eventDraft', draft);
+    sessionStorage.setItem('platy-wiz-step', draft.step);
+    router.navigate('/e-event-create');
+  };
+
+  window._wizardPrevStep = function () {
+    var draft = Store.get('eventDraft');
+    draft.step = Math.max(draft.step - 1, 1);
+    Store.set('eventDraft', draft);
+    sessionStorage.setItem('platy-wiz-step', draft.step);
+    router.navigate('/e-event-create');
+  };
+
+  window._saveWizardDraft = function () {
+    window._saveWizardFields();
+    Store.set('eventDraft.step', 1);
+    var draft = Store.get('eventDraft');
+    var events = Store.get('events');
+    events.push({
+      id: Date.now(),
+      title: draft.data.name || 'Nouvel événement',
+      circuit: draft.data.location || '—',
+      location: draft.data.location || '—',
+      startDate: draft.data.startDate || '',
+      endDate: draft.data.endDate || '',
+      type: draft.data.type || 'Endurance 24H',
+      series: 'Personnalisé',
+      budget: parseInt(draft.data.budget) || 0,
+      status: 'Brouillon',
+      recruited: 0,
+      totalNeeded: (draft.data.jobs || []).reduce(function (a, b) { return a + (parseInt(b.count) || 0); }, 0),
+      color: 'muted'
+    });
+    Store.set('events', events);
+    Store.set('eventDraft', { step: 1, data: {} });
+    router.navigate('/e-events');
+  };
+
+  window._publishEvent = function () {
+    window._saveWizardFields();
+    var draft = Store.get('eventDraft');
+    var events = Store.get('events');
+    events.push({
+      id: Date.now(),
+      title: draft.data.name || 'Nouvel événement',
+      circuit: draft.data.location || '—',
+      location: draft.data.location || '—',
+      startDate: draft.data.startDate || '',
+      endDate: draft.data.endDate || '',
+      type: draft.data.type || 'Endurance 24H',
+      series: 'Personnalisé',
+      budget: parseInt(draft.data.budget) || 0,
+      status: 'Actif',
+      recruited: 0,
+      totalNeeded: (draft.data.jobs || []).reduce(function (a, b) { return a + (parseInt(b.count) || 0); }, 0),
+      color: 'primary'
+    });
+    Store.set('events', events);
+    Store.set('eventDraft', { step: 1, data: {} });
+    router.navigate('/e-events');
+  };
+
+  window._addWizardJob = function () {
+    var title = document.getElementById('wiz-job-title');
+    var count = document.getElementById('wiz-job-count');
+    var rate = document.getElementById('wiz-job-rate');
+    if (!title.value) return;
+    var draft = Store.get('eventDraft');
+    draft.data.jobs = draft.data.jobs || [];
+    draft.data.jobs.push({ title: title.value, count: count.value || 1, rate: rate.value || '0' });
+    Store.set('eventDraft', draft);
+    title.value = '';
+    count.value = 1;
+    rate.value = '';
+    router.navigate('/e-event-create');
+  };
+
+  window._removeWizardJob = function (index) {
+    var draft = Store.get('eventDraft');
+    draft.data.jobs = draft.data.jobs || [];
+    draft.data.jobs.splice(index, 1);
+    Store.set('eventDraft', draft);
+    router.navigate('/e-event-create');
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
     if (isLoggedIn()) {
       updateNav(getRole());
     }
@@ -237,5 +389,6 @@
     initSidebarToggle();
     initLogout();
     initThemeToggle();
+    initBadgeCounts();
   });
 })();

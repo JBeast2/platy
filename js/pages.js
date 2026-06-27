@@ -61,134 +61,29 @@ const pages = {
   },
   dashboard: {
     title: 'Dashboard',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Dashboard</h1>
-          <div class="flex gap-sm">
-            <button class="btn btn-secondary btn-sm">This Week</button>
-            <button class="btn btn-primary btn-sm" onclick="router.navigate('/jobs')">Find Work</button>
-          </div>
-        </div>
+    afterRender: function() {
+      if (document.getElementById('dashboard-calendar')) {
+        renderCalendar('dashboard-calendar');
+      }
+    },
+    render: function() {
+      var user = Store.get('user');
+      var gigs = Store.get('activeGigs');
+      var events = Store.get('events');
+      var activeCount = gigs.filter(function(g) { return g.status === 'Active'; }).length;
+      var upcomingCount = events.filter(function(e) { return e.status === 'Actif' || e.status === 'Planification'; }).length;
+      var finances = Store.get('finance');
 
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(36,162,167,0.1); color: var(--primary);">
-              <span class="material-symbols-outlined">work</span>
-            </div>
-            <span class="stat-value">3</span>
-            <span class="stat-label">Active Jobs</span>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(22,163,74,0.1); color: var(--success);">
-              <span class="material-symbols-outlined">payments</span>
-            </div>
-            <span class="stat-value">€8,400</span>
-            <span class="stat-label">This Month</span>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(245,158,11,0.1); color: var(--warning);">
-              <span class="material-symbols-outlined">event</span>
-            </div>
-            <span class="stat-value">2</span>
-            <span class="stat-label">Upcoming Events</span>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(99,102,241,0.1); color: #6366f1;">
-              <span class="material-symbols-outlined">reviews</span>
-            </div>
-            <span class="stat-value">4.8</span>
-            <span class="stat-label">Rating</span>
-          </div>
-        </div>
-      </section>
+      function jobCard(j) {
+        return '<div class="job-card"><div class="job-card-header"><h3 class="job-card-title">' + j.title + '</h3><span class="tag tag-' + (j.status === 'Active' ? 'success' : 'warning') + '">' + j.status + '</span></div><p class="text-sm text-muted">' + j.event + ' • ' + j.dates + '</p><div class="job-card-tags">' + j.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') + '</div><div class="job-card-footer"><span class="font-bold text-primary">' + j.rate + '</span><span class="text-sm text-muted">' + j.location + '</span></div></div>';
+      }
 
-      <section class="page-section">
-        <div class="section-header">
-          <h2 class="section-title">Active Jobs</h2>
-          <a href="#/jobs" class="text-sm text-primary" data-nav>View all</a>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
-          <div class="job-card">
-            <div class="job-card-header">
-              <h3 class="job-card-title">GT3 Lead Mechanic</h3>
-              <span class="tag tag-success">Active</span>
-            </div>
-            <p class="text-sm text-muted">Spa 24H • Jun 26-29</p>
-            <div class="job-card-tags">
-              <span class="tag">Mechanic</span>
-              <span class="tag">GT3</span>
-              <span class="tag">Spa</span>
-            </div>
-            <div class="job-card-footer">
-              <span class="font-bold text-primary">€350/day</span>
-              <span class="text-sm text-muted">Spa, Belgium</span>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-card-header">
-              <h3 class="job-card-title">Data Engineer</h3>
-              <span class="tag tag-warning">Pending</span>
-            </div>
-            <p class="text-sm text-muted">Monaco GP • Jul 3-7</p>
-            <div class="job-card-tags">
-              <span class="tag">Engineering</span>
-              <span class="tag">Data</span>
-            </div>
-            <div class="job-card-footer">
-              <span class="font-bold text-primary">€400/day</span>
-              <span class="text-sm text-muted">Monte Carlo</span>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-card-header">
-              <h3 class="job-card-title">Race Photographer</h3>
-              <span class="tag tag-success">Active</span>
-            </div>
-            <p class="text-sm text-muted">Nürburgring 24H • Jul 15-18</p>
-            <div class="job-card-tags">
-              <span class="tag">Media</span>
-              <span class="tag">Photography</span>
-            </div>
-            <div class="job-card-footer">
-              <span class="font-bold text-primary">€280/day</span>
-              <span class="text-sm text-muted">Nürburg, Germany</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      function eventCard(e) {
+        return '<div class="event-card"><div class="event-card-header"><h3 class="event-card-title">' + e.title + '</h3><span class="text-sm text-muted">' + e.startDate + '</span></div><p class="text-sm text-muted">' + e.circuit + ', ' + e.location + '</p><div class="event-card-footer"><span class="tag">' + e.series + '</span><button class="btn btn-primary btn-sm">View Details</button></div></div>';
+      }
 
-      <section class="page-section">
-        <div class="section-header">
-          <h2 class="section-title">Upcoming Events</h2>
-          <a href="#/events" class="text-sm text-primary" data-nav>View all</a>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
-          <div class="event-card">
-            <div class="event-card-header">
-              <h3 class="event-card-title">Spa 24 Hours</h3>
-              <span class="text-sm text-muted">Jun 26-29</span>
-            </div>
-            <p class="text-sm text-muted">Circuit de Spa-Francorchamps, Belgium</p>
-            <div class="event-card-footer">
-              <span class="tag">GT World Challenge</span>
-              <button class="btn btn-primary btn-sm">View Details</button>
-            </div>
-          </div>
-          <div class="event-card">
-            <div class="event-card-header">
-              <h3 class="event-card-title">Monaco Grand Prix</h3>
-              <span class="text-sm text-muted">Jul 3-7</span>
-            </div>
-            <p class="text-sm text-muted">Circuit de Monaco, Monte Carlo</p>
-            <div class="event-card-footer">
-              <span class="tag">Formula 1</span>
-              <button class="btn btn-primary btn-sm">View Details</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+      return '<section class="page-section"><div class="section-header"><h1 class="section-title">Dashboard</h1><div class="flex gap-sm"><button class="btn btn-secondary btn-sm">This Week</button><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/jobs\')">Find Work</button></div></div><div class="stats-row"><div class="stat-card"><div class="stat-icon" style="background:rgba(36,162,167,0.1);color:var(--primary);"><span class="material-symbols-outlined">work</span></div><span class="stat-value">' + activeCount + '</span><span class="stat-label">Active Jobs</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,0.1);color:var(--success);"><span class="material-symbols-outlined">payments</span></div><span class="stat-value">€' + finances.earnings.toLocaleString() + '</span><span class="stat-label">This Month</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.1);color:var(--warning);"><span class="material-symbols-outlined">event</span></div><span class="stat-value">' + upcomingCount + '</span><span class="stat-label">Upcoming Events</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(99,102,241,0.1);color:#6366f1;"><span class="material-symbols-outlined">reviews</span></div><span class="stat-value">' + user.rating + '</span><span class="stat-label">Rating</span></div></div></section><section class="page-section"><div class="section-header"><h2 class="section-title">My Calendar</h2></div><div id="dashboard-calendar"></div></section><section class="page-section"><div class="section-header"><h2 class="section-title">Active Jobs</h2><a href="#/jobs" class="text-sm text-primary" data-nav>View all</a></div><div class="grid gap-md" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr));">' + gigs.filter(function(g) { return g.status === 'Active' || g.status === 'Upcoming'; }).slice(0, 3).map(jobCard).join('') + '</div></section><section class="page-section"><div class="section-header"><h2 class="section-title">Upcoming Events</h2><a href="#/events" class="text-sm text-primary" data-nav>View all</a></div><div class="grid gap-md" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr));">' + events.slice(0, 2).map(eventCard).join('') + '</div></section>';
+    }
   },
 
   jobs: {
@@ -1154,124 +1049,27 @@ const pages = {
 
   'e-dashboard': {
     title: 'Tableau de bord',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Tableau de bord</h1>
-          <button class="btn btn-primary btn-sm" onclick="router.navigate('/e-event-create')">Créer un événement</button>
-        </div>
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(36,162,167,0.1); color: var(--primary);">
-              <span class="material-symbols-outlined">event</span>
-            </div>
-            <span class="stat-value">3</span>
-            <span class="stat-label">Événements actifs</span>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(99,102,241,0.1); color: #6366f1;">
-              <span class="material-symbols-outlined">groups</span>
-            </div>
-            <span class="stat-value">24</span>
-            <span class="stat-label">Membres d'équipe</span>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(245,158,11,0.1); color: var(--warning);">
-              <span class="material-symbols-outlined">pending_actions</span>
-            </div>
-            <span class="stat-value">8</span>
-            <span class="stat-label">Candidatures en attente</span>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(22,163,74,0.1); color: var(--success);">
-              <span class="material-symbols-outlined">payments</span>
-            </div>
-            <span class="stat-value">€89k</span>
-            <span class="stat-label">Budget total</span>
-          </div>
-        </div>
-      </section>
-      <section class="page-section">
-        <div class="section-header">
-          <h2 class="section-title">Événements à venir</h2>
-          <a href="#/e-events" class="text-sm text-primary" data-nav>Voir tout</a>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
-          <div class="event-card" onclick="router.navigate('/e-event-detail')">
-            <div class="event-card-header">
-              <h3 class="event-card-title">Spa 24 Hours</h3>
-              <span class="tag tag-success">Actif</span>
-            </div>
-            <p class="text-sm text-muted">Circuit de Spa-Francorchamps • 26-29 Juin</p>
-            <div class="event-card-meta">
-              <span>🏁 GT World Challenge</span>
-              <span>👥 12/15 recrutés</span>
-            </div>
-            <div class="event-card-footer">
-              <span class="font-bold text-primary">€45k budget</span>
-              <span class="text-sm text-muted">8 candidatures</span>
-            </div>
-          </div>
-          <div class="event-card" onclick="router.navigate('/e-event-detail')">
-            <div class="event-card-header">
-              <h3 class="event-card-title">Monaco Grand Prix</h3>
-              <span class="tag tag-warning">Planification</span>
-            </div>
-            <p class="text-sm text-muted">Circuit de Monaco • 3-7 Juillet</p>
-            <div class="event-card-meta">
-              <span>🏁 Formula 1</span>
-              <span>👥 5/8 recrutés</span>
-            </div>
-            <div class="event-card-footer">
-              <span class="font-bold text-primary">€32k budget</span>
-              <span class="text-sm text-muted">3 candidatures</span>
-            </div>
-          </div>
-          <div class="event-card" onclick="router.navigate('/e-event-detail')">
-            <div class="event-card-header">
-              <h3 class="event-card-title">Nürburgring 24H</h3>
-              <span class="tag">Brouillon</span>
-            </div>
-            <p class="text-sm text-muted">Nürburgring • 15-18 Juillet</p>
-            <div class="event-card-meta">
-              <span>🏁 24H Series</span>
-              <span>👥 0/10 recrutés</span>
-            </div>
-            <div class="event-card-footer">
-              <span class="font-bold text-primary">€28k budget</span>
-              <span class="text-sm text-muted">Pas de candidatures</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="page-section">
-        <div class="section-header">
-          <h2 class="section-title">Candidatures récentes</h2>
-        </div>
-        <div class="grid gap-sm">
-          <div class="card flex items-center gap-md" style="cursor:pointer; border-left: 3px solid var(--primary);">
-            <div class="avatar">AK</div>
-            <div style="flex:1; min-width:0;">
-              <div class="flex justify-between">
-                <span class="font-bold text-sm">Alex Krause</span>
-                <span class="tag tag-success btn-sm">Approuver</span>
-              </div>
-              <p class="text-sm text-muted">Postule pour GT3 Lead Mechanic • Spa 24H</p>
-            </div>
-          </div>
-          <div class="card flex items-center gap-md" style="cursor:pointer; border-left: 3px solid var(--warning);">
-            <div class="avatar" style="background: rgba(147,51,234,0.1); color: #9333ea;">SM</div>
-            <div style="flex:1; min-width:0;">
-              <div class="flex justify-between">
-                <span class="font-bold text-sm">Sarah Mitchell</span>
-                <span class="tag tag-warning btn-sm">En attente</span>
-              </div>
-              <p class="text-sm text-muted">Postule pour Data Engineer • Monaco GP</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: function() {
+      var es = Store.get('enterprise');
+      var events = Store.get('events');
+      var applicants = es.recentApplicants;
+      var stats = es.stats;
+
+      function eventCard(e) {
+        var statusClass = e.status === 'Actif' ? 'tag-success' : e.status === 'Planification' ? 'tag-warning' : '';
+        var recruited = e.recruited || 0;
+        var needed = e.totalNeeded || 0;
+        return '<div class="event-card" onclick="router.navigate(\'/e-event-detail\')"><div class="event-card-header"><h3 class="event-card-title">' + e.title + '</h3><span class="tag ' + statusClass + '">' + e.status + '</span></div><p class="text-sm text-muted">' + (e.circuit || e.location) + ' • ' + e.startDate + '</p><div class="event-card-meta"><span>🏁 ' + (e.series || '') + '</span><span>👥 ' + recruited + '/' + needed + ' recrutés</span></div><div class="event-card-footer"><span class="font-bold text-primary">€' + (e.budget || 0).toLocaleString() + ' budget</span><span class="text-sm text-muted">—</span></div></div>';
+      }
+
+      function applicantCard(a) {
+        var borderColor = a.statusColor === 'success' ? 'var(--primary)' : 'var(--warning)';
+        var tagCls = 'tag-' + a.statusColor;
+        return '<div class="card flex items-center gap-md" style="cursor:pointer;border-left:3px solid ' + borderColor + ';"><div class="avatar">' + a.initials + '</div><div style="flex:1;min-width:0;"><div class="flex justify-between"><span class="font-bold text-sm">' + a.name + '</span><span class="tag ' + tagCls + ' btn-sm">' + a.status + '</span></div><p class="text-sm text-muted">Postule pour ' + a.role + ' • ' + a.event + '</p></div></div>';
+      }
+
+      return '<section class="page-section"><div class="section-header"><h1 class="section-title">Tableau de bord</h1><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-event-create\')">Créer un événement</button></div><div class="stats-row"><div class="stat-card"><div class="stat-icon" style="background:rgba(36,162,167,0.1);color:var(--primary);"><span class="material-symbols-outlined">event</span></div><span class="stat-value">' + stats.events + '</span><span class="stat-label">Événements actifs</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(99,102,241,0.1);color:#6366f1;"><span class="material-symbols-outlined">groups</span></div><span class="stat-value">' + stats.teamMembers + '</span><span class="stat-label">Membres d\'équipe</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.1);color:var(--warning);"><span class="material-symbols-outlined">pending_actions</span></div><span class="stat-value">' + stats.pendingApps + '</span><span class="stat-label">Candidatures en attente</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,0.1);color:var(--success);"><span class="material-symbols-outlined">payments</span></div><span class="stat-value">€' + (stats.totalBudget / 1000).toFixed(0) + 'k</span><span class="stat-label">Budget total</span></div></div></section><section class="page-section"><div class="section-header"><h2 class="section-title">Événements à venir</h2><a href="#/e-events" class="text-sm text-primary" data-nav>Voir tout</a></div><div class="grid gap-md" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr));">' + events.map(eventCard).join('') + '</div></section><section class="page-section"><div class="section-header"><h2 class="section-title">Candidatures récentes</h2></div><div class="grid gap-sm">' + applicants.map(applicantCard).join('') + '</div></section>';
+    }
   },
 
   'e-events': {
@@ -1351,579 +1149,347 @@ const pages = {
 
   'e-event-create': {
     title: 'Créer un événement',
-    render: () => `
-      <section class="page-section">
-        <div class="flex items-center gap-2 mb-6">
-          <button class="icon-btn" onclick="router.navigate('/e-dashboard')"><span class="material-symbols-outlined">arrow_back</span></button>
-          <h1 class="section-title">Créer un événement</h1>
-        </div>
-        <div class="flex items-center gap-0 mb-8">
-          <div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">1</div><span class="text-sm font-medium text-primary">Infos</span></div>
-          <div class="w-12 h-0.5 bg-primary mx-1"></div>
-          <div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center text-sm font-bold">2</div><span class="text-sm text-primary">Offres</span></div>
-          <div class="w-12 h-0.5 bg-outline/30 mx-1"></div>
-          <div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-surface-dim text-muted flex items-center justify-center text-sm font-bold">3</div><span class="text-sm text-muted">Voyage</span></div>
-          <div class="w-12 h-0.5 bg-outline/30 mx-1"></div>
-          <div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-surface-dim text-muted flex items-center justify-center text-sm font-bold">4</div><span class="text-sm text-muted">Publication</span></div>
-        </div>
-        <div class="grid grid-2 gap-lg">
-          <div class="card">
-            <h3 class="font-bold mb-md">Informations générales</h3>
-            <div class="flex flex-col gap-md">
-              <div>
-                <label class="text-sm text-muted mb-sm block">Nom de l'événement</label>
-                <input class="input-field" placeholder="Ex: Spa 24 Hours 2026">
-              </div>
-              <div class="grid grid-2 gap-md">
-                <div>
-                  <label class="text-sm text-muted mb-sm block">Date début</label>
-                  <input class="input-field" type="date">
-                </div>
-                <div>
-                  <label class="text-sm text-muted mb-sm block">Date fin</label>
-                  <input class="input-field" type="date">
-                </div>
-              </div>
-              <div>
-                <label class="text-sm text-muted mb-sm block">Lieu</label>
-                <input class="input-field" placeholder="Circuit, ville, pays">
-              </div>
-              <div class="grid grid-2 gap-md">
-                <div>
-                  <label class="text-sm text-muted mb-sm block">Type d'épreuve</label>
-                  <select class="input-field">
-                    <option>Endurance 24H</option>
-                    <option>Sprint</option>
-                    <option>Test day</option>
-                    <option>Track day</option>
-                    <option>Corporate</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-sm text-muted mb-sm block">Budget total (€)</label>
-                  <input class="input-field" placeholder="45000">
-                </div>
-              </div>
-              <div>
-                <label class="text-sm text-muted mb-sm block">Description</label>
-                <textarea class="input-field" style="height:80px; padding:12px 16px; resize:none;" placeholder="Décrivez l'événement, les besoins spécifiques..."></textarea>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="card mb-md">
-              <h3 class="font-bold mb-md">Résumé</h3>
-              <div class="space-y-3 text-sm">
-                <div class="flex justify-between"><span class="text-muted">Budget</span><span class="font-bold">€45,000</span></div>
-                <div class="flex justify-between"><span class="text-muted">Personnel requis</span><span class="font-bold">15</span></div>
-                <div class="flex justify-between"><span class="text-muted">Durée</span><span class="font-bold">4 jours</span></div>
-                <div class="flex justify-between"><span class="text-muted">Statut</span><span class="tag">Brouillon</span></div>
-              </div>
-            </div>
-            <div class="card" style="background: var(--primary-bg); border-color: var(--primary);">
-              <p class="text-sm font-bold text-primary mb-sm">💡 Conseil</p>
-              <p class="text-xs text-muted">Définissez d'abord votre budget pour obtenir des recommandations de personnel optimisées par l'IA.</p>
-            </div>
-          </div>
-        </div>
-        <div class="flex justify-between mt-lg">
-          <button class="btn btn-secondary">Sauvegarder brouillon</button>
-          <div class="flex gap-sm">
-            <button class="btn btn-secondary">Annuler</button>
-            <button class="btn btn-primary">Suivant : Offres d'emploi</button>
-          </div>
-        </div>
-      </section>
-    `
+    afterRender: function() {
+      window._initEventWizard && window._initEventWizard();
+    },
+    render: function() {
+      var draft = Store.get('eventDraft') || { step: 1, data: {} };
+      var step = draft.step;
+      var d = draft.data;
+
+      function stepCircle(num, label) {
+        var active = step >= num;
+        var current = step === num;
+        var circleCls = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ' + (current ? 'bg-primary text-white' : active ? 'bg-primary/20 text-primary' : 'bg-surface-dim text-muted');
+        var textCls = 'text-sm ' + (current ? 'font-bold text-primary' : active ? 'text-primary' : 'text-muted');
+        var lineCls = 'w-12 h-0.5 ' + (active ? 'bg-primary' : 'bg-outline/30');
+        return '<div class="flex items-center gap-2"><div class="' + circleCls + '">' + num + '</div><span class="' + textCls + '">' + label + '</span></div><div class="' + lineCls + ' mx-1"></div>';
+      }
+
+      function field(name, label, type, placeholder, value) {
+        var val = value || '';
+        if (type === 'textarea') {
+          return '<div class="flex flex-col gap-md"><div><label class="text-sm text-muted mb-sm block">' + label + '</label><textarea class="input-field event-wiz" data-field="' + name + '" style="height:80px;padding:12px 16px;resize:none;" placeholder="' + placeholder + '">' + val + '</textarea></div></div>';
+        }
+        if (type === 'select') {
+          var opts = placeholder.split('|');
+          var html = '<label class="text-sm text-muted mb-sm block">' + label + '</label><select class="input-field event-wiz" data-field="' + name + '">';
+          for (var i = 0; i < opts.length; i++) {
+            html += '<option' + (opts[i] === val ? ' selected' : '') + '>' + opts[i] + '</option>';
+          }
+          html += '</select>';
+          return '<div>' + html + '</div>';
+        }
+        return '<div><label class="text-sm text-muted mb-sm block">' + label + '</label><input class="input-field event-wiz" data-field="' + name + '" type="' + (type || 'text') + '" placeholder="' + placeholder + '" value="' + val + '"></div>';
+      }
+
+      var stepsHtml = '<div class="flex items-center gap-0 mb-8" style="overflow-x:auto;">';
+      var steps = ['Infos', 'Offres', 'Voyage', 'Publication'];
+      for (var i = 0; i < steps.length; i++) {
+        stepsHtml += stepCircle(i + 1, steps[i]);
+      }
+      stepsHtml = stepsHtml.replace(/<div class="w-12 h-0\.5 (bg-outline\/30|bg-primary) mx-1"><\/div>\s*$/, '') + '</div>';
+
+      var stepContent = '';
+      var stepTitle = '';
+
+      if (step === 1) {
+        stepTitle = 'Informations générales';
+        stepContent = '<div class="grid grid-2 gap-lg"><div class="card"><h3 class="font-bold mb-md">' + stepTitle + '</h3><div class="flex flex-col gap-md">' +
+          field('name', "Nom de l'événement", 'text', 'Ex: Spa 24 Hours 2026', d.name) +
+          '<div class="grid grid-2 gap-md">' + field('startDate', 'Date début', 'date', '', d.startDate) + field('endDate', 'Date fin', 'date', '', d.endDate) + '</div>' +
+          field('location', 'Lieu', 'text', 'Circuit, ville, pays', d.location) +
+          '<div class="grid grid-2 gap-md">' + field('type', "Type d'épreuve", 'select', 'Endurance 24H|Sprint|Test day|Track day|Corporate', d.type || 'Endurance 24H') + field('budget', 'Budget total (€)', 'number', '45000', d.budget) + '</div>' +
+          field('description', 'Description', 'textarea', "Décrivez l'événement, les besoins spécifiques...", d.description) +
+          '</div></div><div><div class="card mb-md"><h3 class="font-bold mb-md">Résumé</h3><div class="space-y-3 text-sm"><div class="flex justify-between"><span class="text-muted">Budget</span><span class="font-bold">€' + (d.budget || '—') + '</span></div><div class="flex justify-between"><span class="text-muted">Dates</span><span class="font-bold">' + (d.startDate || '—') + (d.endDate ? ' → ' + d.endDate : '') + '</span></div><div class="flex justify-between"><span class="text-muted">Lieu</span><span class="font-bold">' + (d.location || '—') + '</span></div><div class="flex justify-between"><span class="text-muted">Statut</span><span class="tag">Brouillon</span></div></div></div><div class="card" style="background:var(--primary-bg);border-color:var(--primary);"><p class="text-sm font-bold text-primary mb-sm">💡 Conseil</p><p class="text-xs text-muted">Définissez d\'abord votre budget pour obtenir des recommandations de personnel optimisées par l\'IA.</p></div></div></div>';
+      } else if (step === 2) {
+        stepTitle = 'Offres d\'emploi';
+        stepContent = '<div class="card"><h3 class="font-bold mb-md">' + stepTitle + '</h3><p class="text-sm text-muted mb-md">Ajoutez les postes à pourvoir pour cet événement.</p><div id="wizard-jobs-list"><div class="divide-y" id="wizard-jobs-container">';
+        var jobs = d.jobs || [];
+        if (jobs.length === 0) {
+          stepContent += '<div class="text-center py-6 text-muted text-sm">Aucun poste ajouté pour le moment</div>';
+        } else {
+          for (var ji = 0; ji < jobs.length; ji++) {
+            var j = jobs[ji];
+            stepContent += '<div class="flex items-center justify-between py-3"><div><p class="font-bold text-sm">' + j.title + '</p><p class="text-xs text-muted">' + j.count + ' poste(s) • €' + j.rate + '/jour</p></div><button class="btn btn-ghost btn-sm" onclick="window._removeWizardJob(' + ji + ')"><span class="material-symbols-outlined text-error">remove_circle</span></button></div>';
+          }
+        }
+        stepContent += '</div><div class="grid grid-2 gap-md mt-md p-md" style="border:1px dashed var(--outline);border-radius:12px;"><div><label class="text-sm text-muted mb-sm block">Intitulé du poste</label><input class="input-field" id="wiz-job-title" placeholder="Ex: GT3 Lead Mechanic"></div><div class="grid grid-2 gap-sm"><div><label class="text-sm text-muted mb-sm block">Nombre</label><input class="input-field" id="wiz-job-count" type="number" value="1" min="1"></div><div><label class="text-sm text-muted mb-sm block">Taux (€/jour)</label><input class="input-field" id="wiz-job-rate" placeholder="350"></div></div><div><button class="btn btn-primary btn-sm" onclick="window._addWizardJob()">+ Ajouter ce poste</button></div></div></div></div>';
+      } else if (step === 3) {
+        stepTitle = 'Voyage & Logistique';
+        stepContent = '<div class="grid grid-2 gap-lg"><div class="card"><h3 class="font-bold mb-md">' + stepTitle + '</h3><div class="flex flex-col gap-md">' +
+          field('travelFlight', 'Vol / Transport', 'text', 'Ex: Brussels Airlines SN2608', d.travel ? d.travel.flight : '') +
+          field('travelHotel', 'Hébergement', 'text', "Ex: Hôtel de la Source", d.travel ? d.travel.hotel : '') +
+          field('travelNights', 'Nombre de nuits', 'number', '4', d.travel ? d.travel.nights : '') +
+          field('travelTransfer', 'Transfert', 'text', 'Ex: Navette aéroport', d.travel ? d.travel.transfer : '') +
+          '</div></div><div><div class="card mb-md"><h3 class="font-bold mb-md">Équipement</h3><div class="flex flex-col gap-md">' +
+          field('equipment', 'Équipement nécessaire', 'textarea', 'Outils, pièces, matériel spécifique...', d.equipment || '') +
+          '</div></div><div class="card" style="background:var(--primary-bg);border-color:var(--primary);"><p class="text-sm font-bold text-primary mb-sm">✈️ Platy Travel</p><p class="text-xs text-muted">Activez la gestion de voyage Platy pour réserver vols, hôtels et transfers directement depuis la plateforme.</p></div></div></div>';
+      } else if (step === 4) {
+        var jobCount = (d.jobs || []).reduce(function(a, b) { return a + (parseInt(b.count) || 0); }, 0);
+        var totalBudget = parseInt(d.budget) || 0;
+        stepTitle = 'Publication';
+        stepContent = '<div class="grid grid-2 gap-lg"><div class="card"><h3 class="font-bold mb-md">' + stepTitle + '</h3><div class="flex flex-col gap-md">' +
+          '<div class="flex items-center justify-between p-3 rounded-lg bg-surface-dim"><div><p class="font-bold text-sm">Visibilité</p><p class="text-xs text-muted">Qui peut voir cet événement ?</p></div><select class="input-field event-wiz" data-field="visibility" style="width:160px;"><option selected>Public</option><option>Privé</option><option>Interne</option></select></div>' +
+          '<div class="flex items-center justify-between p-3 rounded-lg bg-surface-dim"><div><p class="font-bold text-sm">Auto-match IA</p><p class="text-xs text-muted">Recommandations automatiques de talents</p></div><label class="switch"><input type="checkbox" class="event-wiz" data-field="aiMatch" checked><span class="slider"></span></label></div>' +
+          '<div class="flex items-center justify-between p-3 rounded-lg bg-surface-dim"><div><p class="font-bold text-sm">Date limite candidature</p></div><input class="input-field event-wiz" data-field="deadline" type="date" style="width:160px;"></div>' +
+          '</div></div><div><div class="card mb-md"><h3 class="font-bold mb-md">Récapitulatif</h3><div class="space-y-3 text-sm"><div class="flex justify-between"><span class="text-muted">Événement</span><span class="font-bold">' + (d.name || '—') + '</span></div><div class="flex justify-between"><span class="text-muted">Postes</span><span class="font-bold">' + jobCount + '</span></div><div class="flex justify-between"><span class="text-muted">Budget</span><span class="font-bold">€' + totalBudget.toLocaleString() + '</span></div><div class="flex justify-between"><span class="text-muted">Visibilité</span><span class="tag tag-success">Public</span></div></div></div><button class="btn btn-primary btn-lg w-full" onclick="window._publishEvent()"><span class="material-symbols-outlined">publish</span> Publier l\'événement</button></div></div>';
+      }
+
+      return '<section class="page-section"><div class="flex items-center gap-2 mb-6"><button class="icon-btn" onclick="router.navigate(\'/e-dashboard\')"><span class="material-symbols-outlined">arrow_back</span></button><h1 class="section-title">Créer un événement</h1></div>' + stepsHtml + stepContent + '<div class="flex justify-between mt-lg"><button class="btn btn-secondary" onclick="window._saveWizardDraft()">Sauvegarder brouillon</button><div class="flex gap-sm"><button class="btn btn-secondary" onclick="router.navigate(\'/e-dashboard\')">Annuler</button>' + (step > 1 ? '<button class="btn btn-secondary" onclick="window._wizardPrevStep()">Précédent</button>' : '') + (step < 4 ? '<button class="btn btn-primary" onclick="window._wizardNextStep()">Suivant' + (step === 1 ? ' : Offres' : step === 2 ? ' : Voyage' : '') + '</button>' : '') + '</div></div></section>';
+    }
   },
 
   'e-event-detail': {
     title: 'Détail événement',
-    render: () => {
+    render: function() {
       const tab = new URLSearchParams(window.location.hash.split('?')[1] || '').get('tab') || 'overview';
-      return `
-      <section class="page-section">
-        <div class="flex items-center gap-2 mb-4" style="flex-wrap: wrap;">
-          <button class="icon-btn" onclick="router.navigate('/e-dashboard')"><span class="material-symbols-outlined">arrow_back</span></button>
-          <div>
-            <h1 class="section-title">Spa 24 Hours</h1>
-            <p class="text-sm text-muted">Circuit de Spa-Francorchamps • 26-29 Juin 2026</p>
-          </div>
-          <div class="ml-auto flex gap-sm" style="margin-left:auto;">
-            <button class="btn btn-secondary btn-sm">Modifier</button>
-            <button class="btn btn-primary btn-sm">Publier</button>
-          </div>
-        </div>
+      const tabs = ['overview','schedule','team','budget','travel','documents'];
+      const tabLabels = ['Overview','Programme','Équipe','Budget','Voyage','Documents'];
+      const tabIcons = ['dashboard','schedule','groups','payments','flight','description'];
 
-        <div class="stats-row mb-lg">
-          <div class="stat-card"><span class="stat-value">12/15</span><span class="stat-label">Postes pourvus</span></div>
-          <div class="stat-card"><span class="stat-value">8</span><span class="stat-label">Candidatures</span></div>
-          <div class="stat-card"><span class="stat-value">€32k</span><span class="stat-label">Dépensé</span></div>
-          <div class="stat-card"><span class="stat-value">€13k</span><span class="stat-label">Restant</span></div>
-        </div>
+      function tabBtn(t) {
+        return '<button class="tab-btn' + (tab === t ? ' active' : '') + '" onclick="router.navigate(\'/e-event-detail?tab=' + t + '\')">' + tabLabels[tabs.indexOf(t)] + '</button>';
+      }
+      function tag(text, cls) {
+        return '<span class="tag' + (cls ? ' tag-' + cls : '') + '">' + text + '</span>';
+      }
+      function avatar(initials, bg) {
+        return '<div class="avatar" style="width:32px;height:32px;font-size:12px;' + (bg ? 'background:' + bg + ';' : '') + '">' + initials + '</div>';
+      }
 
-        <div class="flex gap-0 mb-lg" style="border-bottom: 2px solid var(--outline-light); overflow-x: auto;">
-          <button class="tab-btn ${tab === 'overview' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=overview')">Overview</button>
-          <button class="tab-btn ${tab === 'schedule' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=schedule')">Programme</button>
-          <button class="tab-btn ${tab === 'team' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=team')">Équipe</button>
-          <button class="tab-btn ${tab === 'budget' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=budget')">Budget</button>
-          <button class="tab-btn ${tab === 'travel' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=travel')">Voyage</button>
-          <button class="tab-btn ${tab === 'documents' ? 'active' : ''}" onclick="router.navigate('/e-event-detail?tab=documents')">Documents</button>
-        </div>
+      var overviewTab = '<div class="grid grid-2 gap-lg">' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Postes à pourvoir</span><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-post-job\')">+ Ajouter</button></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center justify-between py-3"><div><p class="font-bold text-sm">GT3 Lead Mechanic</p><p class="text-xs text-muted">2 postes &bull; &euro;350/jour</p></div>' + tag('Pourvu','success') + '</div>' +
+              '<div class="flex items-center justify-between py-3"><div><p class="font-bold text-sm">Data Engineer</p><p class="text-xs text-muted">1 poste &bull; &euro;400/jour</p></div>' + tag('En cours','warning') + '</div>' +
+              '<div class="flex items-center justify-between py-3"><div><p class="font-bold text-sm">Race Photographer</p><p class="text-xs text-muted">1 poste &bull; &euro;280/jour</p></div>' + tag('Ouvert','') + '</div>' +
+              '<div class="flex items-center justify-between py-3"><div><p class="font-bold text-sm">Tire Technician</p><p class="text-xs text-muted">2 postes &bull; &euro;200/jour</p></div>' + tag('Ouvert','') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Équipe confirmée</span></div>' +
+            '<div class="flex flex-wrap gap-2">' +
+              '<div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim">' + avatar('AK') + '<span class="text-xs font-bold">Alex K.</span></div>' +
+              '<div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim">' + avatar('MB','rgba(234,88,12,0.1)') + '<span class="text-xs font-bold" style="color:#ea580c;">Marco B.</span></div>' +
+              '<div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim">' + avatar('LW','rgba(34,197,94,0.1)') + '<span class="text-xs font-bold" style="color:#22c55e;">Lena W.</span></div>' +
+              '<div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim">' + avatar('PT','rgba(99,102,241,0.1)') + '<span class="text-xs font-bold" style="color:#6366f1;">Paul T.</span></div>' +
+              '<div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim">' + avatar('CJ','rgba(245,158,11,0.1)') + '<span class="text-xs font-bold" style="color:#f59e0b;">Chen J.</span></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Candidats récents</span><a href="#/e-applicants" class="text-sm text-primary" data-nav>Voir tout</a></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-3"><div class="avatar">AK</div><div class="flex-1"><p class="font-bold text-sm">Alex Krause</p><p class="text-xs text-muted">GT3 Lead Mechanic &bull; 2j</p></div><button class="btn btn-primary btn-sm">OK</button></div>' +
+              '<div class="flex items-center gap-3 py-3"><div class="avatar" style="background:rgba(147,51,234,0.1);color:#9333ea;">SM</div><div class="flex-1"><p class="font-bold text-sm">Sarah Mitchell</p><p class="text-xs text-muted">Data Engineer &bull; 3j</p></div><button class="btn btn-secondary btn-sm">Voir</button></div>' +
+              '<div class="flex items-center gap-3 py-3"><div class="avatar" style="background:rgba(245,158,11,0.1);color:#f59e0b;">RJ</div><div class="flex-1"><p class="font-bold text-sm">Romain Jacquard</p><p class="text-xs text-muted">Tire Technician &bull; 5j</p></div><button class="btn btn-secondary btn-sm">Voir</button></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Prochaine &eacute;tape</span></div>' +
+            '<div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center"><span class="material-symbols-outlined">assignment_turned_in</span></div><div class="flex-1"><p class="font-bold text-sm">Finaliser l\'&eacute;quipe</p><p class="text-xs text-muted">3 postes encore ouverts &bull; J-12 avant l\'&eacute;v&eacute;nement</p></div></div>' +
+            '<div class="mt-3 bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-primary h-2 rounded-full" style="width:80%;"></div></div>' +
+            '<p class="text-xs text-muted mt-1">80% des pr&eacute;paratifs compl&eacute;t&eacute;s</p>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
 
-        ${tab === 'overview' ? \`
-          <div class="grid grid-2 gap-lg">
-            <div>
-              <div class="card mb-lg">
-                <div class="card-header"><span class="card-title">Postes à pourvoir</span><button class="btn btn-primary btn-sm" onclick="router.navigate('/e-post-job')">+ Ajouter</button></div>
-                <div class="divide-y">
-                  <div class="flex items-center justify-between py-3">
-                    <div><p class="font-bold text-sm">GT3 Lead Mechanic</p><p class="text-xs text-muted">2 postes • €350/jour</p></div>
-                    <span class="tag tag-success">Pourvu</span>
-                  </div>
-                  <div class="flex items-center justify-between py-3">
-                    <div><p class="font-bold text-sm">Data Engineer</p><p class="text-xs text-muted">1 poste • €400/jour</p></div>
-                    <span class="tag tag-warning">En cours</span>
-                  </div>
-                  <div class="flex items-center justify-between py-3">
-                    <div><p class="font-bold text-sm">Race Photographer</p><p class="text-xs text-muted">1 poste • €280/jour</p></div>
-                    <span class="tag">Ouvert</span>
-                  </div>
-                  <div class="flex items-center justify-between py-3">
-                    <div><p class="font-bold text-sm">Tire Technician</p><p class="text-xs text-muted">2 postes • €200/jour</p></div>
-                    <span class="tag">Ouvert</span>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header"><span class="card-title">Équipe confirmée</span></div>
-                <div class="flex flex-wrap gap-2">
-                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;">AK</div><span class="text-xs font-bold">Alex K.</span></div>
-                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:rgba(234,88,12,0.1);color:#ea580c;">MB</div><span class="text-xs font-bold">Marco B.</span></div>
-                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:rgba(34,197,94,0.1);color:#22c55e;">LW</div><span class="text-xs font-bold">Lena W.</span></div>
-                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:rgba(99,102,241,0.1);color:#6366f1;">PT</div><span class="text-xs font-bold">Paul T.</span></div>
-                  <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-dim"><div class="avatar" style="width:24px;height:24px;font-size:10px;background:rgba(245,158,11,0.1);color:#f59e0b;">CJ</div><span class="text-xs font-bold">Chen J.</span></div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="card mb-lg">
-                <div class="card-header"><span class="card-title">Candidats récents</span><a href="#/e-applicants" class="text-sm text-primary" data-nav>Voir tout</a></div>
-                <div class="divide-y">
-                  <div class="flex items-center gap-3 py-3">
-                    <div class="avatar">AK</div>
-                    <div class="flex-1"><p class="font-bold text-sm">Alex Krause</p><p class="text-xs text-muted">GT3 Lead Mechanic • 2j</p></div>
-                    <button class="btn btn-primary btn-sm">OK</button>
-                  </div>
-                  <div class="flex items-center gap-3 py-3">
-                    <div class="avatar" style="background: rgba(147,51,234,0.1); color: #9333ea;">SM</div>
-                    <div class="flex-1"><p class="font-bold text-sm">Sarah Mitchell</p><p class="text-xs text-muted">Data Engineer • 3j</p></div>
-                    <button class="btn btn-secondary btn-sm">Voir</button>
-                  </div>
-                  <div class="flex items-center gap-3 py-3">
-                    <div class="avatar" style="background: rgba(245,158,11,0.1); color: #f59e0b;">RJ</div>
-                    <div class="flex-1"><p class="font-bold text-sm">Romain Jacquard</p><p class="text-xs text-muted">Tire Technician • 5j</p></div>
-                    <button class="btn btn-secondary btn-sm">Voir</button>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header"><span class="card-title">Prochaine étape</span></div>
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center"><span class="material-symbols-outlined">assignment_turned_in</span></div>
-                  <div class="flex-1">
-                    <p class="font-bold text-sm">Finaliser l'équipe</p>
-                    <p class="text-xs text-muted">3 postes encore ouverts • J-12 avant l'événement</p>
-                  </div>
-                </div>
-                <div class="mt-3 bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-primary h-2 rounded-full" style="width:80%;"></div></div>
-                <p class="text-xs text-muted mt-1">80% des préparatifs complétés</p>
-              </div>
-            </div>
-          </div>
-        \` : tab === 'schedule' ? \`
-          <div class="grid grid-2 gap-lg">
-            <div>
-              <div class="card mb-lg">
-                <div class="card-header"><span class="card-title">Programme général</span><button class="btn btn-secondary btn-sm">Modifier</button></div>
-                <div class="flex flex-col">
-                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--primary); padding-left: 12px;">
-                    <div class="text-center">
-                      <p class="text-xs font-bold text-primary">JUN</p>
-                      <p class="text-lg font-bold text-primary">24</p>
-                    </div>
-                    <div class="flex-1">
-                      <p class="font-bold text-sm">Arrivée & Installation</p>
-                      <p class="text-xs text-muted">Paddock setup, check-in technique</p>
-                      <div class="flex items-center gap-2 mt-1"><span class="tag">08:00 - 18:00</span><span class="tag">Paddock</span></div>
-                    </div>
-                  </div>
-                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--warning); padding-left: 12px;">
-                    <div class="text-center">
-                      <p class="text-xs font-bold text-warning">JUN</p>
-                      <p class="text-lg font-bold text-warning">25</p>
-                    </div>
-                    <div class="flex-1">
-                      <p class="font-bold text-sm">Essais libres & Qualifs</p>
-                      <p class="text-xs text-muted">Free Practice 1-3, Pre-Qualifying</p>
-                      <div class="flex items-center gap-2 mt-1"><span class="tag">09:00 - 17:30</span><span class="tag">Circuit</span></div>
-                    </div>
-                  </div>
-                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--error); padding-left: 12px;">
-                    <div class="text-center">
-                      <p class="text-xs font-bold text-error">JUN</p>
-                      <p class="text-lg font-bold text-error">26</p>
-                    </div>
-                    <div class="flex-1">
-                      <p class="font-bold text-sm">Course - Jour 1</p>
-                      <p class="text-xs text-muted">Warm-up, Départ 16h00, Phases nocturnes</p>
-                      <div class="flex items-center gap-2 mt-1"><span class="tag">08:00 - 02:00</span><span class="tag">Circuit</span></div>
-                    </div>
-                  </div>
-                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--success); padding-left: 12px;">
-                    <div class="text-center">
-                      <p class="text-xs font-bold text-success">JUN</p>
-                      <p class="text-lg font-bold text-success">27</p>
-                    </div>
-                    <div class="flex-1">
-                      <p class="font-bold text-sm">Course - Jour 2 & Final</p>
-                      <p class="text-xs text-muted">Suite course, Arrivée 16h00, Podium</p>
-                      <div class="flex items-center gap-2 mt-1"><span class="tag">06:00 - 18:00</span><span class="tag">Circuit</span></div>
-                    </div>
-                  </div>
-                  <div class="flex gap-3 py-3" style="border-left: 3px solid var(--muted); padding-left: 12px;">
-                    <div class="text-center">
-                      <p class="text-xs font-bold text-muted">JUN</p>
-                      <p class="text-lg font-bold text-muted">28</p>
-                    </div>
-                    <div class="flex-1">
-                      <p class="font-bold text-sm">Démontage & Départ</p>
-                      <p class="text-xs text-muted">Pit breakdown, check-out, travel home</p>
-                      <div class="flex items-center gap-2 mt-1"><span class="tag">08:00 - 14:00</span><span class="tag">Paddock</span></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="card mb-lg">
-                <div class="card-header"><span class="card-title">Détail du jour • 26 Juin (Course J1)</span></div>
-                <div class="divide-y">
-                  <div class="flex items-center justify-between py-2">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-success"></span><span class="text-sm">Briefing équipe</span></div>
-                    <span class="text-xs text-muted">08:00 - 08:30</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-success"></span><span class="text-sm">Warm-up</span></div>
-                    <span class="text-xs text-muted">09:00 - 09:30</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-warning"></span><span class="text-sm">Pit stop practice</span></div>
-                    <span class="text-xs text-muted">10:00 - 11:00</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Parc fermé</span></div>
-                    <span class="text-xs text-muted">12:00 - 14:00</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-error"></span><span class="text-sm">Départ course</span></div>
-                    <span class="text-xs text-muted">16:00</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 1-4</span></div>
-                    <span class="text-xs text-muted">16:00 - 20:00</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 5-8 (nocturnes)</span></div>
-                    <span class="text-xs text-muted">20:00 - 00:00</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 9-10</span></div>
-                    <span class="text-xs text-muted">00:00 - 02:00</span>
-                  </div>
-                </div>
-              </div>
-              <div class="card" style="background: var(--primary-bg); border-color: var(--primary);">
-                <p class="text-sm font-bold text-primary mb-sm">⏰ Rappels importants</p>
-                <ul class="text-xs text-muted flex flex-col gap-1">
-                  <li>• Briefing obligatoire 45min avant chaque session</li>
-                  <li>• Équipement de sécurité obligatoire dans le paddock</li>
-                  <li>• Créneaux catering : 12:00-14:00 et 19:00-21:00</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        \` : tab === 'team' ? \`
-          <div>
-            <div class="card mb-lg">
-              <div class="card-header"><span class="card-title">Organigramme équipe</span><button class="btn btn-secondary btn-sm">Modifier</button></div>
-              <div class="grid grid-2 gap-md">
-                <div class="p-4 rounded-xl text-center" style="border: 2px solid var(--primary); background: var(--primary-bg);">
-                  <div class="avatar avatar-lg" style="width:56px;height:56px;margin:0 auto 8px;background:var(--primary);color:white;font-size:1.2rem;">JD</div>
-                  <p class="font-bold text-sm">James Donovan</p>
-                  <p class="text-xs text-muted">Team Manager</p>
-                  <span class="tag tag-success mt-2">Confirmé</span>
-                </div>
-                <div class="grid grid-2 gap-md">
-                  <div class="p-3 rounded-xl text-center bg-surface-dim">
-                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;">AK</div>
-                    <p class="font-bold text-xs">Alex Krause</p>
-                    <p class="text-xs text-muted" style="font-size:10px;">Lead Mechanic</p>
-                  </div>
-                  <div class="p-3 rounded-xl text-center bg-surface-dim">
-                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(234,88,12,0.1);color:#ea580c;">MB</div>
-                    <p class="font-bold text-xs">Marco Bellini</p>
-                    <p class="text-xs text-muted" style="font-size:10px;">Race Engineer</p>
-                  </div>
-                  <div class="p-3 rounded-xl text-center bg-surface-dim">
-                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(147,51,234,0.1);color:#9333ea;">SM</div>
-                    <p class="font-bold text-xs">Sarah Mitchell</p>
-                    <p class="text-xs text-muted" style="font-size:10px;">Data Engineer</p>
-                  </div>
-                  <div class="p-3 rounded-xl text-center bg-surface-dim">
-                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(34,197,94,0.1);color:#22c55e;">LW</div>
-                    <p class="font-bold text-xs">Lena Wagner</p>
-                    <p class="text-xs text-muted" style="font-size:10px;">Logistics</p>
-                  </div>
-                  <div class="p-3 rounded-xl text-center bg-surface-dim">
-                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(99,102,241,0.1);color:#6366f1;">PT</div>
-                    <p class="font-bold text-xs">Paul Tan</p>
-                    <p class="text-xs text-muted" style="font-size:10px;">Media</p>
-                  </div>
-                  <div class="p-3 rounded-xl text-center bg-surface-dim">
-                    <div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(245,158,11,0.1);color:#f59e0b;">CJ</div>
-                    <p class="font-bold text-xs">Chen Jiao</p>
-                    <p class="text-xs text-muted" style="font-size:10px;">Catering</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header"><span class="card-title">Shift Planning</span></div>
-              <div class="divide-y">
-                <div class="flex items-center justify-between py-2">
-                  <div><p class="font-bold text-sm">Pit Crew - Shift A</p><p class="text-xs text-muted">Alex K., Marco B., Paul T.</p></div>
-                  <span class="tag">06:00 - 14:00</span>
-                </div>
-                <div class="flex items-center justify-between py-2">
-                  <div><p class="font-bold text-sm">Pit Crew - Shift B</p><p class="text-xs text-muted">Sarah M., Chen J., David K.</p></div>
-                  <span class="tag">14:00 - 22:00</span>
-                </div>
-                <div class="flex items-center justify-between py-2">
-                  <div><p class="font-bold text-sm">Pit Crew - Shift C</p><p class="text-xs text-muted">Lena W., James D., Fabio R.</p></div>
-                  <span class="tag">22:00 - 06:00</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        \` : tab === 'budget' ? \`
-          <div class="grid grid-2 gap-lg">
-            <div>
-              <div class="card mb-lg">
-                <div class="card-header"><span class="card-title">Budget Overview</span></div>
-                <div class="flex flex-col gap-3">
-                  <div>
-                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Salaires</span><span class="text-muted">€28,400 / €32,000</span></div>
-                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-primary h-2 rounded-full" style="width:89%;"></div></div>
-                  </div>
-                  <div>
-                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Voyage & Transport</span><span class="text-muted">€8,200 / €10,000</span></div>
-                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-warning h-2 rounded-full" style="width:82%;"></div></div>
-                  </div>
-                  <div>
-                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Hébergement</span><span class="text-muted">€4,200 / €4,000</span></div>
-                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-error h-2 rounded-full" style="width:105%;"></div></div>
-                  </div>
-                  <div>
-                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Équipement & Pièces</span><span class="text-muted">€3,400 / €5,000</span></div>
-                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:68%;"></div></div>
-                  </div>
-                  <div>
-                    <div class="flex justify-between text-sm mb-1"><span class="font-bold">Catering & Divers</span><span class="text-muted">€1,800 / €2,000</span></div>
-                    <div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:90%;"></div></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="card mb-lg">
-                <div class="card-header"><span class="card-title">Transactions récentes</span></div>
-                <div class="divide-y">
-                  <div class="flex items-center justify-between py-2">
-                    <div><p class="font-bold text-sm">AK - Lead Mechanic</p><p class="text-xs text-muted">Salaire J1-J4</p></div>
-                    <span class="font-bold text-sm">€1,400</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div><p class="font-bold text-sm">Vols Brussels Airlines</p><p class="text-xs text-muted">6 billets aller-retour</p></div>
-                    <span class="font-bold text-sm">€3,600</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div><p class="font-bold text-sm">Hôtel de la Source</p><p class="text-xs text-muted">5 chambres × 4 nuits</p></div>
-                    <span class="font-bold text-sm">€4,200</span>
-                  </div>
-                  <div class="flex items-center justify-between py-2">
-                    <div><p class="font-bold text-sm">Pneus Michelin</p><p class="text-xs text-muted">Set qualif + 2 sets course</p></div>
-                    <span class="font-bold text-sm">€2,400</span>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header"><span class="card-title">Totaux</span></div>
-                <div class="flex justify-between text-sm mb-1"><span class="text-muted">Budget total</span><span class="font-bold">€45,000</span></div>
-                <div class="flex justify-between text-sm mb-1"><span class="text-muted">Dépensé</span><span class="font-bold">€32,000</span></div>
-                <div class="flex justify-between text-sm"><span class="text-muted">Restant</span><span class="font-bold text-success">€13,000</span></div>
-                <button class="btn btn-primary btn-sm mt-3 w-full">Voir rapport complet</button>
-              </div>
-            </div>
-          </div>
-        \` : tab === 'travel' ? \`
-          <div class="grid grid-2 gap-lg">
-            <div>
-              <div class="card mb-lg">
-                <div class="card-header"><span class="card-title">Transport</span><button class="btn btn-secondary btn-sm">Modifier</button></div>
-                <div class="divide-y">
-                  <div class="flex items-center gap-3 py-3">
-                    <span class="material-symbols-outlined text-primary">flight</span>
-                    <div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2608</p><p class="text-xs text-muted">MIL → BRU • 24 Jun 07:00 • 6 pers</p></div>
-                    <span class="tag tag-success">Confirmé</span>
-                  </div>
-                  <div class="flex items-center gap-3 py-3">
-                    <span class="material-symbols-outlined text-primary">directions_car</span>
-                    <div class="flex-1"><p class="font-bold text-sm">Navette aéroport</p><p class="text-xs text-muted">BRU → Spa • 24 Jun 09:30 • 12 pers</p></div>
-                    <span class="tag tag-success">Confirmé</span>
-                  </div>
-                  <div class="flex items-center gap-3 py-3">
-                    <span class="material-symbols-outlined text-primary">flight</span>
-                    <div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2609</p><p class="text-xs text-muted">BRU → MIL • 28 Jun 14:00 • 6 pers</p></div>
-                    <span class="tag tag-warning">En attente</span>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header"><span class="card-title">Hébergement</span><button class="btn btn-secondary btn-sm">Modifier</button></div>
-                <div class="card mb-md p-0">
-                  <div class="flex items-center gap-3 p-3 rounded-lg" style="background: var(--surface-dim);">
-                    <span class="material-symbols-outlined text-primary">hotel</span>
-                    <div class="flex-1"><p class="font-bold text-sm">Hôtel de la Source</p><p class="text-xs text-muted">5 chambres • 24-28 Juin • 4 nuits</p></div>
-                    <span class="tag tag-success">Confirmé</span>
-                  </div>
-                  <div class="flex items-center gap-2 mt-2 text-xs text-muted">
-                    <span class="material-symbols-outlined text-sm">location_on</span>
-                    <span>1.2km du circuit • Rue de la Source, Spa</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="card mb-lg">
-                <div class="card-header"><span class="card-title">Équipage logistique</span></div>
-                <div class="divide-y">
-                  <div class="flex items-center gap-3 py-3">
-                    <div class="avatar" style="width:32px;height:32px;font-size:12px;">LW</div>
-                    <div class="flex-1"><p class="font-bold text-sm">Lena Wagner</p><p class="text-xs text-muted">Logistics Coordinator</p></div>
-                    <span class="tag tag-success">Confirmé</span>
-                  </div>
-                  <div class="flex items-center gap-3 py-3">
-                    <div class="avatar" style="width:32px;height:32px;font-size:12px;background:rgba(99,102,241,0.1);color:#6366f1;">FK</div>
-                    <div class="flex-1"><p class="font-bold text-sm">Fabio Rossi</p><p class="text-xs text-muted">Transport Manager</p></div>
-                    <span class="tag tag-success">Confirmé</span>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header"><span class="card-title">Documents de voyage</span></div>
-                <div class="divide-y">
-                  <div class="flex items-center gap-3 py-2">
-                    <span class="material-symbols-outlined text-sm text-primary">description</span>
-                    <span class="text-sm flex-1">Itinéraire complet.pdf</span>
-                    <span class="material-symbols-outlined text-sm text-muted">download</span>
-                  </div>
-                  <div class="flex items-center gap-3 py-2">
-                    <span class="material-symbols-outlined text-sm text-primary">description</span>
-                    <span class="text-sm flex-1">Billets avion (x6)</span>
-                    <span class="material-symbols-outlined text-sm text-muted">download</span>
-                  </div>
-                  <div class="flex items-center gap-3 py-2">
-                    <span class="material-symbols-outlined text-sm text-primary">description</span>
-                    <span class="text-sm flex-1">Confirmation hôtel</span>
-                    <span class="material-symbols-outlined text-sm text-muted">download</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        \` : tab === 'documents' ? \`
-          <div>
-            <div class="mb-lg flex gap-sm" style="flex-wrap: wrap;">
-              <button class="btn btn-primary btn-sm">Tous</button>
-              <button class="btn btn-secondary btn-sm">Contrats</button>
-              <button class="btn btn-secondary btn-sm">Certifications</button>
-              <button class="btn btn-secondary btn-sm">Assurances</button>
-              <button class="btn btn-secondary btn-sm">Rapports</button>
-            </div>
-            <div class="grid grid-2 gap-lg">
-              <div class="card">
-                <div class="card-header"><span class="card-title">Contrats & Accords</span><button class="btn btn-primary btn-sm">+ Upload</button></div>
-                <div class="divide-y">
-                  <div class="flex items-center gap-3 py-3">
-                    <span class="material-symbols-outlined text-primary">contract</span>
-                    <div class="flex-1"><p class="font-bold text-sm">Contrat - Alex Krause</p><p class="text-xs text-muted">Signé le 15 Mai 2026</p></div>
-                    <span class="tag tag-success">Signé</span>
-                  </div>
-                  <div class="flex items-center gap-3 py-3">
-                    <span class="material-symbols-outlined text-primary">contract</span>
-                    <div class="flex-1"><p class="font-bold text-sm">Contrat - Marco Bellini</p><p class="text-xs text-muted">Signé le 10 Mai 2026</p></div>
-                    <span class="tag tag-success">Signé</span>
-                  </div>
-                  <div class="flex items-center gap-3 py-3">
-                    <span class="material-symbols-outlined text-primary">contract</span>
-                    <div class="flex-1"><p class="font-bold text-sm">Contrat - Sarah Mitchell</p><p class="text-xs text-muted">En attente de signature</p></div>
-                    <span class="tag tag-warning">En attente</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div class="card mb-lg">
-                  <div class="card-header"><span class="card-title">Certifications & Licences</span></div>
-                  <div class="divide-y">
-                    <div class="flex items-center gap-3 py-2">
-                      <span class="material-symbols-outlined text-sm text-success">verified</span>
-                      <span class="text-sm flex-1">FIA Mechanic License - Alex K.</span>
-                      <span class="text-xs text-success">Valide</span>
-                    </div>
-                    <div class="flex items-center gap-3 py-2">
-                      <span class="material-symbols-outlined text-sm text-success">verified</span>
-                      <span class="text-sm flex-1">FIA Engineer License - Marco B.</span>
-                      <span class="text-xs text-success">Valide</span>
-                    </div>
-                    <div class="flex items-center gap-3 py-2">
-                      <span class="material-symbols-outlined text-sm text-warning">warning</span>
-                      <span class="text-sm flex-1">Medical Certificate - Lena W.</span>
-                      <span class="text-xs text-warning">Expire 30 Juin</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header"><span class="card-title">Assurances</span></div>
-                  <div class="divide-y">
-                    <div class="flex items-center gap-3 py-2">
-                      <span class="material-symbols-outlined text-sm text-success">shield</span>
-                      <span class="text-sm flex-1">Responsabilité civile circuit</span>
-                      <span class="text-xs text-success">Active</span>
-                    </div>
-                    <div class="flex items-center gap-3 py-2">
-                      <span class="material-symbols-outlined text-sm text-success">shield</span>
-                      <span class="text-sm flex-1">Assurance accident travail</span>
-                      <span class="text-xs text-success">Active</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        \` : ''}
-      </section>
-      `;
+      var scheduleTab = '<div class="grid grid-2 gap-lg">' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Programme g&eacute;n&eacute;ral</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="flex flex-col">' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--primary);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-primary">JUN</p><p class="text-lg font-bold text-primary">24</p></div><div class="flex-1"><p class="font-bold text-sm">Arriv&eacute;e &amp; Installation</p><p class="text-xs text-muted">Paddock setup, check-in technique</p><div class="flex items-center gap-2 mt-1">' + tag('08:00 - 18:00') + tag('Paddock') + '</div></div></div>' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--warning);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-warning">JUN</p><p class="text-lg font-bold text-warning">25</p></div><div class="flex-1"><p class="font-bold text-sm">Essais libres &amp; Qualifs</p><p class="text-xs text-muted">Free Practice 1-3, Pre-Qualifying</p><div class="flex items-center gap-2 mt-1">' + tag('09:00 - 17:30') + tag('Circuit') + '</div></div></div>' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--error);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-error">JUN</p><p class="text-lg font-bold text-error">26</p></div><div class="flex-1"><p class="font-bold text-sm">Course - Jour 1</p><p class="text-xs text-muted">Warm-up, D&eacute;part 16h00, Phases nocturnes</p><div class="flex items-center gap-2 mt-1">' + tag('08:00 - 02:00') + tag('Circuit') + '</div></div></div>' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--success);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-success">JUN</p><p class="text-lg font-bold text-success">27</p></div><div class="flex-1"><p class="font-bold text-sm">Course - Jour 2 &amp; Final</p><p class="text-xs text-muted">Suite course, Arriv&eacute;e 16h00, Podium</p><div class="flex items-center gap-2 mt-1">' + tag('06:00 - 18:00') + tag('Circuit') + '</div></div></div>' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--muted);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-muted">JUN</p><p class="text-lg font-bold text-muted">28</p></div><div class="flex-1"><p class="font-bold text-sm">D&eacute;montage &amp; D&eacute;part</p><p class="text-xs text-muted">Pit breakdown, check-out, travel home</p><div class="flex items-center gap-2 mt-1">' + tag('08:00 - 14:00') + tag('Paddock') + '</div></div></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">D&eacute;tail du jour &bull; 26 Juin (Course J1)</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-success"></span><span class="text-sm">Briefing &eacute;quipe</span></div><span class="text-xs text-muted">08:00 - 08:30</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-success"></span><span class="text-sm">Warm-up</span></div><span class="text-xs text-muted">09:00 - 09:30</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-warning"></span><span class="text-sm">Pit stop practice</span></div><span class="text-xs text-muted">10:00 - 11:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Parc ferm&eacute;</span></div><span class="text-xs text-muted">12:00 - 14:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-error"></span><span class="text-sm">D&eacute;part course</span></div><span class="text-xs text-muted">16:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 1-4</span></div><span class="text-xs text-muted">16:00 - 20:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 5-8 (nocturnes)</span></div><span class="text-xs text-muted">20:00 - 00:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 9-10</span></div><span class="text-xs text-muted">00:00 - 02:00</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card" style="background:var(--primary-bg);border-color:var(--primary);">' +
+            '<p class="text-sm font-bold text-primary mb-sm">Rappels importants</p>' +
+            '<ul class="text-xs text-muted flex flex-col gap-1">' +
+              '<li>&bull; Briefing obligatoire 45min avant chaque session</li>' +
+              '<li>&bull; &Eacute;quipement de s&eacute;curit&eacute; obligatoire dans le paddock</li>' +
+              '<li>&bull; Cr&eacute;neaux catering : 12:00-14:00 et 19:00-21:00</li>' +
+            '</ul>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var teamTab = '<div>' +
+        '<div class="card mb-lg">' +
+          '<div class="card-header"><span class="card-title">Organigramme &eacute;quipe</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+          '<div class="grid grid-2 gap-md">' +
+            '<div class="p-4 rounded-xl text-center" style="border:2px solid var(--primary);background:var(--primary-bg);"><div class="avatar avatar-lg" style="width:56px;height:56px;margin:0 auto 8px;background:var(--primary);color:white;font-size:1.2rem;">JD</div><p class="font-bold text-sm">James Donovan</p><p class="text-xs text-muted">Team Manager</p>' + tag('Confirm&eacute;','success') + '</div>' +
+            '<div class="grid grid-2 gap-md">' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;">AK</div><p class="font-bold text-xs">Alex Krause</p><p class="text-xs text-muted" style="font-size:10px;">Lead Mechanic</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(234,88,12,0.1);color:#ea580c;">MB</div><p class="font-bold text-xs">Marco Bellini</p><p class="text-xs text-muted" style="font-size:10px;">Race Engineer</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(147,51,234,0.1);color:#9333ea;">SM</div><p class="font-bold text-xs">Sarah Mitchell</p><p class="text-xs text-muted" style="font-size:10px;">Data Engineer</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(34,197,94,0.1);color:#22c55e;">LW</div><p class="font-bold text-xs">Lena Wagner</p><p class="text-xs text-muted" style="font-size:10px;">Logistics</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(99,102,241,0.1);color:#6366f1;">PT</div><p class="font-bold text-xs">Paul Tan</p><p class="text-xs text-muted" style="font-size:10px;">Media</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(245,158,11,0.1);color:#f59e0b;">CJ</div><p class="font-bold text-xs">Chen Jiao</p><p class="text-xs text-muted" style="font-size:10px;">Catering</p></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><span class="card-title">Shift Planning</span></div>' +
+          '<div class="divide-y">' +
+            '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">Pit Crew - Shift A</p><p class="text-xs text-muted">Alex K., Marco B., Paul T.</p></div>' + tag('06:00 - 14:00') + '</div>' +
+            '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">Pit Crew - Shift B</p><p class="text-xs text-muted">Sarah M., Chen J., David K.</p></div>' + tag('14:00 - 22:00') + '</div>' +
+            '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">Pit Crew - Shift C</p><p class="text-xs text-muted">Lena W., James D., Fabio R.</p></div>' + tag('22:00 - 06:00') + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var budgetTab = '<div class="grid grid-2 gap-lg">' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Budget Overview</span></div>' +
+            '<div class="flex flex-col gap-3">' +
+              '<div><div class="flex justify-between text-sm mb-1"><span class="font-bold">Salaires</span><span class="text-muted">&euro;28,400 / &euro;32,000</span></div><div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-primary h-2 rounded-full" style="width:89%;"></div></div></div>' +
+              '<div><div class="flex justify-between text-sm mb-1"><span class="font-bold">Voyage &amp; Transport</span><span class="text-muted">&euro;8,200 / &euro;10,000</span></div><div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-warning h-2 rounded-full" style="width:82%;"></div></div></div>' +
+              '<div><div class="flex justify-between text-sm mb-1"><span class="font-bold">H&eacute;bergement</span><span class="text-muted">&euro;4,200 / &euro;4,000</span></div><div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-error h-2 rounded-full" style="width:105%;"></div></div></div>' +
+              '<div><div class="flex justify-between text-sm mb-1"><span class="font-bold">&Eacute;quipement &amp; Pi&egrave;ces</span><span class="text-muted">&euro;3,400 / &euro;5,000</span></div><div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:68%;"></div></div></div>' +
+              '<div><div class="flex justify-between text-sm mb-1"><span class="font-bold">Catering &amp; Divers</span><span class="text-muted">&euro;1,800 / &euro;2,000</span></div><div class="bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:90%;"></div></div></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Transactions r&eacute;centes</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">AK - Lead Mechanic</p><p class="text-xs text-muted">Salaire J1-J4</p></div><span class="font-bold text-sm">&euro;1,400</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">Vols Brussels Airlines</p><p class="text-xs text-muted">6 billets aller-retour</p></div><span class="font-bold text-sm">&euro;3,600</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">H&ocirc;tel de la Source</p><p class="text-xs text-muted">5 chambres x 4 nuits</p></div><span class="font-bold text-sm">&euro;4,200</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">Pneus Michelin</p><p class="text-xs text-muted">Set qualif + 2 sets course</p></div><span class="font-bold text-sm">&euro;2,400</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Totaux</span></div>' +
+            '<div class="flex justify-between text-sm mb-1"><span class="text-muted">Budget total</span><span class="font-bold">&euro;45,000</span></div>' +
+            '<div class="flex justify-between text-sm mb-1"><span class="text-muted">D&eacute;pens&eacute;</span><span class="font-bold">&euro;32,000</span></div>' +
+            '<div class="flex justify-between text-sm"><span class="text-muted">Restant</span><span class="font-bold text-success">&euro;13,000</span></div>' +
+            '<button class="btn btn-primary btn-sm mt-3 w-full">Voir rapport complet</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var travelTab = '<div class="grid grid-2 gap-lg">' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Transport</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">flight</span><div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2608</p><p class="text-xs text-muted">MIL &rarr; BRU &bull; 24 Jun 07:00 &bull; 6 pers</p></div>' + tag('Confirm&eacute;','success') + '</div>' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">directions_car</span><div class="flex-1"><p class="font-bold text-sm">Navette a&eacute;roport</p><p class="text-xs text-muted">BRU &rarr; Spa &bull; 24 Jun 09:30 &bull; 12 pers</p></div>' + tag('Confirm&eacute;','success') + '</div>' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">flight</span><div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2609</p><p class="text-xs text-muted">BRU &rarr; MIL &bull; 28 Jun 14:00 &bull; 6 pers</p></div>' + tag('En attente','warning') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">H&eacute;bergement</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="flex items-center gap-3 p-3 rounded-lg" style="background:var(--surface-dim);"><span class="material-symbols-outlined text-primary">hotel</span><div class="flex-1"><p class="font-bold text-sm">H&ocirc;tel de la Source</p><p class="text-xs text-muted">5 chambres &bull; 24-28 Juin &bull; 4 nuits</p></div>' + tag('Confirm&eacute;','success') + '</div>' +
+            '<div class="flex items-center gap-2 mt-2 text-xs text-muted"><span class="material-symbols-outlined text-sm">location_on</span><span>1.2km du circuit &bull; Rue de la Source, Spa</span></div>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">&Eacute;quipage logistique</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-3">' + avatar('LW') + '<div class="flex-1"><p class="font-bold text-sm">Lena Wagner</p><p class="text-xs text-muted">Logistics Coordinator</p></div>' + tag('Confirm&eacute;','success') + '</div>' +
+              '<div class="flex items-center gap-3 py-3">' + avatar('FK','rgba(99,102,241,0.1)') + '<div class="flex-1"><p class="font-bold text-sm">Fabio Rossi</p><p class="text-xs text-muted">Transport Manager</p></div>' + tag('Confirm&eacute;','success') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Documents de voyage</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Itin&eacute;raire complet.pdf</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Billets avion (x6)</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Confirmation h&ocirc;tel</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var docsTab = '<div>' +
+        '<div class="mb-lg flex gap-sm" style="flex-wrap:wrap;">' +
+          '<button class="btn btn-primary btn-sm">Tous</button>' +
+          '<button class="btn btn-secondary btn-sm">Contrats</button>' +
+          '<button class="btn btn-secondary btn-sm">Certifications</button>' +
+          '<button class="btn btn-secondary btn-sm">Assurances</button>' +
+          '<button class="btn btn-secondary btn-sm">Rapports</button>' +
+        '</div>' +
+        '<div class="grid grid-2 gap-lg">' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Contrats &amp; Accords</span><button class="btn btn-primary btn-sm">+ Upload</button></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">contract</span><div class="flex-1"><p class="font-bold text-sm">Contrat - Alex Krause</p><p class="text-xs text-muted">Sign&eacute; le 15 Mai 2026</p></div>' + tag('Sign&eacute;','success') + '</div>' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">contract</span><div class="flex-1"><p class="font-bold text-sm">Contrat - Marco Bellini</p><p class="text-xs text-muted">Sign&eacute; le 10 Mai 2026</p></div>' + tag('Sign&eacute;','success') + '</div>' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">contract</span><div class="flex-1"><p class="font-bold text-sm">Contrat - Sarah Mitchell</p><p class="text-xs text-muted">En attente de signature</p></div>' + tag('En attente','warning') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<div class="card mb-lg">' +
+              '<div class="card-header"><span class="card-title">Certifications &amp; Licences</span></div>' +
+              '<div class="divide-y">' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">verified</span><span class="text-sm flex-1">FIA Mechanic License - Alex K.</span><span class="text-xs text-success">Valide</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">verified</span><span class="text-sm flex-1">FIA Engineer License - Marco B.</span><span class="text-xs text-success">Valide</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-warning">warning</span><span class="text-sm flex-1">Medical Certificate - Lena W.</span><span class="text-xs text-warning">Expire 30 Juin</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="card">' +
+              '<div class="card-header"><span class="card-title">Assurances</span></div>' +
+              '<div class="divide-y">' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">shield</span><span class="text-sm flex-1">Responsabilit&eacute; civile circuit</span><span class="text-xs text-success">Active</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">shield</span><span class="text-sm flex-1">Assurance accident travail</span><span class="text-xs text-success">Active</span></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var tabContent = overviewTab;
+      if (tab === 'schedule') tabContent = scheduleTab;
+      else if (tab === 'team') tabContent = teamTab;
+      else if (tab === 'budget') tabContent = budgetTab;
+      else if (tab === 'travel') tabContent = travelTab;
+      else if (tab === 'documents') tabContent = docsTab;
+
+      return '<section class="page-section">' +
+        '<div class="flex items-center gap-2 mb-4" style="flex-wrap:wrap;">' +
+          '<button class="icon-btn" onclick="router.navigate(\'/e-dashboard\')"><span class="material-symbols-outlined">arrow_back</span></button>' +
+          '<div><h1 class="section-title">Spa 24 Hours</h1><p class="text-sm text-muted">Circuit de Spa-Francorchamps &bull; 26-29 Juin 2026</p></div>' +
+          '<div class="ml-auto flex gap-sm"><button class="btn btn-secondary btn-sm">Modifier</button><button class="btn btn-primary btn-sm">Publier</button></div>' +
+        '</div>' +
+        '<div class="stats-row mb-lg">' +
+          '<div class="stat-card"><span class="stat-value">12/15</span><span class="stat-label">Postes pourvus</span></div>' +
+          '<div class="stat-card"><span class="stat-value">8</span><span class="stat-label">Candidatures</span></div>' +
+          '<div class="stat-card"><span class="stat-value">&euro;32k</span><span class="stat-label">D&eacute;pens&eacute;</span></div>' +
+          '<div class="stat-card"><span class="stat-value">&euro;13k</span><span class="stat-label">Restant</span></div>' +
+        '</div>' +
+        '<div class="flex gap-0 mb-lg" style="border-bottom:2px solid var(--outline-light);overflow-x:auto;">' +
+          tabBtn('overview') + tabBtn('schedule') + tabBtn('team') + tabBtn('budget') + tabBtn('travel') + tabBtn('documents') +
+        '</div>' +
+        tabContent +
+      '</section>';
     }
   },
 
