@@ -254,8 +254,10 @@
   }
 
   function initBadgeCounts() {
-    var notifCount = Store.get('notifications').filter(function (n) { return !n.read; }).length;
-    var msgCount = Store.get('messages').filter(function (m) { return m.unread; }).length;
+    var notifs = Store.get('notifications') || [];
+    var msgs = Store.get('messages') || [];
+    var notifCount = notifs.filter(function (n) { return !n.read; }).length;
+    var msgCount = msgs.filter(function (m) { return m.unread; }).length;
     var notifBadge = document.querySelector('a[href="#/notifications"] .badge');
     var msgBadge = document.querySelector('a[href="#/messages"] .badge');
     if (notifBadge) notifBadge.textContent = notifCount;
@@ -272,7 +274,8 @@
 
   window._saveWizardFields = function () {
     var els = document.querySelectorAll('.event-wiz');
-    var draft = Store.get('eventDraft');
+    var draft = Store.get('eventDraft') || { step: 1, data: {} };
+    if (!draft.data) draft.data = {};
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       var field = el.getAttribute('data-field');
@@ -298,7 +301,7 @@
     draft.step = Math.min(draft.step + 1, 4);
     Store.set('eventDraft', draft);
     sessionStorage.setItem('platy-wiz-step', draft.step);
-    router.navigate('/e-event-create');
+    router.navigate('/e-event-create', true);
   };
 
   window._wizardPrevStep = function () {
@@ -306,7 +309,7 @@
     draft.step = Math.max(draft.step - 1, 1);
     Store.set('eventDraft', draft);
     sessionStorage.setItem('platy-wiz-step', draft.step);
-    router.navigate('/e-event-create');
+    router.navigate('/e-event-create', true);
   };
 
   window._saveWizardDraft = function () {
@@ -370,7 +373,7 @@
     title.value = '';
     count.value = 1;
     rate.value = '';
-    router.navigate('/e-event-create');
+    router.navigate('/e-event-create', true);
   };
 
   window._removeWizardJob = function (index) {
@@ -378,7 +381,7 @@
     draft.data.jobs = draft.data.jobs || [];
     draft.data.jobs.splice(index, 1);
     Store.set('eventDraft', draft);
-    router.navigate('/e-event-create');
+    router.navigate('/e-event-create', true);
   };
 
   document.addEventListener('DOMContentLoaded', function () {

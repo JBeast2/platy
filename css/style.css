@@ -35,28 +35,6 @@
   text-decoration: none;
 }
 
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  background: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo-icon .material-symbols-outlined {
-  color: white;
-  font-size: 1.2rem;
-}
-
-.logo-text {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.3rem;
-  color: var(--on-surface);
-}
-
 .logo-img {
   height: 32px;
   width: auto;
@@ -480,28 +458,6 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 8px;
-}
-
-.login-logo-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-logo-icon .material-symbols-outlined {
-  color: white;
-  font-size: 2rem;
-}
-
-.login-logo-text {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--on-surface);
 }
 
 .login-logo-img {

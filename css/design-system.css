@@ -18,6 +18,7 @@
   --error: #dc2626;
   --success: #16a34a;
   --warning: #f59e0b;
+  --muted: #9ca3af;
 
   /* Typography */
   --font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
@@ -63,6 +64,7 @@
   --on-surface-variant: #94a3b8;
   --outline: #334155;
   --outline-light: #1e293b;
+  --muted: #64748b;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);

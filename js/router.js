@@ -1,7 +1,6 @@
 class Router {
   constructor() {
     this.routes = {};
-    this.currentRoute = null;
     window.addEventListener('hashchange', () => this.handleRoute());
   }
 
@@ -9,8 +8,14 @@ class Router {
     this.routes[path] = handler;
   }
 
-  navigate(path) {
-    window.location.hash = path;
+  navigate(path, forceRefresh) {
+    if (forceRefresh) {
+      window.location.hash = '';
+      var self = this;
+      setTimeout(function() { window.location.hash = path; }, 0);
+    } else {
+      window.location.hash = path;
+    }
   }
 
   handleRoute() {
@@ -20,7 +25,6 @@ class Router {
 
     if (handler) {
       handler();
-      this.currentRoute = fullHash;
       if (typeof handler.afterRender === 'function') {
         var self = this;
         setTimeout(function() { handler.afterRender(); }, 0);

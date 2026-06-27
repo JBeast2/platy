@@ -1,10 +1,3 @@
-function handleLogin(role) {
-  localStorage.setItem('platy-logged-in', 'true');
-  localStorage.setItem('platy-role', role);
-  document.body.classList.remove('login-mode');
-  router.navigate('/dashboard');
-}
-
 const pages = {
   login: {
     title: 'Connexion',
@@ -174,46 +167,23 @@ const pages = {
 
   events: {
     title: 'Events',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Events</h1>
-          <button class="btn btn-primary btn-sm">Create Event</button>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
-          <div class="event-card">
-            <div class="event-card-header">
-              <h3 class="event-card-title">Spa 24 Hours</h3>
-              <span class="text-sm text-muted">Jun 26-29</span>
-            </div>
-            <p class="text-sm text-muted">Circuit de Spa-Francorchamps, Belgium</p>
-            <div class="event-card-meta">
-              <span>🏁 GT World Challenge</span>
-              <span>👥 12 staff needed</span>
-            </div>
-            <div class="event-card-footer">
-              <span class="tag tag-success">Active</span>
-              <button class="btn btn-primary btn-sm">Manage</button>
-            </div>
-          </div>
-          <div class="event-card">
-            <div class="event-card-header">
-              <h3 class="event-card-title">Monaco Grand Prix</h3>
-              <span class="text-sm text-muted">Jul 3-7</span>
-            </div>
-            <p class="text-sm text-muted">Circuit de Monaco, Monte Carlo</p>
-            <div class="event-card-meta">
-              <span>🏁 Formula 1</span>
-              <span>👥 8 staff needed</span>
-            </div>
-            <div class="event-card-footer">
-              <span class="tag">Planning</span>
-              <button class="btn btn-primary btn-sm">Manage</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var events = Store.get('events') || [];
+      var cardsHtml = events.map(function(e) {
+        var statusClass = e.status === 'Actif' ? 'tag-success' : (e.status === 'Planification' ? 'tag-warning' : 'tag');
+        return '<div class="event-card">' +
+          '<div class="event-card-header"><h3 class="event-card-title">' + e.title + '</h3><span class="text-sm text-muted">' + e.startDate + '</span></div>' +
+          '<p class="text-sm text-muted">' + e.circuit + ', ' + e.location + '</p>' +
+          '<div class="event-card-meta"><span>🏁 ' + e.series + '</span><span>👥 ' + e.totalNeeded + ' staff needed</span></div>' +
+          '<div class="event-card-footer"><span class="tag ' + statusClass + '">' + e.status + '</span><button class="btn btn-primary btn-sm">Manage</button></div>' +
+        '</div>';
+      }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header"><h1 class="section-title">Events</h1><button class="btn btn-primary btn-sm">Create Event</button></div>' +
+        '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">' + cardsHtml + '</div>' +
+      '</section>';
+    }
   },
 
   messages: {
@@ -267,89 +237,53 @@ const pages = {
 
   team: {
     title: 'Team',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Team</h1>
-          <button class="btn btn-primary btn-sm">Build Team</button>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">
-          <div class="card text-center">
-            <div class="avatar avatar-lg" style="margin: 0 auto 12px;">AK</div>
-            <h3 class="font-bold">Alex Krause</h3>
-            <p class="text-sm text-muted">Lead Mechanic</p>
-            <span class="tag tag-success mt-sm">Available</span>
-          </div>
-          <div class="card text-center">
-            <div class="avatar avatar-lg" style="margin: 0 auto 12px; background: rgba(147,51,234,0.1); color: #9333ea;">SM</div>
-            <h3 class="font-bold">Sarah Mitchell</h3>
-            <p class="text-sm text-muted">Data Engineer</p>
-            <span class="tag tag-warning mt-sm">On Assignment</span>
-          </div>
-          <div class="card text-center">
-            <div class="avatar avatar-lg" style="margin: 0 auto 12px; background: rgba(234,88,12,0.1); color: #ea580c;">MB</div>
-            <h3 class="font-bold">Marco Bellini</h3>
-            <p class="text-sm text-muted">Race Engineer</p>
-            <span class="tag tag-success mt-sm">Available</span>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var team = Store.get('team') || [];
+      var cardsHtml = team.map(function(m) {
+        var statusClass = m.status === 'Available' || m.status === 'Active' ? 'tag-success' : 'tag-warning';
+        var bgStyle = m.initialsBg ? 'background:' + m.initialsBg + '; color:' + (m.initialsColor || 'inherit') + ';' : '';
+        return '<div class="card text-center">' +
+          '<div class="avatar avatar-lg" style="margin: 0 auto 12px;' + bgStyle + '">' + m.initials + '</div>' +
+          '<h3 class="font-bold">' + m.name + '</h3>' +
+          '<p class="text-sm text-muted">' + m.role + '</p>' +
+          '<span class="tag ' + statusClass + ' mt-sm">' + m.status + '</span>' +
+        '</div>';
+      }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header"><h1 class="section-title">Team</h1><button class="btn btn-primary btn-sm">Build Team</button></div>' +
+        '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">' + cardsHtml + '</div>' +
+      '</section>';
+    }
   },
 
   finance: {
     title: 'Finance',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Finance</h1>
-          <button class="btn btn-primary btn-sm">New Invoice</button>
-        </div>
-        <div class="stats-row mb-lg">
-          <div class="stat-card">
-            <span class="stat-value">€8,400</span>
-            <span class="stat-label">Earnings This Month</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">€12,200</span>
-            <span class="stat-label">Pending</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-value">€45,000</span>
-            <span class="stat-label">YTD Total</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Invoices</span>
-          </div>
-          <table style="width:100%; border-collapse: collapse;">
-            <thead>
-              <tr style="text-align:left; border-bottom: 1px solid var(--outline-light);">
-                <th class="text-sm text-muted p-md">Date</th>
-                <th class="text-sm text-muted p-md">Job</th>
-                <th class="text-sm text-muted p-md">Amount</th>
-                <th class="text-sm text-muted p-md">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-bottom: 1px solid var(--outline-light);">
-                <td class="p-md text-sm">Jun 20</td>
-                <td class="p-md text-sm font-bold">Spa 24H - Practice</td>
-                <td class="p-md text-sm">€2,800</td>
-                <td class="p-md"><span class="tag tag-success">Paid</span></td>
-              </tr>
-              <tr style="border-bottom: 1px solid var(--outline-light);">
-                <td class="p-md text-sm">Jun 15</td>
-                <td class="p-md text-sm font-bold">Spa 24H - Qualifying</td>
-                <td class="p-md text-sm">€2,100</td>
-                <td class="p-md"><span class="tag tag-warning">Pending</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    `
+    render: () => {
+      var invoices = Store.get('invoices') || [];
+      var totals = Store.get('finances') || { earnings: 12200, pending: 8400, ytd: 45000 };
+      var rowsHtml = invoices.map(function(inv) {
+        var statusClass = inv.status === 'Paid' ? 'tag-success' : (inv.status === 'Pending' ? 'tag-warning' : 'tag-error');
+        return '<tr style="border-bottom: 1px solid var(--outline-light);">' +
+          '<td class="p-md text-sm">' + inv.date + '</td>' +
+          '<td class="p-md text-sm font-bold">' + inv.job + '</td>' +
+          '<td class="p-md text-sm">' + inv.amount + '</td>' +
+          '<td class="p-md"><span class="tag ' + statusClass + '">' + inv.status + '</span></td>' +
+        '</tr>';
+      }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header"><h1 class="section-title">Finance</h1><button class="btn btn-primary btn-sm">New Invoice</button></div>' +
+        '<div class="stats-row mb-lg">' +
+          '<div class="stat-card"><span class="stat-value">€' + totals.earnings.toLocaleString() + '</span><span class="stat-label">Earnings This Month</span></div>' +
+          '<div class="stat-card"><span class="stat-value">€' + totals.pending.toLocaleString() + '</span><span class="stat-label">Pending</span></div>' +
+          '<div class="stat-card"><span class="stat-value">€' + totals.ytd.toLocaleString() + '</span><span class="stat-label">YTD Total</span></div>' +
+        '</div>' +
+        '<div class="card"><div class="card-header"><span class="card-title">Invoices</span></div>' +
+        '<table style="width:100%; border-collapse: collapse;"><thead><tr style="text-align:left; border-bottom: 1px solid var(--outline-light);"><th class="text-sm text-muted p-md">Date</th><th class="text-sm text-muted p-md">Job</th><th class="text-sm text-muted p-md">Amount</th><th class="text-sm text-muted p-md">Status</th></tr></thead><tbody>' +
+        rowsHtml +
+        '</tbody></table></div></section>';
+    }
   },
 
   travel: {
@@ -403,507 +337,480 @@ const pages = {
 
   settings: {
     title: 'Settings',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Settings</h1>
-        </div>
-        <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">Profile</button>
-          <button class="btn btn-secondary btn-sm">Account</button>
-          <button class="btn btn-secondary btn-sm">Notifications</button>
-          <button class="btn btn-secondary btn-sm">Billing</button>
-        </div>
-        <div class="card mb-lg">
-          <h3 class="font-bold mb-md">Profile Information</h3>
-          <div class="flex items-center gap-lg mb-lg">
-            <div class="avatar avatar-lg">JD</div>
-            <div>
-              <h3 class="font-bold">John Doe</h3>
-              <p class="text-sm text-muted">GT3 Lead Mechanic</p>
-            </div>
-          </div>
-          <div class="grid grid-2 gap-md">
-            <div>
-              <label class="text-sm text-muted mb-sm block">Full Name</label>
-              <input class="input-field" value="John Doe">
-            </div>
-            <div>
-              <label class="text-sm text-muted mb-sm block">Email</label>
-              <input class="input-field" value="john.doe@platypro.com">
-            </div>
-            <div>
-              <label class="text-sm text-muted mb-sm block">Phone</label>
-              <input class="input-field" value="+32 4 76 12 34 56">
-            </div>
-            <div>
-              <label class="text-sm text-muted mb-sm block">Location</label>
-              <input class="input-field" value="Spa, Belgium">
-            </div>
-          </div>
-          <div class="flex justify-end gap-sm mt-lg">
-            <button class="btn btn-secondary">Cancel</button>
-            <button class="btn btn-primary">Save Changes</button>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var user = Store.get('user') || {};
+      return '<section class="page-section">' +
+        '<div class="section-header"><h1 class="section-title">Paramètres</h1></div>' +
+        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
+          '<button class="btn btn-primary btn-sm" onclick="document.querySelectorAll(\'.settings-tab\').forEach(function(e){e.style.display=\'none\'});document.getElementById(\'settings-profile\').style.display=\'block\';this.parentElement.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Profil</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="document.querySelectorAll(\'.settings-tab\').forEach(function(e){e.style.display=\'none\'});document.getElementById(\'settings-account\').style.display=\'block\';this.parentElement.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Compte</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="document.querySelectorAll(\'.settings-tab\').forEach(function(e){e.style.display=\'none\'});document.getElementById(\'settings-notif\').style.display=\'block\';this.parentElement.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Notifications</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="document.querySelectorAll(\'.settings-tab\').forEach(function(e){e.style.display=\'none\'});document.getElementById(\'settings-billing\').style.display=\'block\';this.parentElement.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Facturation</button>' +
+        '</div>' +
+        '<div id="settings-profile" class="settings-tab card mb-lg">' +
+          '<h3 class="font-bold mb-md">Informations du profil</h3>' +
+          '<div class="flex items-center gap-lg mb-lg"><div class="avatar avatar-lg">' + (user.initials || 'JD') + '</div><div><h3 class="font-bold">' + (user.name || 'John Doe') + '</h3><p class="text-sm text-muted">' + (user.title || 'GT3 Lead Mechanic') + '</p></div></div>' +
+          '<div class="grid grid-2 gap-md">' +
+            '<div><label class="text-sm text-muted mb-sm block">Nom complet</label><input class="input-field" value="' + (user.name || 'John Doe') + '"></div>' +
+            '<div><label class="text-sm text-muted mb-sm block">Email</label><input class="input-field" value="' + (user.email || 'john.doe@platypro.com') + '"></div>' +
+            '<div><label class="text-sm text-muted mb-sm block">Téléphone</label><input class="input-field" value="' + (user.phone || '+32 4 76 12 34 56') + '"></div>' +
+            '<div><label class="text-sm text-muted mb-sm block">Localisation</label><input class="input-field" value="' + (user.location || 'Spa, Belgium') + '"></div>' +
+          '</div>' +
+          '<div class="flex justify-end gap-sm mt-lg"><button class="btn btn-secondary">Annuler</button><button class="btn btn-primary">Enregistrer</button></div>' +
+        '</div>' +
+        '<div id="settings-account" class="settings-tab card mb-lg" style="display:none;">' +
+          '<h3 class="font-bold mb-md">Paramètres du compte</h3>' +
+          '<div class="flex flex-col gap-md">' +
+            '<div class="flex items-center justify-between"><span class="text-sm">Mot de passe</span><button class="btn btn-secondary btn-sm">Changer</button></div>' +
+            '<div class="flex items-center justify-between"><span class="text-sm">Langue</span><select class="input-field" style="width:auto;"><option>Français</option><option>English</option></select></div>' +
+            '<div class="flex items-center justify-between"><span class="text-sm">Fuseau horaire</span><span class="text-sm text-muted">Europe/Paris (CEST)</span></div>' +
+          '</div>' +
+        '</div>' +
+        '<div id="settings-notif" class="settings-tab card mb-lg" style="display:none;">' +
+          '<h3 class="font-bold mb-md">Notifications</h3>' +
+          '<div class="flex flex-col gap-md">' +
+            '<label class="flex items-center justify-between"><span class="text-sm">Nouvelles offres d\'emploi</span><div class="switch"><input type="checkbox" checked><span class="slider"></span></div></label>' +
+            '<label class="flex items-center justify-between"><span class="text-sm">Messages</span><div class="switch"><input type="checkbox" checked><span class="slider"></span></div></label>' +
+            '<label class="flex items-center justify-between"><span class="text-sm">Rappels d\'événements</span><div class="switch"><input type="checkbox" checked><span class="slider"></span></div></label>' +
+            '<label class="flex items-center justify-between"><span class="text-sm">Newsletter</span><div class="switch"><input type="checkbox"><span class="slider"></span></div></label>' +
+          '</div>' +
+        '</div>' +
+        '<div id="settings-billing" class="settings-tab card mb-lg" style="display:none;">' +
+          '<h3 class="font-bold mb-md">Facturation</h3>' +
+          '<div class="flex flex-col gap-md">' +
+            '<div class="flex items-center justify-between"><span class="text-sm">Mode de paiement</span><span class="text-sm text-muted">Visa se terminant par 4242</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="flex items-center justify-between"><span class="text-sm">Devise</span><span class="text-sm font-bold">EUR (€)</span></div>' +
+            '<div class="flex items-center justify-between"><span class="text-sm">Taux TVA</span><span class="text-sm">TVA intracommunautaire</span></div>' +
+          '</div>' +
+        '</div>' +
+      '</section>';
+    }
   },
 
   marketplace: {
     title: 'Job Marketplace',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Job Marketplace</h1>
-          <div class="flex gap-sm">
-            <button class="btn btn-secondary btn-sm" onclick="toggleFilters()">Filters</button>
-            <button class="btn btn-primary btn-sm">Post a Job</button>
-          </div>
-        </div>
-        <div class="card mb-lg p-md" id="marketplace-filters" style="display:none;">
-          <div class="grid grid-2 gap-md mb-md">
-            <div>
-              <label class="text-sm text-muted mb-sm block">Category</label>
-              <select class="input-field">
-                <option>All Categories</option>
-                <option>Mechanic</option>
-                <option>Engineer</option>
-                <option>Media</option>
-                <option>Logistics</option>
-                <option>Management</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-sm text-muted mb-sm block">Location</label>
-              <input class="input-field" placeholder="Any location">
-            </div>
-            <div>
-              <label class="text-sm text-muted mb-sm block">Rate (€/day)</label>
-              <div class="flex gap-sm">
-                <input class="input-field" placeholder="Min" style="width:50%;">
-                <input class="input-field" placeholder="Max" style="width:50%;">
-              </div>
-            </div>
-            <div>
-              <label class="text-sm text-muted mb-sm block">Availability</label>
-              <select class="input-field">
-                <option>Any time</option>
-                <option>Immediate</option>
-                <option>Next week</option>
-                <option>Next month</option>
-              </select>
-            </div>
-          </div>
-          <div class="flex gap-sm justify-end">
-            <button class="btn btn-secondary btn-sm" onclick="toggleFilters()">Cancel</button>
-            <button class="btn btn-primary btn-sm">Apply Filters</button>
-          </div>
-        </div>
-        <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">All</button>
-          <button class="btn btn-secondary btn-sm">Mechanic</button>
-          <button class="btn btn-secondary btn-sm">Engineer</button>
-          <button class="btn btn-secondary btn-sm">Media</button>
-          <button class="btn btn-secondary btn-sm">Logistics</button>
-          <button class="btn btn-secondary btn-sm">Management</button>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">
-          <div class="job-card" onclick="router.navigate('/job-detail')">
-            <div class="job-card-header">
-              <div>
-                <h3 class="job-card-title">GT3 Lead Mechanic</h3>
-                <p class="text-sm text-muted">Spa 24 Hours • Jun 26-29</p>
-              </div>
-              <span class="tag tag-success">New</span>
-            </div>
-            <div class="flex items-center gap-2 mb-sm">
-              <span class="text-xs font-bold text-primary bg-primary-bg px-2 py-1 rounded">€350-400/day</span>
-              <span class="text-xs text-muted">📍 Spa, Belgium</span>
-            </div>
-            <div class="job-card-tags">
-              <span class="tag">Mechanic</span>
-              <span class="tag">GT3</span>
-              <span class="tag">Endurance</span>
-              <span class="tag">FIA License</span>
-            </div>
-            <div class="flex items-center gap-3 mt-2">
-              <span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">person</span> 2 positions</span>
-              <span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">schedule</span> 4 days</span>
-            </div>
-            <div class="job-card-footer">
-              <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-bold">KM</div>
-                <span class="text-xs text-muted">Scuderia Italia Racing</span>
-              </div>
-              <button class="btn btn-primary btn-sm">Apply</button>
-            </div>
-          </div>
-          <div class="job-card" onclick="router.navigate('/job-detail')">
-            <div class="job-card-header">
-              <div>
-                <h3 class="job-card-title">Data Engineer - WEC</h3>
-                <p class="text-sm text-muted">Monaco GP • Jul 3-7</p>
-              </div>
-              <span class="tag tag-warning">Urgent</span>
-            </div>
-            <div class="flex items-center gap-2 mb-sm">
-              <span class="text-xs font-bold text-primary bg-primary-bg px-2 py-1 rounded">€400-500/day</span>
-              <span class="text-xs text-muted">📍 Monte Carlo</span>
-            </div>
-            <div class="job-card-tags">
-              <span class="tag">Engineering</span>
-              <span class="tag">Data</span>
-              <span class="tag">WEC</span>
-              <span class="tag">Hybrid</span>
-            </div>
-            <div class="flex items-center gap-3 mt-2">
-              <span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">person</span> 1 position</span>
-              <span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">schedule</span> 5 days</span>
-            </div>
-            <div class="job-card-footer">
-              <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded-full bg-warning text-white text-[10px] flex items-center justify-center font-bold">AM</div>
-                <span class="text-xs text-muted">AF Corse</span>
-              </div>
-              <button class="btn btn-primary btn-sm">Apply</button>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-card-header">
-              <div>
-                <h3 class="job-card-title">Race Photographer</h3>
-                <p class="text-sm text-muted">Nürburgring 24H • Jul 15-18</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 mb-sm">
-              <span class="text-xs font-bold text-primary bg-primary-bg px-2 py-1 rounded">€250-300/day</span>
-              <span class="text-xs text-muted">📍 Nürburg, Germany</span>
-            </div>
-            <div class="job-card-tags">
-              <span class="tag">Media</span>
-              <span class="tag">Photography</span>
-              <span class="tag">Video</span>
-            </div>
-            <div class="flex items-center gap-3 mt-2">
-              <span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">person</span> 1 position</span>
-              <span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">schedule</span> 4 days</span>
-            </div>
-            <div class="job-card-footer">
-              <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded-full bg-purple-500 text-white text-[10px] flex items-center justify-center font-bold">GT</div>
-                <span class="text-xs text-muted">GT Media Group</span>
-              </div>
-              <button class="btn btn-primary btn-sm">Apply</button>
-            </div>
-          </div>
-          <div class="job-card">
-            <div class="job-card-header">
-              <div>
-                <h3 class="job-card-title">Logistics Coordinator</h3>
-                <p class="text-sm text-muted">Spa 24H + Monaco GP</p>
-              </div>
-              <span class="tag tag-success">Featured</span>
-            </div>
-            <div class="flex items-center gap-2 mb-sm">
-              <span class="text-xs font-bold text-primary bg-primary-bg px-2 py-1 rounded">€300-380/day</span>
-              <span class="text-xs text-muted">📍 Multiple locations</span>
-            </div>
-            <div class="job-card-tags">
-              <span class="tag">Logistics</span>
-              <span class="tag">Coordination</span>
-              <span class="tag">Travel</span>
-              <span class="tag">Multi-event</span>
-            </div>
-            <div class="flex items-center gap-3 mt-2">
-              <span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">person</span> 1 position</span>
-              <span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">schedule</span> 2 weeks</span>
-            </div>
-            <div class="job-card-footer">
-              <div class="flex items-center gap-2">
-                <div class="w-5 h-5 rounded-full bg-primary text-white text-[10px] flex items-center justify-center font-bold">SI</div>
-                <span class="text-xs text-muted">Scuderia Italia Racing</span>
-              </div>
-              <button class="btn btn-primary btn-sm">Apply</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var jobs = Store.get('jobs') || [];
+      var jobCardsHtml = jobs.map(function(j) {
+        var statusTag = j.status === 'Featured' ? 'tag-success' : (j.status === 'Urgent' ? 'tag-warning' : '');
+        var statusBadge = j.status !== 'Open' ? '<span class="tag ' + statusTag + '">' + j.status + '</span>' : '';
+        var initialsColor = j.employerInitials === 'SI' ? 'primary' : (j.employerInitials === 'AM' ? 'warning' : (j.employerInitials === 'GT' ? '#9333ea' : 'primary'));
+        var tagsHtml = (j.tags || []).map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
+        return '<div class="job-card" onclick="router.navigate(\'/job-detail?id=' + j.id + '\')">' +
+          '<div class="job-card-header">' +
+            '<div><h3 class="job-card-title">' + j.title + '</h3><p class="text-sm text-muted">' + j.event + ' • ' + j.dates + '</p></div>' +
+            statusBadge +
+          '</div>' +
+          '<div class="flex items-center gap-2 mb-sm">' +
+            '<span class="text-xs font-bold text-primary bg-primary-bg px-2 py-1 rounded">' + j.rate + '</span>' +
+            '<span class="text-xs text-muted">📍 ' + j.location + '</span>' +
+          '</div>' +
+          '<div class="job-card-tags">' + tagsHtml + '</div>' +
+          '<div class="flex items-center gap-3 mt-2">' +
+            '<span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">person</span> ' + j.openings + ' position' + (j.openings > 1 ? 's' : '') + '</span>' +
+            '<span class="flex items-center gap-1 text-xs"><span class="material-symbols-outlined text-sm">schedule</span> ' + j.duration + '</span>' +
+          '</div>' +
+          '<div class="job-card-footer">' +
+            '<div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style="background:var(--' + (initialsColor === 'primary' ? 'primary' : initialsColor) + ');">' + j.employerInitials + '</div><span class="text-xs text-muted">' + j.employer + '</span></div>' +
+            '<button class="btn btn-primary btn-sm">Apply</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header">' +
+          '<h1 class="section-title">Job Marketplace</h1>' +
+          '<div class="flex gap-sm"><button class="btn btn-secondary btn-sm" onclick="toggleFilters()">Filters</button><button class="btn btn-primary btn-sm">Post a Job</button></div>' +
+        '</div>' +
+        '<div class="card mb-lg p-md" id="marketplace-filters" style="display:none;">' +
+          '<div class="grid grid-2 gap-md mb-md">' +
+            '<div><label class="text-sm text-muted mb-sm block">Category</label><select class="input-field"><option>All Categories</option><option>Mechanic</option><option>Engineer</option><option>Media</option><option>Logistics</option><option>Management</option></select></div>' +
+            '<div><label class="text-sm text-muted mb-sm block">Location</label><input class="input-field" placeholder="Any location"></div>' +
+            '<div><label class="text-sm text-muted mb-sm block">Rate (€/day)</label><div class="flex gap-sm"><input class="input-field" placeholder="Min" style="width:50%;"><input class="input-field" placeholder="Max" style="width:50%;"></div></div>' +
+            '<div><label class="text-sm text-muted mb-sm block">Availability</label><select class="input-field"><option>Any time</option><option>Immediate</option><option>Next week</option><option>Next month</option></select></div>' +
+          '</div>' +
+          '<div class="flex gap-sm justify-end"><button class="btn btn-secondary btn-sm" onclick="toggleFilters()">Cancel</button><button class="btn btn-primary btn-sm">Apply Filters</button></div>' +
+        '</div>' +
+        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;"><button class="btn btn-primary btn-sm">All</button><button class="btn btn-secondary btn-sm">Mechanic</button><button class="btn btn-secondary btn-sm">Engineer</button><button class="btn btn-secondary btn-sm">Media</button><button class="btn btn-secondary btn-sm">Logistics</button><button class="btn btn-secondary btn-sm">Management</button></div>' +
+        '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">' +
+          jobCardsHtml +
+        '</div>' +
+      '</section>';
+    }
   },
 
   'job-detail': {
     title: 'Job Detail',
-    render: () => `
-      <section class="page-section">
-        <div class="flex items-center gap-2 mb-6">
-          <button class="icon-btn" onclick="router.navigate('/marketplace')"><span class="material-symbols-outlined">arrow_back</span></button>
-          <h1 class="section-title">Job Details</h1>
-        </div>
-        <div class="grid grid-2 gap-lg">
-          <div>
-            <div class="card mb-lg">
-              <div class="flex items-start justify-between mb-4">
-                <div>
-                  <h2 class="text-xl font-bold">GT3 Lead Mechanic</h2>
-                  <p class="text-sm text-muted">Scuderia Italia Racing • Spa 24 Hours</p>
-                </div>
-                <span class="tag tag-success">Open</span>
-              </div>
-              <div class="flex items-center gap-4 mb-4">
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">location_on</span><span class="text-sm">Spa, Belgium</span></div>
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">calendar_today</span><span class="text-sm">Jun 26-29</span></div>
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">payments</span><span class="text-sm font-bold text-primary">€350-400/day</span></div>
-              </div>
-              <h3 class="font-bold mb-sm">Description</h3>
-              <p class="text-sm text-muted mb-md">We are looking for an experienced GT3 Lead Mechanic for the Spa 24 Hours endurance race. Must have at least 5 years of GT racing experience and FIA certification.</p>
-              <h3 class="font-bold mb-sm">Requirements</h3>
-              <ul class="flex flex-col gap-sm text-sm">
-                <li>• Minimum 5 years GT3 experience</li>
-                <li>• FIA Mechanic License Level 2+</li>
-                <li>• Experience with Ferrari 296 GT3</li>
-                <li>• Available for full event duration (Jun 24-30)</li>
-                <li>• Fluent English, Italian a plus</li>
-              </ul>
-            </div>
-            <div class="card">
-              <h3 class="font-bold mb-md">About the Employer</h3>
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center font-bold">SI</div>
-                <div>
-                  <h4 class="font-bold">Scuderia Italia Racing</h4>
-                  <p class="text-xs text-muted">GT World Challenge • Since 2012</p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3 text-sm">
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">star</span><span class="text-muted">4.7 employer rating</span></div>
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">work</span><span class="text-muted">18 jobs posted</span></div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="card mb-lg">
-              <h3 class="font-bold mb-md">Apply for this Job</h3>
-              <div class="flex flex-col gap-md">
-                <div>
-                  <label class="text-sm text-muted mb-sm block">Your rate (€/day)</label>
-                  <input class="input-field" placeholder="350">
-                </div>
-                <div>
-                  <label class="text-sm text-muted mb-sm block">Cover message</label>
-                  <textarea class="input-field" style="height:100px; padding:12px 16px; resize:none;" placeholder="Tell the employer why you're a great fit..."></textarea>
-                </div>
-                <div>
-                  <label class="text-sm text-muted mb-sm block">Availability</label>
-                  <div class="flex gap-sm">
-                    <label class="flex items-center gap-2"><input type="radio" name="availability" checked> <span class="text-sm">Full event</span></label>
-                    <label class="flex items-center gap-2"><input type="radio" name="availability"> <span class="text-sm">Partial</span></label>
-                  </div>
-                </div>
-                <button class="btn btn-primary btn-lg">Submit Application</button>
-              </div>
-            </div>
-            <div class="card">
-              <h3 class="font-bold mb-md">Similar Jobs</h3>
-              <div class="flex flex-col gap-sm">
-                <div class="p-3 rounded-xl hover:bg-surface-dim transition-colors" style="cursor:pointer;">
-                  <p class="font-bold text-sm">GT3 Mechanic - 24H Le Mans</p>
-                  <p class="text-xs text-muted">Jun 10-16 • €380-450/day</p>
-                </div>
-                <div class="p-3 rounded-xl hover:bg-surface-dim transition-colors" style="cursor:pointer;">
-                  <p class="font-bold text-sm">Data Engineer - WEC</p>
-                  <p class="text-xs text-muted">Monaco GP • €400-500/day</p>
-                </div>
-                <div class="p-3 rounded-xl hover:bg-surface-dim transition-colors" style="cursor:pointer;">
-                  <p class="font-bold text-sm">Tire Technician</p>
-                  <p class="text-xs text-muted">Spa 24H • €200-250/day</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var jobs = Store.get('jobs') || [];
+      var params = new URLSearchParams(window.location.hash.split('?')[1] || '');
+      var jobId = parseInt(params.get('id'));
+      var j = jobs.find(function(x) { return x.id === jobId; }) || jobs[0];
+      if (!j) return '<section class="page-section"><div class="card p-lg text-center"><p class="text-muted">Offre non trouvée.</p><button class="btn btn-primary mt-md" onclick="router.navigate(\'/marketplace\')">Retour</button></div></section>';
+
+      var statusTag = j.status === 'Featured' ? 'tag-success' : (j.status === 'Urgent' ? 'tag-warning' : '');
+      var tagsHtml = (j.tags || []).map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
+      var reqsHtml = (j.requirements || ['Proven experience in ' + j.category, 'Available for full event duration', 'Relevant certifications', 'Fluent English']).map(function(r) { return '<li>• ' + r + '</li>'; }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="flex items-center gap-2 mb-6">' +
+          '<button class="icon-btn" onclick="router.navigate(\'/marketplace\')"><span class="material-symbols-outlined">arrow_back</span></button>' +
+          '<h1 class="section-title">Job Details</h1>' +
+        '</div>' +
+        '<div class="grid grid-2 gap-lg">' +
+          '<div>' +
+            '<div class="card mb-lg">' +
+              '<div class="flex items-start justify-between mb-4">' +
+                '<div><h2 class="text-xl font-bold">' + j.title + '</h2><p class="text-sm text-muted">' + j.employer + ' • ' + j.event + '</p></div>' +
+                '<span class="tag ' + statusTag + '">' + j.status + '</span>' +
+              '</div>' +
+              '<div class="flex items-center gap-4 mb-4">' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">location_on</span><span class="text-sm">' + j.location + '</span></span>' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">calendar_today</span><span class="text-sm">' + j.dates + '</span></span>' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">payments</span><span class="text-sm font-bold text-primary">' + j.rate + '</span></span>' +
+              '</div>' +
+              '<h3 class="font-bold mb-sm">Description</h3>' +
+              '<p class="text-sm text-muted mb-md">' + (j.description || j.title + ' position for ' + j.event + ' at ' + j.location + '. ' + j.employer + ' requires an experienced professional for this role.') + '</p>' +
+              '<h3 class="font-bold mb-sm">Requirements</h3>' +
+              '<ul class="flex flex-col gap-sm text-sm">' + reqsHtml + '</ul>' +
+              '<div class="flex gap-xs flex-wrap mt-md">' + tagsHtml + '</div>' +
+            '</div>' +
+            '<div class="card">' +
+              '<h3 class="font-bold mb-md">About the Employer</h3>' +
+              '<div class="flex items-center gap-3 mb-3">' +
+                '<div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center font-bold">' + j.employerInitials + '</div>' +
+                '<div><h4 class="font-bold">' + j.employer + '</h4><p class="text-xs text-muted">' + (j.event || 'Motorsport team') + '</p></div>' +
+              '</div>' +
+              '<div class="flex items-center gap-3 text-sm">' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">star</span><span class="text-muted">4.7 employer rating</span></span>' +
+                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">work</span><span class="text-muted">' + (j.openings + 10) + ' jobs posted</span></span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<div class="card mb-lg">' +
+              '<h3 class="font-bold mb-md">Apply for this Job</h3>' +
+              '<div class="flex flex-col gap-md">' +
+                '<div><label class="text-sm text-muted mb-sm block">Your rate (€/day)</label><input class="input-field" placeholder="350"></div>' +
+                '<div><label class="text-sm text-muted mb-sm block">Cover message</label><textarea class="input-field" style="height:100px; padding:12px 16px; resize:none;" placeholder="Tell the employer why you\'re a great fit..."></textarea></div>' +
+                '<div><label class="text-sm text-muted mb-sm block">Availability</label><div class="flex gap-sm"><label class="flex items-center gap-2"><input type="radio" name="availability" checked> <span class="text-sm">Full event</span></label><label class="flex items-center gap-2"><input type="radio" name="availability"> <span class="text-sm">Partial</span></label></div></div>' +
+                '<button class="btn btn-primary btn-lg">Submit Application</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="card">' +
+              '<h3 class="font-bold mb-md">Similar Jobs</h3>' +
+              '<div class="flex flex-col gap-sm">' +
+                jobs.filter(function(x) { return x.id !== j.id; }).slice(0, 3).map(function(s) {
+                  return '<div class="p-3 rounded-xl hover:bg-surface-dim transition-colors" style="cursor:pointer;" onclick="router.navigate(\'/job-detail?id=' + s.id + '\')"><p class="font-bold text-sm">' + s.title + '</p><p class="text-xs text-muted">' + s.dates + ' • ' + s.rate + '</p></div>';
+                }).join('') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</section>';
+    }
   },
 
   'my-jobs': {
     title: 'My Jobs',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">My Jobs</h1>
-          <button class="btn btn-primary btn-sm" onclick="router.navigate('/marketplace')">Find Work</button>
-        </div>
-        <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">Active</button>
-          <button class="btn btn-secondary btn-sm">Upcoming</button>
-          <button class="btn btn-secondary btn-sm">Completed</button>
-          <button class="btn btn-secondary btn-sm">All</button>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">
-          <div class="card" style="border-left: 4px solid var(--success);">
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h3 class="font-bold">GT3 Lead Mechanic</h3>
-                <p class="text-xs text-muted">Scuderia Italia Racing • Spa 24H</p>
-              </div>
-              <span class="tag tag-success">Active</span>
-            </div>
-            <div class="flex items-center gap-3 mb-3 text-sm">
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">calendar_today</span> Jun 26-29</span>
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">location_on</span> Spa, BE</span>
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">payments</span> €350/day</span>
-            </div>
-            <div class="flex items-center gap-3 mb-3">
-              <div class="flex-1 bg-surface-dim rounded-full h-2 overflow-hidden">
-                <div class="bg-success h-2 rounded-full" style="width:65%;"></div>
-              </div>
-              <span class="text-xs font-bold">Day 3 of 4</span>
-            </div>
-            <div class="flex gap-sm justify-end">
-              <button class="btn btn-secondary btn-sm">Time Log</button>
-              <button class="btn btn-primary btn-sm" onclick="router.navigate('/gig-detail')">View Details</button>
-            </div>
-          </div>
-          <div class="card" style="border-left: 4px solid var(--warning);">
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h3 class="font-bold">Data Engineer</h3>
-                <p class="text-xs text-muted">AF Corse • Monaco GP</p>
-              </div>
-              <span class="tag tag-warning">Upcoming</span>
-            </div>
-            <div class="flex items-center gap-3 mb-3 text-sm">
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">calendar_today</span> Jul 3-7</span>
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">location_on</span> Monte Carlo</span>
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">payments</span> €400/day</span>
-            </div>
-            <div class="flex items-center gap-3 mb-3">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm text-warning">pending</span>
-                <span class="text-xs text-muted">Contract pending signature</span>
-              </div>
-            </div>
-            <div class="flex gap-sm justify-end">
-              <button class="btn btn-primary btn-sm">Sign Contract</button>
-              <button class="btn btn-secondary btn-sm">Travel Info</button>
-            </div>
-          </div>
-          <div class="card" style="border-left: 4px solid var(--muted);">
-            <div class="flex items-center justify-between mb-3">
-              <div>
-                <h3 class="font-bold">Race Photographer</h3>
-                <p class="text-xs text-muted">GT Media Group • Nürburgring 24H</p>
-              </div>
-              <span class="tag">Completed</span>
-            </div>
-            <div class="flex items-center gap-3 mb-3 text-sm">
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">calendar_today</span> Jul 15-18</span>
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">location_on</span> Nürburg, DE</span>
-              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">payments</span> €1,120</span>
-            </div>
-            <div class="flex items-center gap-3 mb-3">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm text-success">check_circle</span>
-                <span class="text-xs text-muted">Payment pending</span>
-              </div>
-            </div>
-            <div class="flex gap-sm justify-end">
-              <button class="btn btn-secondary btn-sm">Submit Invoice</button>
-              <button class="btn btn-primary btn-sm">Write Review</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var gigs = Store.get('activeGigs') || [];
+      var cardsHtml = gigs.map(function(g) {
+        var statusClass = g.status === 'Active' ? 'tag-success' : (g.status === 'Upcoming' ? 'tag-warning' : 'tag');
+        var borderColor = g.status === 'Active' ? 'var(--success)' : (g.status === 'Upcoming' ? 'var(--warning)' : 'var(--muted)');
+        var progressHtml = '';
+
+        if (g.status === 'Active' && g.currentDay && g.totalDays) {
+          var pct = Math.round((g.currentDay / g.totalDays) * 100);
+          progressHtml = '<div class="flex items-center gap-3 mb-3"><div class="flex-1 bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:' + pct + '%;"></div></div><span class="text-xs font-bold">Day ' + g.currentDay + ' of ' + g.totalDays + '</span></div>';
+        } else if (g.status === 'Upcoming') {
+          progressHtml = '<div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-sm text-warning">pending</span><span class="text-xs text-muted">Contract pending signature</span></div>';
+        } else {
+          progressHtml = '<div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-sm text-success">check_circle</span><span class="text-xs text-muted">' + (g.statusNote || 'Completed') + '</span></div>';
+        }
+
+        return '<div class="card" style="border-left: 4px solid ' + borderColor + ';">' +
+          '<div class="flex items-center justify-between mb-3"><div><h3 class="font-bold">' + g.title + '</h3><p class="text-xs text-muted">' + g.employer + ' • ' + g.event + '</p></div><span class="tag ' + statusClass + '">' + g.status + '</span></div>' +
+          '<div class="flex items-center gap-3 mb-3 text-sm">' +
+            '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">calendar_today</span> ' + g.dates + '</span>' +
+            '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">location_on</span> ' + g.location + '</span>' +
+            '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-muted">payments</span> ' + g.rate + '</span>' +
+          '</div>' +
+          progressHtml +
+          '<div class="flex gap-sm justify-end">' +
+            (g.status === 'Active' ? '<button class="btn btn-secondary btn-sm">Time Log</button>' : '') +
+            (g.status === 'Upcoming' ? '<button class="btn btn-secondary btn-sm">Travel Info</button>' : '') +
+            (g.status === 'Completed' ? '<button class="btn btn-secondary btn-sm">Submit Invoice</button>' : '') +
+            '<button class="btn btn-primary btn-sm" onclick="router.navigate(\'/gig-detail?id=' + g.id + '\',true)">View Details</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header"><h1 class="section-title">My Jobs</h1><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/marketplace\')">Find Work</button></div>' +
+        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
+          '<button class="btn btn-primary btn-sm">Active</button>' +
+          '<button class="btn btn-secondary btn-sm">Upcoming</button>' +
+          '<button class="btn btn-secondary btn-sm">Completed</button>' +
+          '<button class="btn btn-secondary btn-sm">All</button>' +
+        '</div>' +
+        '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">' +
+          cardsHtml +
+        '</div>' +
+      '</section>';
+    }
   },
 
   'gig-detail': {
     title: 'Job Detail',
     render: () => {
-      var gigs = Store.get('activeGigs');
-      var g = gigs[0];
+      var gigs = Store.get('activeGigs') || [];
+      var events = Store.get('events') || [];
+      var params = new URLSearchParams(window.location.hash.split('?')[1] || '');
+      var gigId = parseInt(params.get('id'));
+      var g = gigs.find(function(x) { return x.id === gigId; }) || gigs[0];
+      if (!g) return '<section class="page-section"><div class="card p-lg text-center"><p class="text-muted">Aucun job trouvé.</p><button class="btn btn-primary mt-md" onclick="router.navigate(\'/my-jobs\',true)">Retour</button></div></section>';
 
+      var e = events.find(function(x) { return x.title.toLowerCase().indexOf(g.event.toLowerCase().replace(/[^a-z0-9]/g,'')) > -1 || g.event.toLowerCase().indexOf(x.title.toLowerCase().replace(/[^a-z0-9]/g,'')) > -1; });
+      var tab = params.get('tab') || 'overview';
       var statusColor = g.status === 'Active' ? 'success' : (g.status === 'Upcoming' ? 'warning' : 'muted');
+
+      var tabs = ['overview','programme','travel','team','documents'];
+      var tabLabels = ['Aperçu','Programme','Voyage','Équipe','Documents'];
+      function tabBtn(t) {
+        return '<button class="tab-btn' + (tab === t ? ' active' : '') + '" onclick="router.navigate(\'/gig-detail?id=' + g.id + '&tab=' + t + '\',true)">' + tabLabels[tabs.indexOf(t)] + '</button>';
+      }
+      function tag(text, cls) {
+        return '<span class="tag' + (cls ? ' tag-' + cls : '') + '">' + text + '</span>';
+      }
+
       var progressHtml = g.status === 'Active'
         ? '<div class="flex items-center gap-3 mb-3"><div class="flex-1 bg-surface-dim rounded-full h-2 overflow-hidden"><div class="bg-success h-2 rounded-full" style="width:' + g.progress + '%;"></div></div><span class="text-xs font-bold">Day ' + g.currentDay + ' of ' + g.totalDays + '</span></div>'
         : '';
+
       var tagsHtml = (g.tags || []).map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
 
-      return '<section class="page-section">' +
-        '<div class="flex items-center gap-2 mb-6">' +
-          '<button class="icon-btn" onclick="router.navigate(\'/my-jobs\')"><span class="material-symbols-outlined">arrow_back</span></button>' +
-          '<h1 class="section-title">Job Details</h1>' +
+      var employerInitials = g.employer.split(' ').map(function(w) { return w.charAt(0); }).join('').substring(0, 2);
+
+      // --- Tabs content ---
+
+      var overviewTab = '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="flex items-start justify-between mb-4"><div><h2 class="text-xl font-bold">' + g.title + '</h2><p class="text-sm text-muted">' + g.employer + ' • ' + g.event + '</p></div>' + tag(g.status, statusColor) + '</div>' +
+            '<div class="flex items-center gap-4 mb-4 flex-wrap">' +
+              '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" style="font-size:18px;">location_on</span><span class="text-sm">' + g.location + '</span></span>' +
+              '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" style="font-size:18px;">calendar_today</span><span class="text-sm">' + g.dates + '</span></span>' +
+              '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" style="font-size:18px;">payments</span><span class="text-sm font-bold text-primary">' + g.rate + '</span></span>' +
+            '</div>' +
+            progressHtml +
+            '<div class="flex gap-xs flex-wrap mb-4">' + tagsHtml + '</div>' +
+            '<h3 class="font-bold mb-sm">Description</h3>' +
+            '<p class="text-sm text-muted mb-md">' + g.title + ' position for ' + g.event + ' at ' + g.location + '. ' + g.employer + ' requires an experienced professional for this role.</p>' +
+            '<h3 class="font-bold mb-sm">Requirements</h3>' +
+            '<ul class="flex flex-col gap-sm text-sm">' +
+              '<li>• Proven experience in ' + (g.tags || []).slice(0,2).join(' and ') + '</li>' +
+              '<li>• Available for full event duration</li>' +
+              '<li>• Relevant certifications and licenses</li>' +
+              '<li>• Fluent English, additional languages a plus</li>' +
+            '</ul>' +
+          '</div>' +
+          '<div class="card">' +
+            '<h3 class="font-bold mb-md">À propos de l\'employeur</h3>' +
+            '<div class="flex items-center gap-3 mb-3">' +
+              '<div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center font-bold text-white">' + employerInitials + '</div>' +
+              '<div><h4 class="font-bold">' + g.employer + '</h4><p class="text-xs text-muted">' + (e ? e.series : 'Motorsport team') + '</p></div>' +
+            '</div>' +
+            '<div class="flex items-center gap-3 text-sm">' +
+              '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">star</span><span class="text-muted">4.7 rating</span></span>' +
+              '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">work</span><span class="text-muted">12 jobs posted</span></span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<h3 class="font-bold mb-md">Détails du poste</h3>' +
+            '<div class="flex flex-col gap-3">' +
+              '<div class="flex justify-between text-sm"><span class="text-muted">Position</span><span class="font-bold">' + g.title + '</span></div>' +
+              '<div class="flex justify-between text-sm"><span class="text-muted">Taux</span><span class="font-bold text-primary">' + g.rate + '</span></div>' +
+              '<div class="flex justify-between text-sm"><span class="text-muted">Événement</span><span class="font-bold">' + g.event + '</span></div>' +
+              '<div class="flex justify-between text-sm"><span class="text-muted">Dates</span><span class="font-bold">' + g.dates + '</span></div>' +
+              '<div class="flex justify-between text-sm"><span class="text-muted">Lieu</span><span class="font-bold">' + g.location + '</span></div>' +
+              '<div class="flex justify-between text-sm"><span class="text-muted">Statut</span><span class="font-bold tag tag-' + statusColor + '" style="font-size:inherit;">' + g.status + '</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card mb-lg">' +
+            '<h3 class="font-bold mb-md">Actions rapides</h3>' +
+            '<div class="flex flex-col gap-2">' +
+              '<button class="btn btn-primary btn-lg">Déclarer heures</button>' +
+              '<button class="btn btn-secondary btn-lg">Contacter employeur</button>' +
+              '<button class="btn btn-secondary btn-lg" onclick="router.navigate(\'/gig-detail?id=' + g.id + '&tab=programme\',true)">Voir programme</button>' +
+              '<button class="btn btn-secondary btn-lg" onclick="router.navigate(\'/gig-detail?id=' + g.id + '&tab=travel\',true)">Voir voyage</button>' +
+              '<button class="btn btn-secondary btn-lg">Dépenses</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<h3 class="font-bold mb-md">Prochaines étapes</h3>' +
+            '<div class="divide-y">' +
+              (g.status === 'Completed'
+                ? '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Contrat signé</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Voyage réservé</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Mission terminée</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-warning text-sm">hourglass_empty</span><span class="text-sm">Paiement en attente</span></div>'
+                : g.status === 'Active'
+                ? '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Contrat signé</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Voyage réservé</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-warning text-sm">hourglass_empty</span><span class="text-sm">Check-in sur site</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Mission terminée</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Paiement reçu</span></div>'
+                : '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Contrat signé</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-warning text-sm">hourglass_empty</span><span class="text-sm">Voyage à réserver</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Check-in sur site</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Mission terminée</span></div><div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Paiement reçu</span></div>') +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var programmeTab = '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Programme général</span></div>' +
+            '<div class="flex flex-col">' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--primary);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-primary">JUN</p><p class="text-lg font-bold text-primary">24</p></div><div class="flex-1"><p class="font-bold text-sm">Arrivée &amp; Installation</p><p class="text-xs text-muted">Paddock setup, check-in technique</p><div class="flex items-center gap-2 mt-1">' + tag('08:00 - 18:00') + tag('Paddock') + '</div></div></div>' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--warning);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-warning">JUN</p><p class="text-lg font-bold text-warning">25</p></div><div class="flex-1"><p class="font-bold text-sm">Essais libres &amp; Qualifs</p><p class="text-xs text-muted">Free Practice 1-3, Pre-Qualifying</p><div class="flex items-center gap-2 mt-1">' + tag('09:00 - 17:30') + tag('Circuit') + '</div></div></div>' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--error);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-error">JUN</p><p class="text-lg font-bold text-error">26</p></div><div class="flex-1"><p class="font-bold text-sm">Course - Jour 1</p><p class="text-xs text-muted">Warm-up, Départ 16h00, Phases nocturnes</p><div class="flex items-center gap-2 mt-1">' + tag('08:00 - 02:00') + tag('Circuit') + '</div></div></div>' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--success);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-success">JUN</p><p class="text-lg font-bold text-success">27</p></div><div class="flex-1"><p class="font-bold text-sm">Course - Jour 2 &amp; Final</p><p class="text-xs text-muted">Suite course, Arrivée 16h00, Podium</p><div class="flex items-center gap-2 mt-1">' + tag('06:00 - 18:00') + tag('Circuit') + '</div></div></div>' +
+              '<div class="flex gap-3 py-3" style="border-left:3px solid var(--muted);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-muted">JUN</p><p class="text-lg font-bold text-muted">28</p></div><div class="flex-1"><p class="font-bold text-sm">Démontage &amp; Départ</p><p class="text-xs text-muted">Pit breakdown, check-out, travel home</p><div class="flex items-center gap-2 mt-1">' + tag('08:00 - 14:00') + tag('Paddock') + '</div></div></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Détail du jour &bull; 26 Juin (Course J1)</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-success"></span><span class="text-sm">Briefing équipe</span></div><span class="text-xs text-muted">08:00 - 08:30</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-success"></span><span class="text-sm">Warm-up</span></div><span class="text-xs text-muted">09:00 - 09:30</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-warning"></span><span class="text-sm">Pit stop practice</span></div><span class="text-xs text-muted">10:00 - 11:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Parc fermé</span></div><span class="text-xs text-muted">12:00 - 14:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-error"></span><span class="text-sm">Départ course</span></div><span class="text-xs text-muted">16:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 1-4</span></div><span class="text-xs text-muted">16:00 - 20:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 5-8 (nocturnes)</span></div><span class="text-xs text-muted">20:00 - 00:00</span></div>' +
+              '<div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full"></span><span class="text-sm">Relais 9-10</span></div><span class="text-xs text-muted">00:00 - 02:00</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card" style="background:var(--primary-bg);border-color:var(--primary);">' +
+            '<p class="text-sm font-bold text-primary mb-sm">Rappels importants</p>' +
+            '<ul class="text-xs text-muted flex flex-col gap-1">' +
+              '<li>&bull; Briefing obligatoire 45min avant chaque session</li>' +
+              '<li>&bull; Équipement de sécurité obligatoire dans le paddock</li>' +
+              '<li>&bull; Créneaux catering : 12:00-14:00 et 19:00-21:00</li>' +
+            '</ul>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var travelTab = '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Transport</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">flight</span><div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2608</p><p class="text-xs text-muted">MIL &rarr; BRU &bull; 24 Jun 07:00 &bull; Réservé</p></div>' + tag('Confirmé','success') + '</div>' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">directions_car</span><div class="flex-1"><p class="font-bold text-sm">Navette aéroport</p><p class="text-xs text-muted">BRU &rarr; Spa &bull; 24 Jun 09:30</p></div>' + tag('Confirmé','success') + '</div>' +
+              '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">flight</span><div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2609</p><p class="text-xs text-muted">BRU &rarr; MIL &bull; 28 Jun 14:00 &bull; Réservé</p></div>' + tag('Confirmé','success') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Hébergement</span></div>' +
+            '<div class="flex items-center gap-3 p-3 rounded-lg" style="background:var(--surface-dim);"><span class="material-symbols-outlined text-primary">hotel</span><div class="flex-1"><p class="font-bold text-sm">Hôtel de la Source</p><p class="text-xs text-muted">Chambre partagée &bull; 24-28 Juin &bull; 4 nuits</p></div>' + tag('Confirmé','success') + '</div>' +
+            '<div class="flex items-center gap-2 mt-2 text-xs text-muted"><span class="material-symbols-outlined text-sm">location_on</span><span>1.2km du circuit &bull; Rue de la Source, Spa</span></div>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Documents de voyage</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Itinéraire complet.pdf</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Billet avion</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Confirmation hôtel</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Coordonnées logistique</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-3"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:rgba(34,197,94,0.1);color:#22c55e;">LW</div><div class="flex-1"><p class="font-bold text-sm">Lena Wagner</p><p class="text-xs text-muted">Logistics Coordinator</p></div></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var teamTab = '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Équipe &amp; Collègues</span></div>' +
+            '<div class="grid grid-2 gap-md">' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;">AK</div><p class="font-bold text-xs">Alex Krause</p><p class="text-xs text-muted" style="font-size:10px;">Lead Mechanic</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(234,88,12,0.1);color:#ea580c;">MB</div><p class="font-bold text-xs">Marco Bellini</p><p class="text-xs text-muted" style="font-size:10px;">Race Engineer</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(147,51,234,0.1);color:#9333ea;">SM</div><p class="font-bold text-xs">Sarah Mitchell</p><p class="text-xs text-muted" style="font-size:10px;">Data Engineer</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(34,197,94,0.1);color:#22c55e;">LW</div><p class="font-bold text-xs">Lena Wagner</p><p class="text-xs text-muted" style="font-size:10px;">Logistics</p></div>' +
+              '<div class="p-3 rounded-xl text-center bg-surface-dim"><div class="avatar" style="width:40px;height:40px;margin:0 auto 6px;background:rgba(99,102,241,0.1);color:#6366f1;">PT</div><p class="font-bold text-xs">Paul Tan</p><p class="text-xs text-muted" style="font-size:10px;">Media</p></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="card mb-lg">' +
+            '<div class="card-header"><span class="card-title">Planning des shifts</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">Pit Crew - Shift A</p><p class="text-xs text-muted">Alex K., Marco B., Paul T.</p></div>' + tag('06:00 - 14:00') + '</div>' +
+              '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">Pit Crew - Shift B</p><p class="text-xs text-muted">Sarah M., Chen J., David K.</p></div>' + tag('14:00 - 22:00') + '</div>' +
+              '<div class="flex items-center justify-between py-2"><div><p class="font-bold text-sm">Pit Crew - Shift C</p><p class="text-xs text-muted">Lena W., James D., Fabio R.</p></div>' + tag('22:00 - 06:00') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Contact responsable</span></div>' +
+            '<div class="flex items-center gap-3"><div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center font-bold">JD</div><div><h4 class="font-bold text-sm">James Donovan</h4><p class="text-xs text-muted">Team Manager</p><div class="flex items-center gap-2 mt-1"><span class="material-symbols-outlined text-sm text-primary">mail</span><span class="text-xs text-muted">j.donovan@scuderia.it</span></div></div></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      var docsTab = '<div>' +
+        '<div class="mb-lg flex gap-sm" style="flex-wrap:wrap;">' +
+          '<button class="btn btn-primary btn-sm">Tous</button>' +
+          '<button class="btn btn-secondary btn-sm">Contrats</button>' +
+          '<button class="btn btn-secondary btn-sm">Certifications</button>' +
+          '<button class="btn btn-secondary btn-sm">Assurances</button>' +
+          '<button class="btn btn-secondary btn-sm">Rapports</button>' +
         '</div>' +
         '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
-          '<div>' +
-            '<div class="card mb-lg">' +
-              '<div class="flex items-start justify-between mb-4">' +
-                '<div><h2 class="text-xl font-bold">' + g.title + '</h2><p class="text-sm text-muted">' + g.employer + ' • ' + g.event + '</p></div>' +
-                '<span class="tag tag-' + statusColor + '">' + g.status + '</span>' +
-              '</div>' +
-              '<div class="flex items-center gap-4 mb-4">' +
-                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">location_on</span><span class="text-sm">' + g.location + '</span></span>' +
-                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">calendar_today</span><span class="text-sm">' + g.dates + '</span></span>' +
-                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-primary">payments</span><span class="text-sm font-bold text-primary">' + g.rate + '</span></span>' +
-              '</div>' +
-              progressHtml +
-              '<div class="flex gap-xs flex-wrap mb-4">' + tagsHtml + '</div>' +
-              '<h3 class="font-bold mb-sm">Description</h3>' +
-              '<p class="text-sm text-muted mb-md">' + g.title + ' position for ' + g.event + ' at ' + g.location + '. ' + g.employer + ' requires an experienced professional for this role.</p>' +
-              '<h3 class="font-bold mb-sm">Requirements</h3>' +
-              '<ul class="flex flex-col gap-sm text-sm">' +
-                '<li>• Proven experience in ' + (g.tags || []).slice(0,2).join(' and ') + '</li>' +
-                '<li>• Available for full event duration</li>' +
-                '<li>• Relevant certifications and licenses</li>' +
-                '<li>• Fluent English, additional languages a plus</li>' +
-              '</ul>' +
-            '</div>' +
-            '<div class="card">' +
-              '<h3 class="font-bold mb-md">About the Employer</h3>' +
-              '<div class="flex items-center gap-3 mb-3">' +
-                '<div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center font-bold">' + g.employer.charAt(0) + g.employer.split(' ')[1]?.charAt(0) + '</div>' +
-                '<div><h4 class="font-bold">' + g.employer + '</h4><p class="text-xs text-muted">Motorsport team</p></div>' +
-              '</div>' +
-              '<div class="flex items-center gap-3 text-sm">' +
-                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">star</span><span class="text-muted">4.7 rating</span></span>' +
-                '<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-primary">work</span><span class="text-muted">12 jobs posted</span></span>' +
-              '</div>' +
+          '<div class="card">' +
+            '<div class="card-header"><span class="card-title">Contrats &amp; Accords</span></div>' +
+            '<div class="divide-y">' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Contrat de travail - GT3 Lead Mechanic</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Accord de confidentialité (NDA)</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Règlement intérieur paddock</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
             '</div>' +
           '</div>' +
           '<div>' +
             '<div class="card mb-lg">' +
-              '<h3 class="font-bold mb-md">Role Details</h3>' +
-              '<div class="flex flex-col gap-3">' +
-                '<div class="flex justify-between text-sm"><span class="text-muted">Position</span><span class="font-bold">' + g.title + '</span></div>' +
-                '<div class="flex justify-between text-sm"><span class="text-muted">Rate</span><span class="font-bold text-primary">' + g.rate + '</span></div>' +
-                '<div class="flex justify-between text-sm"><span class="text-muted">Event</span><span class="font-bold">' + g.event + '</span></div>' +
-                '<div class="flex justify-between text-sm"><span class="text-muted">Dates</span><span class="font-bold">' + g.dates + '</span></div>' +
-                '<div class="flex justify-between text-sm"><span class="text-muted">Location</span><span class="font-bold">' + g.location + '</span></div>' +
-                '<div class="flex justify-between text-sm"><span class="text-muted">Status</span><span class="font-bold tag tag-' + statusColor + '" style="font-size:inherit;">' + g.status + '</span></div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="card mb-lg">' +
-              '<h3 class="font-bold mb-md">Quick Actions</h3>' +
-              '<div class="flex flex-col gap-2">' +
-                '<button class="btn btn-primary btn-lg">Log Hours</button>' +
-                '<button class="btn btn-secondary btn-lg">Contact Employer</button>' +
-                '<button class="btn btn-secondary btn-lg">View Schedule</button>' +
-                '<button class="btn btn-secondary btn-lg">Expenses</button>' +
+              '<div class="card-header"><span class="card-title">Certifications</span></div>' +
+              '<div class="divide-y">' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">verified</span><span class="text-sm flex-1">Certification FIA Mécanicien</span><span class="text-xs text-muted">Exp. 2027</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">verified</span><span class="text-sm flex-1">HSE Safety Training</span><span class="text-xs text-muted">Exp. 2026</span></div>' +
               '</div>' +
             '</div>' +
             '<div class="card">' +
-              '<h3 class="font-bold mb-md">Upcoming Milestones</h3>' +
+              '<div class="card-header"><span class="card-title">Assurances</span></div>' +
               '<div class="divide-y">' +
-                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Contract signed</span></div>' +
-                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-success text-sm">check_circle</span><span class="text-sm">Travel booked</span></div>' +
-                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-warning text-sm">hourglass_empty</span><span class="text-sm">On-site check-in</span></div>' +
-                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Job completed</span></div>' +
-                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span><span class="text-sm text-muted">Payment received</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-warning">verified_user</span><span class="text-sm flex-1">Assurance accident travail</span><span class="material-symbols-outlined text-sm text-muted">visibility</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-warning">verified_user</span><span class="text-sm flex-1">Responsabilité civile</span><span class="material-symbols-outlined text-sm text-muted">visibility</span></div>' +
               '</div>' +
             '</div>' +
           '</div>' +
         '</div>' +
+      '</div>';
+
+      var tabContents = { 'overview': overviewTab, 'programme': programmeTab, 'travel': travelTab, 'team': teamTab, 'documents': docsTab };
+      var content = tabContents[tab] || overviewTab;
+
+      return '<section class="page-section">' +
+        '<div class="flex items-center gap-2 mb-4">' +
+          '<button class="icon-btn" onclick="router.navigate(\'/my-jobs\',true)"><span class="material-symbols-outlined">arrow_back</span></button>' +
+          '<div><h1 class="section-title">' + g.title + '</h1><p class="text-sm text-muted">' + g.event + ' • ' + g.employer + '</p></div>' +
+        '</div>' +
+        '<div class="flex gap-sm mb-lg" style="overflow-x:auto;">' +
+          tabs.map(tabBtn).join('') +
+        '</div>' +
+        content +
       '</section>';
     }
   },
@@ -1008,65 +915,47 @@ const pages = {
 
   expenses: {
     title: 'Expenses',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Expenses</h1>
-          <button class="btn btn-primary btn-sm">+ New Expense</button>
-        </div>
-        <div class="stats-row mb-lg">
-          <div class="stat-card"><span class="stat-value">€1,240</span><span class="stat-label">This Month</span></div>
-          <div class="stat-card"><span class="stat-value">€320</span><span class="stat-label">Pending</span></div>
-          <div class="stat-card"><span class="stat-value">€920</span><span class="stat-label">Reimbursed</span></div>
-          <div class="stat-card"><span class="stat-value">3</span><span class="stat-label">Open Reports</span></div>
-        </div>
-        <div class="card mb-lg">
-          <div class="card-header"><span class="card-title">Active Expense Reports</span></div>
-          <div class="divide-y">
-            <div class="flex items-center gap-3 py-3">
-              <div class="flex-1">
-                <p class="font-bold text-sm">Spa 24H - Travel</p>
-                <p class="text-xs text-muted">Flight + Hotel • €680 • Submitted Jun 22</p>
-              </div>
-              <span class="tag tag-warning">Pending</span>
-              <button class="btn btn-ghost btn-sm"><span class="material-symbols-outlined">visibility</span></button>
-            </div>
-            <div class="flex items-center gap-3 py-3">
-              <div class="flex-1">
-                <p class="font-bold text-sm">Spa 24H - Tools & Parts</p>
-                <p class="text-xs text-muted">Specialized tools • €240 • Submitted Jun 20</p>
-              </div>
-              <span class="tag tag-success">Approved</span>
-              <button class="btn btn-ghost btn-sm"><span class="material-symbols-outlined">visibility</span></button>
-            </div>
-            <div class="flex items-center gap-3 py-3">
-              <div class="flex-1">
-                <p class="font-bold text-sm">Monaco GP - Travel Advance</p>
-                <p class="text-xs text-muted">Train + Accommodation • €320 • Draft</p>
-              </div>
-              <span class="tag">Draft</span>
-              <button class="btn btn-ghost btn-sm"><span class="material-symbols-outlined">edit</span></button>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">Quick Submit Receipt</span></div>
-          <div class="flex flex-col items-center gap-3 p-6" style="border: 2px dashed var(--outline-light); border-radius: 12px;">
-            <span class="material-symbols-outlined" style="font-size: 2.5rem; color: var(--primary);">upload_file</span>
-            <p class="text-sm font-bold">Upload Receipt</p>
-            <p class="text-xs text-muted">Drag & drop or click to browse</p>
-            <button class="btn btn-primary btn-sm">Select File</button>
-          </div>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <div class="flex items-center gap-2 p-2 rounded-lg" style="background: var(--surface-dim);">
-              <span class="material-symbols-outlined text-sm text-success">description</span>
-              <span class="text-xs">receipt_2206.pdf</span>
-              <span class="material-symbols-outlined text-xs text-muted" style="cursor:pointer;">close</span>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var exp = Store.get('expenses') || { reports: [], totals: { month: 0, pending: 0, reimbursed: 0, openReports: 0 } };
+      var t = exp.totals;
+      var statusMap = { 'Pending': 'tag-warning', 'Approved': 'tag-success', 'Draft': 'tag' };
+      var iconMap = { 'Pending': 'visibility', 'Approved': 'visibility', 'Draft': 'edit' };
+
+      var reportsHtml = exp.reports.map(function(r) {
+        var items = r.items ? r.items.join(' + ') : '';
+        return '<div class="flex items-center gap-3 py-3"><div class="flex-1"><p class="font-bold text-sm">' + r.title + '</p><p class="text-xs text-muted">' + items + ' • €' + r.amount + ' • Submitted ' + r.date + '</p></div><span class="tag ' + (statusMap[r.status] || 'tag') + '">' + r.status + '</span><button class="btn btn-ghost btn-sm"><span class="material-symbols-outlined">' + (iconMap[r.status] || 'visibility') + '</span></button></div>';
+      }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header"><h1 class="section-title">Expenses</h1><button class="btn btn-primary btn-sm">+ New Expense</button></div>' +
+        '<div class="stats-row mb-lg">' +
+          '<div class="stat-card"><span class="stat-value">€' + t.month + '</span><span class="stat-label">This Month</span></div>' +
+          '<div class="stat-card"><span class="stat-value">€' + t.pending + '</span><span class="stat-label">Pending</span></div>' +
+          '<div class="stat-card"><span class="stat-value">€' + t.reimbursed + '</span><span class="stat-label">Reimbursed</span></div>' +
+          '<div class="stat-card"><span class="stat-value">' + t.openReports + '</span><span class="stat-label">Open Reports</span></div>' +
+        '</div>' +
+        '<div class="card mb-lg">' +
+          '<div class="card-header"><span class="card-title">Active Expense Reports</span></div>' +
+          '<div class="divide-y">' + (reportsHtml || '<p class="text-sm text-muted p-4">No expense reports yet.</p>') + '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-header"><span class="card-title">Quick Submit Receipt</span></div>' +
+          '<div class="flex flex-col items-center gap-3 p-6" style="border:2px dashed var(--outline-light);border-radius:12px;">' +
+            '<span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--primary);">upload_file</span>' +
+            '<p class="text-sm font-bold">Upload Receipt</p>' +
+            '<p class="text-xs text-muted">Drag & drop or click to browse</p>' +
+            '<button class="btn btn-primary btn-sm">Select File</button>' +
+          '</div>' +
+          '<div class="mt-3 flex flex-wrap gap-2">' +
+            '<div class="flex items-center gap-2 p-2 rounded-lg" style="background:var(--surface-dim);">' +
+              '<span class="material-symbols-outlined text-sm text-success">description</span>' +
+              '<span class="text-xs">receipt_2206.pdf</span>' +
+              '<span class="material-symbols-outlined text-xs text-muted" style="cursor:pointer;">close</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</section>';
+    }
   },
 
   help: {
@@ -1161,77 +1050,40 @@ const pages = {
 
   'e-events': {
     title: 'Mes événements',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Mes événements</h1>
-          <button class="btn btn-primary btn-sm" onclick="router.navigate('/e-event-create')">+ Nouvel événement</button>
-        </div>
-        <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">Tous</button>
-          <button class="btn btn-secondary btn-sm">Actifs</button>
-          <button class="btn btn-secondary btn-sm">Planification</button>
-          <button class="btn btn-secondary btn-sm">Terminés</button>
-          <button class="btn btn-secondary btn-sm">Brouillons</button>
-        </div>
-        <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
-          <div class="event-card">
-            <div class="event-card-header">
-              <div>
-                <h3 class="event-card-title">Spa 24 Hours</h3>
-                <p class="text-sm text-muted">Circuit de Spa-Francorchamps</p>
-              </div>
-              <span class="tag tag-success">Actif</span>
-            </div>
-            <div class="event-card-meta">
-              <span>📅 26-29 Juin 2026</span>
-              <span>👥 12/15 recrutés</span>
-              <span>💰 €45k</span>
-            </div>
-            <div class="event-card-footer">
-              <button class="btn btn-primary btn-sm" onclick="router.navigate('/e-event-detail')">Gérer</button>
-              <button class="btn btn-ghost btn-sm">Dupliquer</button>
-            </div>
-          </div>
-          <div class="event-card">
-            <div class="event-card-header">
-              <div>
-                <h3 class="event-card-title">Monaco Grand Prix</h3>
-                <p class="text-sm text-muted">Circuit de Monaco</p>
-              </div>
-              <span class="tag tag-warning">Planification</span>
-            </div>
-            <div class="event-card-meta">
-              <span>📅 3-7 Juillet 2026</span>
-              <span>👥 5/8 recrutés</span>
-              <span>💰 €32k</span>
-            </div>
-            <div class="event-card-footer">
-              <button class="btn btn-primary btn-sm" onclick="router.navigate('/e-event-detail')">Gérer</button>
-              <button class="btn btn-ghost btn-sm">Dupliquer</button>
-            </div>
-          </div>
-          <div class="event-card">
-            <div class="event-card-header">
-              <div>
-                <h3 class="event-card-title">Nürburgring 24H</h3>
-                <p class="text-sm text-muted">Nürburgring</p>
-              </div>
-              <span class="tag">Brouillon</span>
-            </div>
-            <div class="event-card-meta">
-              <span>📅 15-18 Juillet 2026</span>
-              <span>👥 0/10 recrutés</span>
-              <span>💰 €28k</span>
-            </div>
-            <div class="event-card-footer">
-              <button class="btn btn-primary btn-sm">Continuer</button>
-              <button class="btn btn-ghost btn-sm">Supprimer</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var events = Store.get('events') || [];
+      var statusMap = { 'Actif': 'tag-success', 'Planification': 'tag-warning', 'Brouillon': 'tag' };
+      var colorMap = { 'Actif': 'success', 'Planification': 'warning', 'Brouillon': 'muted' };
+
+      var cardsHtml = events.map(function(e) {
+        var recruited = e.recruited || 0;
+        var needed = e.totalNeeded || 0;
+        return '<div class="event-card">' +
+          '<div class="event-card-header"><div><h3 class="event-card-title">' + e.title + '</h3><p class="text-sm text-muted">' + e.circuit + '</p></div><span class="tag ' + (statusMap[e.status] || 'tag') + '">' + e.status + '</span></div>' +
+          '<div class="event-card-meta">' +
+            '<span>📅 ' + e.startDate + (e.endDate ? ' → ' + e.endDate : '') + '</span>' +
+            '<span>👥 ' + recruited + '/' + needed + ' recrutés</span>' +
+            '<span>💰 €' + (e.budget / 1000) + 'k</span>' +
+          '</div>' +
+          '<div class="event-card-footer">' +
+            '<button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-event-detail\')">Gérer</button>' +
+            '<button class="btn btn-ghost btn-sm">Dupliquer</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      return '<section class="page-section">' +
+        '<div class="section-header"><h1 class="section-title">Mes événements</h1><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-event-create\')">+ Nouvel événement</button></div>' +
+        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
+          '<button class="btn btn-primary btn-sm">Tous</button>' +
+          '<button class="btn btn-secondary btn-sm">Actifs</button>' +
+          '<button class="btn btn-secondary btn-sm">Planification</button>' +
+          '<button class="btn btn-secondary btn-sm">Terminés</button>' +
+          '<button class="btn btn-secondary btn-sm">Brouillons</button>' +
+        '</div>' +
+        '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">' + cardsHtml + '</div>' +
+      '</section>';
+    }
   },
 
   'e-event-create': {
