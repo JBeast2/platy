@@ -69,10 +69,10 @@ const pages = {
       }
 
       function eventCard(e) {
-        return '<div class="event-card"><div class="event-card-header"><h3 class="event-card-title">' + e.title + '</h3><span class="text-sm text-muted">' + e.startDate + '</span></div><p class="text-sm text-muted">' + e.circuit + ', ' + e.location + '</p><div class="event-card-footer"><span class="tag">' + e.series + '</span><button class="btn btn-primary btn-sm">View Details</button></div></div>';
+        return '<div class="event-card"><div class="event-card-header"><h3 class="event-card-title">' + e.title + '</h3><span class="text-sm text-muted">' + e.startDate + '</span></div><p class="text-sm text-muted">' + e.circuit + ', ' + e.location + '</p><div class="event-card-footer"><span class="tag">' + e.series + '</span><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-event-detail\',true)">View Details</button></div></div>';
       }
 
-      return '<section class="page-section"><div class="section-header"><h1 class="section-title">Dashboard</h1><div class="flex gap-sm"><button class="btn btn-secondary btn-sm">This Week</button><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/jobs\')">Find Work</button></div></div><div class="stats-row"><div class="stat-card"><div class="stat-icon" style="background:rgba(36,162,167,0.1);color:var(--primary);"><span class="material-symbols-outlined">work</span></div><span class="stat-value">' + activeCount + '</span><span class="stat-label">Active Jobs</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,0.1);color:var(--success);"><span class="material-symbols-outlined">payments</span></div><span class="stat-value">€' + finances.earnings.toLocaleString() + '</span><span class="stat-label">This Month</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.1);color:var(--warning);"><span class="material-symbols-outlined">event</span></div><span class="stat-value">' + upcomingCount + '</span><span class="stat-label">Upcoming Events</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(99,102,241,0.1);color:#6366f1;"><span class="material-symbols-outlined">reviews</span></div><span class="stat-value">' + user.rating + '</span><span class="stat-label">Rating</span></div></div></section><section class="page-section"><div class="section-header"><h2 class="section-title">My Calendar</h2></div><div id="dashboard-calendar"></div></section><section class="page-section"><div class="section-header"><h2 class="section-title">Active Jobs</h2><a href="#/jobs" class="text-sm text-primary" data-nav>View all</a></div><div class="grid gap-md" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr));">' + gigs.filter(function(g) { return g.status === 'Active' || g.status === 'Upcoming'; }).slice(0, 3).map(jobCard).join('') + '</div></section><section class="page-section"><div class="section-header"><h2 class="section-title">Upcoming Events</h2><a href="#/events" class="text-sm text-primary" data-nav>View all</a></div><div class="grid gap-md" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr));">' + events.slice(0, 2).map(eventCard).join('') + '</div></section>';
+      return '<section class="page-section"><div class="section-header"><h1 class="section-title">Dashboard</h1><div class="flex gap-sm"><button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">This Week</button><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/jobs\')">Find Work</button></div></div><div class="stats-row"><div class="stat-card"><div class="stat-icon" style="background:rgba(36,162,167,0.1);color:var(--primary);"><span class="material-symbols-outlined">work</span></div><span class="stat-value">' + activeCount + '</span><span class="stat-label">Active Jobs</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(22,163,74,0.1);color:var(--success);"><span class="material-symbols-outlined">payments</span></div><span class="stat-value">€' + finances.earnings.toLocaleString() + '</span><span class="stat-label">This Month</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,0.1);color:var(--warning);"><span class="material-symbols-outlined">event</span></div><span class="stat-value">' + upcomingCount + '</span><span class="stat-label">Upcoming Events</span></div><div class="stat-card"><div class="stat-icon" style="background:rgba(99,102,241,0.1);color:#6366f1;"><span class="material-symbols-outlined">reviews</span></div><span class="stat-value">' + user.rating + '</span><span class="stat-label">Rating</span></div></div></section><section class="page-section"><div class="section-header"><h2 class="section-title">My Calendar</h2></div><div id="dashboard-calendar"></div></section><section class="page-section"><div class="section-header"><h2 class="section-title">Active Jobs</h2><a href="#/jobs" class="text-sm text-primary" data-nav>View all</a></div><div class="grid gap-md" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr));">' + gigs.filter(function(g) { return g.status === 'Active' || g.status === 'Upcoming'; }).slice(0, 3).map(jobCard).join('') + '</div></section><section class="page-section"><div class="section-header"><h2 class="section-title">Upcoming Events</h2><a href="#/events" class="text-sm text-primary" data-nav>View all</a></div><div class="grid gap-md" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr));">' + events.slice(0, 2).map(eventCard).join('') + '</div></section>';
     }
   },
 
@@ -93,19 +93,19 @@ const pages = {
           '</div>' +
           '<div class="job-card-footer">' +
             '<span class="font-bold text-primary">' + j.rate + '</span>' +
-            '<button class="btn btn-primary btn-sm">Apply</button>' +
+            '<button class="btn btn-primary btn-sm" onclick="alert(\'Application sent!\')">Apply</button>' +
           '</div>' +
         '</div>';
       }).join('');
 
       return '<section class="page-section">' +
-        '<div class="section-header"><h1 class="section-title">Find Work</h1><div class="flex gap-sm"><button class="btn btn-secondary btn-sm">Filters</button><button class="btn btn-primary btn-sm">Post a Job</button></div></div>' +
+        '<div class="section-header"><h1 class="section-title">Find Work</h1><div class="flex gap-sm"><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Filters</button><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-post-job\',true)">Post a Job</button></div></div>' +
         '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
-          '<button class="btn btn-primary btn-sm">All</button>' +
-          '<button class="btn btn-secondary btn-sm">Mechanic</button>' +
-          '<button class="btn btn-secondary btn-sm">Engineer</button>' +
-          '<button class="btn btn-secondary btn-sm">Media</button>' +
-          '<button class="btn btn-secondary btn-sm">Logistics</button>' +
+          '<button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">All</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Mechanic</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Engineer</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Media</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Logistics</button>' +
         '</div>' +
         '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">' +
           cardsHtml +
@@ -124,12 +124,12 @@ const pages = {
           '<div class="event-card-header"><h3 class="event-card-title">' + e.title + '</h3><span class="text-sm text-muted">' + e.startDate + '</span></div>' +
           '<p class="text-sm text-muted">' + e.circuit + ', ' + e.location + '</p>' +
           '<div class="event-card-meta"><span>🏁 ' + e.series + '</span><span>👥 ' + e.totalNeeded + ' staff needed</span></div>' +
-          '<div class="event-card-footer"><span class="tag ' + statusClass + '">' + e.status + '</span><button class="btn btn-primary btn-sm">Manage</button></div>' +
+          '<div class="event-card-footer"><span class="tag ' + statusClass + '">' + e.status + '</span><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-event-detail\',true)">Manage</button></div>' +
         '</div>';
       }).join('');
 
       return '<section class="page-section">' +
-        '<div class="section-header"><h1 class="section-title">Events</h1><button class="btn btn-primary btn-sm">Create Event</button></div>' +
+        '<div class="section-header"><h1 class="section-title">Events</h1><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-event-create\',true)">Create Event</button></div>' +
         '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">' + cardsHtml + '</div>' +
       '</section>';
     }
@@ -137,51 +137,35 @@ const pages = {
 
   messages: {
     title: 'Messages',
-    render: () => `
-      <section class="page-section">
-        <div class="section-header">
-          <h1 class="section-title">Messages</h1>
-        </div>
-        <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">All</button>
-          <button class="btn btn-secondary btn-sm">Unread</button>
-          <button class="btn btn-secondary btn-sm">Jobs</button>
-          <button class="btn btn-secondary btn-sm">Teams</button>
-        </div>
-        <div class="grid gap-sm">
-          <div class="card flex items-center gap-md" style="cursor:pointer; border-left: 3px solid var(--primary);">
-            <div class="avatar">TM</div>
-            <div style="flex:1; min-width:0;">
-              <div class="flex justify-between">
-                <span class="font-bold text-sm">Thomas Müller</span>
-                <span class="text-sm text-muted">2m ago</span>
-              </div>
-              <p class="text-sm text-muted truncate">Perfect, see you at the paddock at 7!</p>
-            </div>
-          </div>
-          <div class="card flex items-center gap-md" style="cursor:pointer;">
-            <div class="avatar" style="background: rgba(147,51,234,0.1); color: #9333ea;">SP</div>
-            <div style="flex:1; min-width:0;">
-              <div class="flex justify-between">
-                <span class="font-bold text-sm">Spa 24H Team Chat</span>
-                <span class="text-sm text-muted">1h ago</span>
-              </div>
-              <p class="text-sm text-muted truncate">Sarah: New tire allocation confirmed</p>
-            </div>
-          </div>
-          <div class="card flex items-center gap-md" style="cursor:pointer;">
-            <div class="avatar" style="background: rgba(234,88,12,0.1); color: #ea580c;">JW</div>
-            <div style="flex:1; min-width:0;">
-              <div class="flex justify-between">
-                <span class="font-bold text-sm">James Wilson</span>
-                <span class="text-sm text-muted">3h ago</span>
-              </div>
-              <p class="text-sm text-muted truncate">Great work today! Let's discuss the next race...</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var msgs = Store.get('messages') || [];
+      var msgsHtml = msgs.map(function(m) {
+        var borderStyle = m.unread ? 'border-left: 3px solid var(--primary);' : '';
+        var bgStyle = m.avatarBg ? 'background:' + m.avatarBg + '; color:' + (m.avatarColor || 'inherit') + ';' : '';
+        return '<div class="card flex items-center gap-md" style="cursor:pointer; ' + borderStyle + '" onclick="alert(\'Opening conversation...\')">' +
+          '<div class="avatar" style="' + bgStyle + '">' + m.initials + '</div>' +
+          '<div style="flex:1; min-width:0;">' +
+            '<div class="flex justify-between">' +
+              '<span class="font-bold text-sm">' + m.name + '</span>' +
+              '<span class="text-sm text-muted">' + m.time + '</span>' +
+            '</div>' +
+            '<p class="text-sm text-muted truncate">' + m.preview + '</p>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      return '<section class="page-section">' +
+        '<div class="section-header">' +
+          '<h1 class="section-title">Messages</h1>' +
+        '</div>' +
+        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
+          '<button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">All</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Unread</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Jobs</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Teams</button>' +
+        '</div>' +
+        '<div class="grid gap-sm">' + msgsHtml + '</div>' +
+      '</section>';
+    }
   },
 
   team: {
@@ -200,7 +184,7 @@ const pages = {
       }).join('');
 
       return '<section class="page-section">' +
-        '<div class="section-header"><h1 class="section-title">Team</h1><button class="btn btn-primary btn-sm">Build Team</button></div>' +
+        '<div class="section-header"><h1 class="section-title">Team</h1><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-team\',true)">Build Team</button></div>' +
         '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));">' + cardsHtml + '</div>' +
       '</section>';
     }
@@ -222,7 +206,7 @@ const pages = {
       }).join('');
 
       return '<section class="page-section">' +
-        '<div class="section-header"><h1 class="section-title">Finance</h1><button class="btn btn-primary btn-sm">New Invoice</button></div>' +
+        '<div class="section-header"><h1 class="section-title">Finance</h1><button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">New Invoice</button></div>' +
         '<div class="stats-row mb-lg">' +
           '<div class="stat-card"><span class="stat-value">€' + totals.earnings.toLocaleString() + '</span><span class="stat-label">Earnings This Month</span></div>' +
           '<div class="stat-card"><span class="stat-value">€' + totals.pending.toLocaleString() + '</span><span class="stat-label">Pending</span></div>' +
@@ -274,12 +258,12 @@ const pages = {
             '<div><label class="text-sm text-muted mb-sm block">Téléphone</label><input class="input-field" value="' + (user.phone || '+32 4 76 12 34 56') + '"></div>' +
             '<div><label class="text-sm text-muted mb-sm block">Localisation</label><input class="input-field" value="' + (user.location || 'Spa, Belgium') + '"></div>' +
           '</div>' +
-          '<div class="flex justify-end gap-sm mt-lg"><button class="btn btn-secondary">Annuler</button><button class="btn btn-primary">Enregistrer</button></div>' +
+          '<div class="flex justify-end gap-sm mt-lg"><button class="btn btn-secondary" onclick="alert(\'Coming soon\')">Annuler</button><button class="btn btn-primary" onclick="alert(\'Coming soon\')">Enregistrer</button></div>' +
         '</div>' +
         '<div id="settings-account" class="settings-tab card mb-lg" style="display:none;">' +
           '<h3 class="font-bold mb-md">Paramètres du compte</h3>' +
           '<div class="flex flex-col gap-md">' +
-            '<div class="flex items-center justify-between"><span class="text-sm">Mot de passe</span><button class="btn btn-secondary btn-sm">Changer</button></div>' +
+            '<div class="flex items-center justify-between"><span class="text-sm">Mot de passe</span><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Changer</button></div>' +
             '<div class="flex items-center justify-between"><span class="text-sm">Langue</span><select class="input-field" style="width:auto;"><option>Français</option><option>English</option></select></div>' +
             '<div class="flex items-center justify-between"><span class="text-sm">Fuseau horaire</span><span class="text-sm text-muted">Europe/Paris (CEST)</span></div>' +
           '</div>' +
@@ -296,7 +280,7 @@ const pages = {
         '<div id="settings-billing" class="settings-tab card mb-lg" style="display:none;">' +
           '<h3 class="font-bold mb-md">Facturation</h3>' +
           '<div class="flex flex-col gap-md">' +
-            '<div class="flex items-center justify-between"><span class="text-sm">Mode de paiement</span><span class="text-sm text-muted">Visa se terminant par 4242</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="flex items-center justify-between"><span class="text-sm">Mode de paiement</span><span class="text-sm text-muted">Visa se terminant par 4242</span><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Modifier</button></div>' +
             '<div class="flex items-center justify-between"><span class="text-sm">Devise</span><span class="text-sm font-bold">EUR (€)</span></div>' +
             '<div class="flex items-center justify-between"><span class="text-sm">Taux TVA</span><span class="text-sm">TVA intracommunautaire</span></div>' +
           '</div>' +
@@ -330,7 +314,7 @@ const pages = {
           '</div>' +
           '<div class="job-card-footer">' +
             '<div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style="background:var(--' + (initialsColor === 'primary' ? 'primary' : initialsColor) + ');">' + j.employerInitials + '</div><span class="text-xs text-muted">' + j.employer + '</span></div>' +
-            '<button class="btn btn-primary btn-sm">Apply</button>' +
+            '<button class="btn btn-primary btn-sm" onclick="alert(\'Application sent!\')">Apply</button>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -338,7 +322,7 @@ const pages = {
       return '<section class="page-section">' +
         '<div class="section-header">' +
           '<h1 class="section-title">Job Marketplace</h1>' +
-          '<div class="flex gap-sm"><button class="btn btn-secondary btn-sm" onclick="toggleFilters()">Filters</button><button class="btn btn-primary btn-sm">Post a Job</button></div>' +
+          '<div class="flex gap-sm"><button class="btn btn-secondary btn-sm" onclick="toggleFilters()">Filters</button><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-post-job\',true)">Post a Job</button></div>' +
         '</div>' +
         '<div class="card mb-lg p-md" id="marketplace-filters" style="display:none;">' +
           '<div class="grid grid-2 gap-md mb-md">' +
@@ -347,9 +331,9 @@ const pages = {
             '<div><label class="text-sm text-muted mb-sm block">Rate (€/day)</label><div class="flex gap-sm"><input class="input-field" placeholder="Min" style="width:50%;"><input class="input-field" placeholder="Max" style="width:50%;"></div></div>' +
             '<div><label class="text-sm text-muted mb-sm block">Availability</label><select class="input-field"><option>Any time</option><option>Immediate</option><option>Next week</option><option>Next month</option></select></div>' +
           '</div>' +
-          '<div class="flex gap-sm justify-end"><button class="btn btn-secondary btn-sm" onclick="toggleFilters()">Cancel</button><button class="btn btn-primary btn-sm">Apply Filters</button></div>' +
+          '<div class="flex gap-sm justify-end"><button class="btn btn-secondary btn-sm" onclick="toggleFilters()">Cancel</button><button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">Apply Filters</button></div>' +
         '</div>' +
-        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;"><button class="btn btn-primary btn-sm">All</button><button class="btn btn-secondary btn-sm">Mechanic</button><button class="btn btn-secondary btn-sm">Engineer</button><button class="btn btn-secondary btn-sm">Media</button><button class="btn btn-secondary btn-sm">Logistics</button><button class="btn btn-secondary btn-sm">Management</button></div>' +
+        '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;"><button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">All</button><button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Mechanic</button><button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Engineer</button><button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Media</button><button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Logistics</button><button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Management</button></div>' +
         '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">' +
           jobCardsHtml +
         '</div>' +
@@ -412,7 +396,7 @@ const pages = {
                 '<div><label class="text-sm text-muted mb-sm block">Your rate (€/day)</label><input class="input-field" placeholder="350"></div>' +
                 '<div><label class="text-sm text-muted mb-sm block">Cover message</label><textarea class="input-field" style="height:100px; padding:12px 16px; resize:none;" placeholder="Tell the employer why you\'re a great fit..."></textarea></div>' +
                 '<div><label class="text-sm text-muted mb-sm block">Availability</label><div class="flex gap-sm"><label class="flex items-center gap-2"><input type="radio" name="availability" checked> <span class="text-sm">Full event</span></label><label class="flex items-center gap-2"><input type="radio" name="availability"> <span class="text-sm">Partial</span></label></div></div>' +
-                '<button class="btn btn-primary btn-lg">Submit Application</button>' +
+                '<button class="btn btn-primary btn-lg" onclick="alert(\'Application sent!\')">Submit Application</button>' +
               '</div>' +
             '</div>' +
             '<div class="card">' +
@@ -456,9 +440,9 @@ const pages = {
           '</div>' +
           progressHtml +
           '<div class="flex gap-sm justify-end">' +
-            (g.status === 'Active' ? '<button class="btn btn-secondary btn-sm">Time Log</button>' : '') +
-            (g.status === 'Upcoming' ? '<button class="btn btn-secondary btn-sm">Travel Info</button>' : '') +
-            (g.status === 'Completed' ? '<button class="btn btn-secondary btn-sm">Submit Invoice</button>' : '') +
+            (g.status === 'Active' ? '<button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Time Log</button>' : '') +
+            (g.status === 'Upcoming' ? '<button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Travel Info</button>' : '') +
+            (g.status === 'Completed' ? '<button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Submit Invoice</button>' : '') +
             '<button class="btn btn-primary btn-sm" onclick="router.navigate(\'/gig-detail?id=' + g.id + '\',true)">View Details</button>' +
           '</div>' +
         '</div>';
@@ -467,10 +451,10 @@ const pages = {
       return '<section class="page-section">' +
         '<div class="section-header"><h1 class="section-title">My Jobs</h1><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/marketplace\')">Find Work</button></div>' +
         '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
-          '<button class="btn btn-primary btn-sm">Active</button>' +
-          '<button class="btn btn-secondary btn-sm">Upcoming</button>' +
-          '<button class="btn btn-secondary btn-sm">Completed</button>' +
-          '<button class="btn btn-secondary btn-sm">All</button>' +
+          '<button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Active</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Upcoming</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Completed</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">All</button>' +
         '</div>' +
         '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">' +
           cardsHtml +
@@ -560,11 +544,11 @@ const pages = {
           '<div class="card mb-lg">' +
             '<h3 class="font-bold mb-md">Actions rapides</h3>' +
             '<div class="flex flex-col gap-2">' +
-              '<button class="btn btn-primary btn-lg">Déclarer heures</button>' +
-              '<button class="btn btn-secondary btn-lg">Contacter employeur</button>' +
+              '<button class="btn btn-primary btn-lg" onclick="alert(\'Coming soon\')">Déclarer heures</button>' +
+              '<button class="btn btn-secondary btn-lg" onclick="alert(\'Coming soon\')">Contacter employeur</button>' +
               '<button class="btn btn-secondary btn-lg" onclick="router.navigate(\'/gig-detail?id=' + g.id + '&tab=programme\',true)">Voir programme</button>' +
               '<button class="btn btn-secondary btn-lg" onclick="router.navigate(\'/gig-detail?id=' + g.id + '&tab=travel\',true)">Voir voyage</button>' +
-              '<button class="btn btn-secondary btn-lg">Dépenses</button>' +
+              '<button class="btn btn-secondary btn-lg" onclick="alert(\'Coming soon\')">Dépenses</button>' +
             '</div>' +
           '</div>' +
           '<div class="card">' +
@@ -638,9 +622,9 @@ const pages = {
           '<div class="card mb-lg">' +
             '<div class="card-header"><span class="card-title">Documents de voyage</span></div>' +
             '<div class="divide-y">' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Itinéraire complet.pdf</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Billet avion</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Confirmation hôtel</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Itinéraire complet.pdf</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Billet avion</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Confirmation hôtel</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
             '</div>' +
           '</div>' +
           '<div class="card">' +
@@ -683,19 +667,19 @@ const pages = {
 
       var docsTab = '<div>' +
         '<div class="mb-lg flex gap-sm" style="flex-wrap:wrap;">' +
-          '<button class="btn btn-primary btn-sm">Tous</button>' +
-          '<button class="btn btn-secondary btn-sm">Contrats</button>' +
-          '<button class="btn btn-secondary btn-sm">Certifications</button>' +
-          '<button class="btn btn-secondary btn-sm">Assurances</button>' +
-          '<button class="btn btn-secondary btn-sm">Rapports</button>' +
+          '<button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Tous</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Contrats</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Certifications</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Assurances</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Rapports</button>' +
         '</div>' +
         '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
           '<div class="card">' +
             '<div class="card-header"><span class="card-title">Contrats &amp; Accords</span></div>' +
             '<div class="divide-y">' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Contrat de travail - GT3 Lead Mechanic</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Accord de confidentialité (NDA)</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Règlement intérieur paddock</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Contrat de travail - GT3 Lead Mechanic</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Accord de confidentialité (NDA)</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-success">description</span><span class="text-sm flex-1">Règlement intérieur paddock</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
             '</div>' +
           '</div>' +
           '<div>' +
@@ -709,8 +693,8 @@ const pages = {
             '<div class="card">' +
               '<div class="card-header"><span class="card-title">Assurances</span></div>' +
               '<div class="divide-y">' +
-                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-warning">verified_user</span><span class="text-sm flex-1">Assurance accident travail</span><span class="material-symbols-outlined text-sm text-muted">visibility</span></div>' +
-                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-warning">verified_user</span><span class="text-sm flex-1">Responsabilité civile</span><span class="material-symbols-outlined text-sm text-muted">visibility</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-warning">verified_user</span><span class="text-sm flex-1">Assurance accident travail</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">visibility</span></div>' +
+                '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-warning">verified_user</span><span class="text-sm flex-1">Responsabilité civile</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">visibility</span></div>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -788,7 +772,7 @@ const pages = {
         <div class="card mb-lg">
           <div class="card-header">
             <span class="card-title">Skills & Certifications</span>
-            <button class="btn btn-primary btn-sm">+ Add</button>
+            <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">+ Add</button>
           </div>
           <div class="flex flex-wrap gap-sm">
             <div class="flex items-center gap-1 tag tag-primary">GT3 Mechanic <span class="material-symbols-outlined" style="font-size:14px; cursor:pointer;">close</span></div>
@@ -802,7 +786,7 @@ const pages = {
         <div class="card mb-lg">
           <div class="card-header">
             <span class="card-title">Work Experience</span>
-            <button class="btn btn-primary btn-sm">+ Add</button>
+            <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">+ Add</button>
           </div>
           <div class="divide-y">
             <div class="py-3 flex items-start justify-between">
@@ -824,8 +808,8 @@ const pages = {
           </div>
         </div>
         <div class="flex justify-end gap-sm">
-          <button class="btn btn-secondary">Cancel</button>
-          <button class="btn btn-primary">Save Profile</button>
+          <button class="btn btn-secondary" onclick="router.navigate('/profile',true)">Cancel</button>
+          <button class="btn btn-primary" onclick="alert('Profile saved!')">Save Profile</button>
         </div>
       </section>
     `
@@ -845,7 +829,7 @@ const pages = {
       }).join('');
 
       return '<section class="page-section">' +
-        '<div class="section-header"><h1 class="section-title">Expenses</h1><button class="btn btn-primary btn-sm">+ New Expense</button></div>' +
+        '<div class="section-header"><h1 class="section-title">Expenses</h1><button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">+ New Expense</button></div>' +
         '<div class="stats-row mb-lg">' +
           '<div class="stat-card"><span class="stat-value">€' + t.month + '</span><span class="stat-label">This Month</span></div>' +
           '<div class="stat-card"><span class="stat-value">€' + t.pending + '</span><span class="stat-label">Pending</span></div>' +
@@ -862,7 +846,7 @@ const pages = {
             '<span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--primary);">upload_file</span>' +
             '<p class="text-sm font-bold">Upload Receipt</p>' +
             '<p class="text-xs text-muted">Drag & drop or click to browse</p>' +
-            '<button class="btn btn-primary btn-sm">Select File</button>' +
+            '<button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">Select File</button>' +
           '</div>' +
           '<div class="mt-3 flex flex-wrap gap-2">' +
             '<div class="flex items-center gap-2 p-2 rounded-lg" style="background:var(--surface-dim);">' +
@@ -884,17 +868,17 @@ const pages = {
           <h1 class="section-title">Help & Support</h1>
         </div>
         <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
-          <div class="card text-center">
+          <div class="card text-center" onclick="alert(&#39;Coming soon&#39;)" style="cursor:pointer;">
             <span class="material-symbols-outlined text-primary" style="font-size:2.5rem; margin-bottom:12px;">help</span>
             <h3 class="font-bold">FAQ</h3>
             <p class="text-sm text-muted">Find answers to common questions</p>
           </div>
-          <div class="card text-center">
+          <div class="card text-center" onclick="alert(&#39;Coming soon&#39;)" style="cursor:pointer;">
             <span class="material-symbols-outlined text-primary" style="font-size:2.5rem; margin-bottom:12px;">support_agent</span>
             <h3 class="font-bold">Contact Support</h3>
             <p class="text-sm text-muted">Reach out to our team 24/7</p>
           </div>
-          <div class="card text-center">
+          <div class="card text-center" onclick="alert(&#39;Coming soon&#39;)" style="cursor:pointer;">
             <span class="material-symbols-outlined text-primary" style="font-size:2.5rem; margin-bottom:12px;">description</span>
             <h3 class="font-bold">Documentation</h3>
             <p class="text-sm text-muted">Guides and platform docs</p>
@@ -906,39 +890,40 @@ const pages = {
 
   profile: {
     title: 'Profile',
-    render: () => `
-      <section class="page-section">
-        <div class="card text-center mb-lg">
-          <div class="avatar avatar-lg" style="margin: 0 auto 16px; width: 72px; height: 72px; font-size:1.5rem;">JD</div>
-          <h2 class="font-bold text-lg">John Doe</h2>
-          <p class="text-sm text-muted">GT3 Lead Mechanic • Spa, Belgium</p>
-          <div class="flex justify-center gap-md mt-md">
-            <div class="stat text-center">
-              <span class="stat-value">4.8</span>
-              <span class="stat-label">Rating</span>
-            </div>
-            <div class="stat text-center">
-              <span class="stat-value">12</span>
-              <span class="stat-label">Jobs Done</span>
-            </div>
-            <div class="stat text-center">
-              <span class="stat-value">3</span>
-              <span class="stat-label">Active</span>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <h3 class="font-bold mb-md">Skills & Certifications</h3>
-          <div class="flex gap-sm flex-wrap">
-            <span class="tag">GT3 Mechanic</span>
-            <span class="tag">FIA License</span>
-            <span class="tag">Engine Rebuild</span>
-            <span class="tag">Data Analysis</span>
-            <span class="tag">Team Leadership</span>
-          </div>
-        </div>
-      </section>
-    `
+    render: () => {
+      var u = Store.get('user') || {};
+      var skills = u.skills || ['GT3 Mechanic', 'FIA License', 'Engine Rebuild', 'Data Analysis', 'Team Leadership'];
+      var skillsHtml = skills.map(function(s) { return '<span class="tag">' + s + '</span>'; }).join('');
+      return '<section class="page-section">' +
+        '<div class="flex items-center gap-2 mb-4">' +
+          '<h1 class="section-title">Profile</h1>' +
+          '<button class="btn btn-secondary btn-sm ml-auto" onclick="router.navigate(\'/profile-edit\',true)">Edit Profile</button>' +
+        '</div>' +
+        '<div class="card text-center mb-lg">' +
+          '<div class="avatar avatar-lg" style="margin: 0 auto 16px; width: 72px; height: 72px; font-size:1.5rem;">' + (u.initials || 'JD') + '</div>' +
+          '<h2 class="font-bold text-lg">' + (u.name || 'John Doe') + '</h2>' +
+          '<p class="text-sm text-muted">' + (u.title || 'GT3 Lead Mechanic') + ' • ' + (u.location || 'Spa, Belgium') + '</p>' +
+          '<div class="flex justify-center gap-md mt-md">' +
+            '<div class="stat text-center">' +
+              '<span class="stat-value">' + (u.rating || '4.8') + '</span>' +
+              '<span class="stat-label">Rating</span>' +
+            '</div>' +
+            '<div class="stat text-center">' +
+              '<span class="stat-value">' + (u.jobsDone || '12') + '</span>' +
+              '<span class="stat-label">Jobs Done</span>' +
+            '</div>' +
+            '<div class="stat text-center">' +
+              '<span class="stat-value">' + (u.activeJobs || '3') + '</span>' +
+              '<span class="stat-label">Active</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<h3 class="font-bold mb-md">Skills & Certifications</h3>' +
+          '<div class="flex gap-sm flex-wrap">' + skillsHtml + '</div>' +
+        '</div>' +
+      '</section>';
+    }
   },
 
   'e-dashboard': {
@@ -985,7 +970,7 @@ const pages = {
           '</div>' +
           '<div class="event-card-footer">' +
             '<button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-event-detail\')">Gérer</button>' +
-            '<button class="btn btn-ghost btn-sm">Dupliquer</button>' +
+            '<button class="btn btn-ghost btn-sm" onclick="alert(\'Coming soon\')">Dupliquer</button>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -993,11 +978,11 @@ const pages = {
       return '<section class="page-section">' +
         '<div class="section-header"><h1 class="section-title">Mes événements</h1><button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-event-create\')">+ Nouvel événement</button></div>' +
         '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
-          '<button class="btn btn-primary btn-sm">Tous</button>' +
-          '<button class="btn btn-secondary btn-sm">Actifs</button>' +
-          '<button class="btn btn-secondary btn-sm">Planification</button>' +
-          '<button class="btn btn-secondary btn-sm">Terminés</button>' +
-          '<button class="btn btn-secondary btn-sm">Brouillons</button>' +
+          '<button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Tous</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Actifs</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Planification</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Terminés</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Brouillons</button>' +
         '</div>' +
         '<div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">' + cardsHtml + '</div>' +
       '</section>';
@@ -1141,9 +1126,9 @@ const pages = {
           '<div class="card mb-lg">' +
             '<div class="card-header"><span class="card-title">Candidats récents</span><a href="#/e-applicants" class="text-sm text-primary" data-nav>Voir tout</a></div>' +
             '<div class="divide-y">' +
-              '<div class="flex items-center gap-3 py-3"><div class="avatar">AK</div><div class="flex-1"><p class="font-bold text-sm">Alex Krause</p><p class="text-xs text-muted">GT3 Lead Mechanic &bull; 2j</p></div><button class="btn btn-primary btn-sm">OK</button></div>' +
-              '<div class="flex items-center gap-3 py-3"><div class="avatar" style="background:rgba(147,51,234,0.1);color:#9333ea;">SM</div><div class="flex-1"><p class="font-bold text-sm">Sarah Mitchell</p><p class="text-xs text-muted">Data Engineer &bull; 3j</p></div><button class="btn btn-secondary btn-sm">Voir</button></div>' +
-              '<div class="flex items-center gap-3 py-3"><div class="avatar" style="background:rgba(245,158,11,0.1);color:#f59e0b;">RJ</div><div class="flex-1"><p class="font-bold text-sm">Romain Jacquard</p><p class="text-xs text-muted">Tire Technician &bull; 5j</p></div><button class="btn btn-secondary btn-sm">Voir</button></div>' +
+              '<div class="flex items-center gap-3 py-3"><div class="avatar">AK</div><div class="flex-1"><p class="font-bold text-sm">Alex Krause</p><p class="text-xs text-muted">GT3 Lead Mechanic &bull; 2j</p></div><button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">OK</button></div>' +
+              '<div class="flex items-center gap-3 py-3"><div class="avatar" style="background:rgba(147,51,234,0.1);color:#9333ea;">SM</div><div class="flex-1"><p class="font-bold text-sm">Sarah Mitchell</p><p class="text-xs text-muted">Data Engineer &bull; 3j</p></div><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Voir</button></div>' +
+              '<div class="flex items-center gap-3 py-3"><div class="avatar" style="background:rgba(245,158,11,0.1);color:#f59e0b;">RJ</div><div class="flex-1"><p class="font-bold text-sm">Romain Jacquard</p><p class="text-xs text-muted">Tire Technician &bull; 5j</p></div><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Voir</button></div>' +
             '</div>' +
           '</div>' +
           '<div class="card">' +
@@ -1158,7 +1143,7 @@ const pages = {
       var scheduleTab = '<div class="grid grid-2 gap-lg">' +
         '<div>' +
           '<div class="card mb-lg">' +
-            '<div class="card-header"><span class="card-title">Programme g&eacute;n&eacute;ral</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="card-header"><span class="card-title">Programme g&eacute;n&eacute;ral</span><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Modifier</button></div>' +
             '<div class="flex flex-col">' +
               '<div class="flex gap-3 py-3" style="border-left:3px solid var(--primary);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-primary">JUN</p><p class="text-lg font-bold text-primary">24</p></div><div class="flex-1"><p class="font-bold text-sm">Arriv&eacute;e &amp; Installation</p><p class="text-xs text-muted">Paddock setup, check-in technique</p><div class="flex items-center gap-2 mt-1">' + tag('08:00 - 18:00') + tag('Paddock') + '</div></div></div>' +
               '<div class="flex gap-3 py-3" style="border-left:3px solid var(--warning);padding-left:12px;"><div class="text-center"><p class="text-xs font-bold text-warning">JUN</p><p class="text-lg font-bold text-warning">25</p></div><div class="flex-1"><p class="font-bold text-sm">Essais libres &amp; Qualifs</p><p class="text-xs text-muted">Free Practice 1-3, Pre-Qualifying</p><div class="flex items-center gap-2 mt-1">' + tag('09:00 - 17:30') + tag('Circuit') + '</div></div></div>' +
@@ -1195,7 +1180,7 @@ const pages = {
 
       var teamTab = '<div>' +
         '<div class="card mb-lg">' +
-          '<div class="card-header"><span class="card-title">Organigramme &eacute;quipe</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="card-header"><span class="card-title">Organigramme &eacute;quipe</span><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Modifier</button></div>' +
           '<div class="grid grid-2 gap-md">' +
             '<div class="p-4 rounded-xl text-center" style="border:2px solid var(--primary);background:var(--primary-bg);"><div class="avatar avatar-lg" style="width:56px;height:56px;margin:0 auto 8px;background:var(--primary);color:white;font-size:1.2rem;">JD</div><p class="font-bold text-sm">James Donovan</p><p class="text-xs text-muted">Team Manager</p>' + tag('Confirm&eacute;','success') + '</div>' +
             '<div class="grid grid-2 gap-md">' +
@@ -1246,7 +1231,7 @@ const pages = {
             '<div class="flex justify-between text-sm mb-1"><span class="text-muted">Budget total</span><span class="font-bold">&euro;45,000</span></div>' +
             '<div class="flex justify-between text-sm mb-1"><span class="text-muted">D&eacute;pens&eacute;</span><span class="font-bold">&euro;32,000</span></div>' +
             '<div class="flex justify-between text-sm"><span class="text-muted">Restant</span><span class="font-bold text-success">&euro;13,000</span></div>' +
-            '<button class="btn btn-primary btn-sm mt-3 w-full">Voir rapport complet</button>' +
+            '<button class="btn btn-primary btn-sm mt-3 w-full" onclick="alert(\'Coming soon\')">Voir rapport complet</button>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -1254,7 +1239,7 @@ const pages = {
       var travelTab = '<div class="grid grid-2 gap-lg">' +
         '<div>' +
           '<div class="card mb-lg">' +
-            '<div class="card-header"><span class="card-title">Transport</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="card-header"><span class="card-title">Transport</span><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Modifier</button></div>' +
             '<div class="divide-y">' +
               '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">flight</span><div class="flex-1"><p class="font-bold text-sm">Brussels Airlines SN2608</p><p class="text-xs text-muted">MIL &rarr; BRU &bull; 24 Jun 07:00 &bull; 6 pers</p></div>' + tag('Confirm&eacute;','success') + '</div>' +
               '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">directions_car</span><div class="flex-1"><p class="font-bold text-sm">Navette a&eacute;roport</p><p class="text-xs text-muted">BRU &rarr; Spa &bull; 24 Jun 09:30 &bull; 12 pers</p></div>' + tag('Confirm&eacute;','success') + '</div>' +
@@ -1262,7 +1247,7 @@ const pages = {
             '</div>' +
           '</div>' +
           '<div class="card">' +
-            '<div class="card-header"><span class="card-title">H&eacute;bergement</span><button class="btn btn-secondary btn-sm">Modifier</button></div>' +
+            '<div class="card-header"><span class="card-title">H&eacute;bergement</span><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Modifier</button></div>' +
             '<div class="flex items-center gap-3 p-3 rounded-lg" style="background:var(--surface-dim);"><span class="material-symbols-outlined text-primary">hotel</span><div class="flex-1"><p class="font-bold text-sm">H&ocirc;tel de la Source</p><p class="text-xs text-muted">5 chambres &bull; 24-28 Juin &bull; 4 nuits</p></div>' + tag('Confirm&eacute;','success') + '</div>' +
             '<div class="flex items-center gap-2 mt-2 text-xs text-muted"><span class="material-symbols-outlined text-sm">location_on</span><span>1.2km du circuit &bull; Rue de la Source, Spa</span></div>' +
           '</div>' +
@@ -1278,9 +1263,9 @@ const pages = {
           '<div class="card">' +
             '<div class="card-header"><span class="card-title">Documents de voyage</span></div>' +
             '<div class="divide-y">' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Itin&eacute;raire complet.pdf</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Billets avion (x6)</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
-              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Confirmation h&ocirc;tel</span><span class="material-symbols-outlined text-sm text-muted">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Itin&eacute;raire complet.pdf</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Billets avion (x6)</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
+              '<div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined text-sm text-primary">description</span><span class="text-sm flex-1">Confirmation h&ocirc;tel</span><span class="material-symbols-outlined text-sm text-muted" style="cursor:pointer;" onclick="alert(&#39;Coming soon&#39;)">download</span></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -1288,15 +1273,15 @@ const pages = {
 
       var docsTab = '<div>' +
         '<div class="mb-lg flex gap-sm" style="flex-wrap:wrap;">' +
-          '<button class="btn btn-primary btn-sm">Tous</button>' +
-          '<button class="btn btn-secondary btn-sm">Contrats</button>' +
-          '<button class="btn btn-secondary btn-sm">Certifications</button>' +
-          '<button class="btn btn-secondary btn-sm">Assurances</button>' +
-          '<button class="btn btn-secondary btn-sm">Rapports</button>' +
+            '<button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Tous</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Contrats</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Certifications</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Assurances</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Rapports</button>' +
         '</div>' +
         '<div class="grid grid-2 gap-lg">' +
           '<div class="card">' +
-            '<div class="card-header"><span class="card-title">Contrats &amp; Accords</span><button class="btn btn-primary btn-sm">+ Upload</button></div>' +
+            '<div class="card-header"><span class="card-title">Contrats &amp; Accords</span><button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">+ Upload</button></div>' +
             '<div class="divide-y">' +
               '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">contract</span><div class="flex-1"><p class="font-bold text-sm">Contrat - Alex Krause</p><p class="text-xs text-muted">Sign&eacute; le 15 Mai 2026</p></div>' + tag('Sign&eacute;','success') + '</div>' +
               '<div class="flex items-center gap-3 py-3"><span class="material-symbols-outlined text-primary">contract</span><div class="flex-1"><p class="font-bold text-sm">Contrat - Marco Bellini</p><p class="text-xs text-muted">Sign&eacute; le 10 Mai 2026</p></div>' + tag('Sign&eacute;','success') + '</div>' +
@@ -1334,7 +1319,7 @@ const pages = {
         '<div class="flex items-center gap-2 mb-4" style="flex-wrap:wrap;">' +
           '<button class="icon-btn" onclick="router.navigate(\'/e-dashboard\')"><span class="material-symbols-outlined">arrow_back</span></button>' +
           '<div><h1 class="section-title">Spa 24 Hours</h1><p class="text-sm text-muted">Circuit de Spa-Francorchamps &bull; 26-29 Juin 2026</p></div>' +
-          '<div class="ml-auto flex gap-sm"><button class="btn btn-secondary btn-sm">Modifier</button><button class="btn btn-primary btn-sm">Publier</button></div>' +
+          '<div class="ml-auto flex gap-sm"><button class="btn btn-secondary btn-sm" onclick="alert(\'Coming soon\')">Modifier</button><button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">Publier</button></div>' +
         '</div>' +
         '<div class="stats-row mb-lg">' +
           '<div class="stat-card"><span class="stat-value">12/15</span><span class="stat-label">Postes pourvus</span></div>' +
@@ -1356,7 +1341,7 @@ const pages = {
       <section class="page-section">
         <div class="section-header">
           <h1 class="section-title">Offres d'emploi</h1>
-          <button class="btn btn-primary btn-sm">+ Nouvelle offre</button>
+          <button class="btn btn-primary btn-sm" onclick="router.navigate(\'/e-post-job\',true)">+ Nouvelle offre</button>
         </div>
         <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
           <div class="job-card">
@@ -1371,8 +1356,8 @@ const pages = {
             <div class="job-card-footer">
               <span class="text-sm text-muted">6 candidatures</span>
               <div class="flex gap-sm">
-                <button class="btn btn-secondary btn-sm">Modifier</button>
-                <button class="btn btn-primary btn-sm">Candidats</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Modifier</button>
+                <button class="btn btn-primary btn-sm" onclick="router.navigate('/e-applicants')">Candidats</button>
               </div>
             </div>
           </div>
@@ -1388,8 +1373,8 @@ const pages = {
             <div class="job-card-footer">
               <span class="text-sm text-muted">3 candidatures</span>
               <div class="flex gap-sm">
-                <button class="btn btn-secondary btn-sm">Modifier</button>
-                <button class="btn btn-primary btn-sm">Candidats</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Modifier</button>
+                <button class="btn btn-primary btn-sm" onclick="router.navigate('/e-applicants')">Candidats</button>
               </div>
             </div>
           </div>
@@ -1405,8 +1390,8 @@ const pages = {
             <div class="job-card-footer">
               <span class="text-sm text-muted">Pas encore publiée</span>
               <div class="flex gap-sm">
-                <button class="btn btn-secondary btn-sm">Modifier</button>
-                <button class="btn btn-primary btn-sm">Publier</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Modifier</button>
+                <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Publier</button>
               </div>
             </div>
           </div>
@@ -1459,7 +1444,7 @@ const pages = {
       return '<section class="page-section">' +
         '<div class="section-header">' +
           '<h1 class="section-title">Mon équipe</h1>' +
-          '<button class="btn btn-primary btn-sm">+ Inviter</button>' +
+          '<button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">+ Inviter</button>' +
         '</div>' +
         '<div class="card mb-lg p-md" style="background:var(--primary-bg);">' +
           '<div class="flex items-center gap-2">' +
@@ -1489,13 +1474,13 @@ const pages = {
       <section class="page-section">
         <div class="section-header">
           <h1 class="section-title">Candidatures</h1>
-          <button class="btn btn-secondary btn-sm">Filtrer</button>
+          <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Filtrer</button>
         </div>
         <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">Toutes</button>
-          <button class="btn btn-secondary btn-sm">En attente</button>
-          <button class="btn btn-secondary btn-sm">Approuvées</button>
-          <button class="btn btn-secondary btn-sm">Refusées</button>
+          <button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Toutes</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">En attente</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Approuvées</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Refusées</button>
         </div>
         <div class="grid gap-sm">
           <div class="card flex items-center gap-md" style="border-left: 3px solid var(--primary);">
@@ -1508,9 +1493,9 @@ const pages = {
               <p class="text-sm text-muted">GT3 Lead Mechanic • Spa 24H</p>
               <div class="flex items-center gap-2 mt-1"><span class="tag">Exp : 8 ans</span><span class="tag">Dispo : Immédiate</span></div>
               <div class="flex gap-sm mt-2">
-                <button class="btn btn-primary btn-sm">Approuver</button>
-                <button class="btn btn-secondary btn-sm">Contacter</button>
-                <button class="btn btn-ghost btn-sm" style="color: var(--error);">Refuser</button>
+                <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Approuver</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Contacter</button>
+                <button class="btn btn-ghost btn-sm" style="color: var(--error);" onclick="alert(&#39;Coming soon&#39;)">Refuser</button>
               </div>
             </div>
           </div>
@@ -1524,9 +1509,9 @@ const pages = {
               <p class="text-sm text-muted">Data Engineer • Spa 24H</p>
               <div class="flex items-center gap-2 mt-1"><span class="tag">Exp : 5 ans</span><span class="tag">Dispo : 26 Juin</span></div>
               <div class="flex gap-sm mt-2">
-                <button class="btn btn-primary btn-sm">Approuver</button>
-                <button class="btn btn-secondary btn-sm">Contacter</button>
-                <button class="btn btn-ghost btn-sm" style="color: var(--error);">Refuser</button>
+                <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Approuver</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Contacter</button>
+                <button class="btn btn-ghost btn-sm" style="color: var(--error);" onclick="alert(&#39;Coming soon&#39;)">Refuser</button>
               </div>
             </div>
           </div>
@@ -1540,9 +1525,9 @@ const pages = {
               <p class="text-sm text-muted">Race Engineer • Monaco GP</p>
               <div class="flex items-center gap-2 mt-1"><span class="tag">Exp : 12 ans</span><span class="tag">Dispo : 3 Juillet</span></div>
               <div class="flex gap-sm mt-2">
-                <button class="btn btn-primary btn-sm">Approuver</button>
-                <button class="btn btn-secondary btn-sm">Contacter</button>
-                <button class="btn btn-ghost btn-sm" style="color: var(--error);">Refuser</button>
+                <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Approuver</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Contacter</button>
+                <button class="btn btn-ghost btn-sm" style="color: var(--error);" onclick="alert(&#39;Coming soon&#39;)">Refuser</button>
               </div>
             </div>
           </div>
@@ -1557,7 +1542,7 @@ const pages = {
       <section class="page-section">
         <div class="section-header">
           <h1 class="section-title">Réseau de talents</h1>
-          <button class="btn btn-primary btn-sm">+ Inviter</button>
+          <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">+ Inviter</button>
         </div>
         <div class="card mb-lg p-md">
           <div class="grid grid-2 gap-md">
@@ -1596,15 +1581,15 @@ const pages = {
             </div>
           </div>
           <div class="flex gap-sm justify-end mt-md">
-            <button class="btn btn-secondary btn-sm">Reset</button>
-            <button class="btn btn-primary btn-sm">Search</button>
+            <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Reset</button>
+            <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Search</button>
           </div>
         </div>
         <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">All</button>
-          <button class="btn btn-secondary btn-sm">Available Now</button>
-          <button class="btn btn-secondary btn-sm">Favorites</button>
-          <button class="btn btn-secondary btn-sm">Recently Viewed</button>
+          <button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">All</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Available Now</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Favorites</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Recently Viewed</button>
         </div>
         <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
           <div class="card">
@@ -1631,8 +1616,8 @@ const pages = {
             <div class="flex justify-between items-center">
               <span class="text-sm font-bold text-primary">€350/day</span>
               <div class="flex gap-sm">
-                <button class="btn btn-secondary btn-sm">Profile</button>
-                <button class="btn btn-primary btn-sm">Invite</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Profile</button>
+                <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Invite</button>
               </div>
             </div>
           </div>
@@ -1660,8 +1645,8 @@ const pages = {
             <div class="flex justify-between items-center">
               <span class="text-sm font-bold text-primary">€400/day</span>
               <div class="flex gap-sm">
-                <button class="btn btn-secondary btn-sm">Profile</button>
-                <button class="btn btn-primary btn-sm">Invite</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Profile</button>
+                <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Invite</button>
               </div>
             </div>
           </div>
@@ -1689,8 +1674,8 @@ const pages = {
             <div class="flex justify-between items-center">
               <span class="text-sm font-bold text-primary">€500/day</span>
               <div class="flex gap-sm">
-                <button class="btn btn-secondary btn-sm">Profile</button>
-                <button class="btn btn-primary btn-sm">Invite</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Profile</button>
+                <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Invite</button>
               </div>
             </div>
           </div>
@@ -1718,8 +1703,8 @@ const pages = {
             <div class="flex justify-between items-center">
               <span class="text-sm font-bold text-primary">€300/day</span>
               <div class="flex gap-sm">
-                <button class="btn btn-secondary btn-sm">Profile</button>
-                <button class="btn btn-primary btn-sm">Invite</button>
+                <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Profile</button>
+                <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Invite</button>
               </div>
             </div>
           </div>
@@ -1766,9 +1751,9 @@ const pages = {
           '<span class="text-sm text-muted">' + allMembers.length + '/' + (allMembers.length + 3) + ' positions filled</span>' +
         '</div>' +
         '<div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">' +
-          '<button class="btn btn-primary btn-sm">Tous</button>' +
-          '<button class="btn btn-secondary btn-sm">Temps plein</button>' +
-          '<button class="btn btn-secondary btn-sm">Freelances</button>' +
+          '<button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Tous</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Temps plein</button>' +
+          '<button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Freelances</button>' +
         '</div>' +
         '<div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">' +
           '<div>' +
@@ -1799,14 +1784,14 @@ const pages = {
                     '<p class="font-bold text-sm">Tire Technician</p>' +
                     '<p class="text-xs text-muted">€200-250/day • 2 needed</p>' +
                   '</div>' +
-                  '<button class="btn btn-primary btn-sm">Find</button>' +
+                   '<button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">Find</button>' +
                 '</div>' +
                 '<div class="flex items-center justify-between py-2">' +
                   '<div>' +
                     '<p class="font-bold text-sm">Data Engineer</p>' +
                     '<p class="text-xs text-muted">€400/day • 1 needed</p>' +
                   '</div>' +
-                  '<button class="btn btn-primary btn-sm">Find</button>' +
+                  '<button class="btn btn-primary btn-sm" onclick="alert(\'Coming soon\')">Find</button>' +
                 '</div>' +
               '</div>' +
             '</div>' +
@@ -1835,13 +1820,13 @@ const pages = {
       <section class="page-section">
         <div class="section-header">
           <h1 class="section-title">Centre d'approbation</h1>
-          <button class="btn btn-secondary btn-sm">Filtrer</button>
+          <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Filtrer</button>
         </div>
         <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">Toutes</button>
-          <button class="btn btn-secondary btn-sm">En attente</button>
-          <button class="btn btn-secondary btn-sm">Approuvées</button>
-          <button class="btn btn-secondary btn-sm">Refusées</button>
+          <button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Toutes</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">En attente</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Approuvées</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Refusées</button>
         </div>
         <div class="grid gap-lg" style="grid-template-columns: 1fr 1fr;">
           <div>
@@ -1864,9 +1849,9 @@ const pages = {
                   <span>€350/day</span>
                 </div>
                 <div class="flex gap-sm">
-                  <button class="btn btn-primary btn-sm">✓ Approve</button>
-                  <button class="btn btn-secondary btn-sm">Contact</button>
-                  <button class="btn btn-ghost btn-sm" style="color: var(--error);">✕ Decline</button>
+                  <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">✓ Approve</button>
+                  <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Contact</button>
+                  <button class="btn btn-ghost btn-sm" style="color: var(--error);" onclick="alert(&#39;Coming soon&#39;)">✕ Decline</button>
                 </div>
               </div>
               <div class="card" style="border-left: 3px solid var(--warning);">
@@ -1886,9 +1871,9 @@ const pages = {
                   <span>€400/day</span>
                 </div>
                 <div class="flex gap-sm">
-                  <button class="btn btn-primary btn-sm">✓ Approve</button>
-                  <button class="btn btn-secondary btn-sm">Contact</button>
-                  <button class="btn btn-ghost btn-sm" style="color: var(--error);">✕ Decline</button>
+                  <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">✓ Approve</button>
+                  <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Contact</button>
+                  <button class="btn btn-ghost btn-sm" style="color: var(--error);" onclick="alert(&#39;Coming soon&#39;)">✕ Decline</button>
                 </div>
               </div>
             </div>
@@ -1932,8 +1917,8 @@ const pages = {
         <div class="section-header">
           <h1 class="section-title">Financial Command Center</h1>
           <div class="flex gap-sm">
-            <button class="btn btn-secondary btn-sm">YTD</button>
-            <button class="btn btn-primary btn-sm">Full Export</button>
+            <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">YTD</button>
+            <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Full Export</button>
           </div>
         </div>
         <div class="grid gap-md mb-lg" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
@@ -2084,8 +2069,8 @@ const pages = {
               </div>
             </div>
             <div class="flex gap-sm mt-lg">
-              <button class="btn btn-secondary flex-1">Save Draft</button>
-              <button class="btn btn-primary flex-1">Publish Now</button>
+              <button class="btn btn-secondary flex-1" onclick="alert(&#39;Coming soon&#39;)">Save Draft</button>
+              <button class="btn btn-primary flex-1" onclick="alert(&#39;Coming soon&#39;)">Publish Now</button>
             </div>
           </div>
         </div>
@@ -2099,14 +2084,14 @@ const pages = {
       <section class="page-section">
         <div class="section-header">
           <h1 class="section-title">Notifications</h1>
-          <button class="btn btn-ghost btn-sm">Mark all read</button>
+          <button class="btn btn-ghost btn-sm" onclick="alert(&#39;Coming soon&#39;)">Mark all read</button>
         </div>
         <div class="flex gap-sm mb-lg" style="flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm">All</button>
-          <button class="btn btn-secondary btn-sm">Unread</button>
-          <button class="btn btn-secondary btn-sm">Jobs</button>
-          <button class="btn btn-secondary btn-sm">Messages</button>
-          <button class="btn btn-secondary btn-sm">Alerts</button>
+          <button class="btn btn-primary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">All</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Unread</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Jobs</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Messages</button>
+          <button class="btn btn-secondary btn-sm" onclick="var p=this.parentElement;p.querySelectorAll(\'.btn-primary\').forEach(function(b){b.className=b.className.replace(\'btn-primary\',\'btn-secondary\')});this.className=\'btn btn-primary btn-sm\'">Alerts</button>
         </div>
         <div class="flex flex-col gap-sm">
           <div class="card flex items-start gap-3" style="border-left: 3px solid var(--primary);">
@@ -2170,7 +2155,7 @@ const pages = {
       <section class="page-section">
         <div class="section-header">
           <h1 class="section-title">Voyages & Logistique</h1>
-          <button class="btn btn-primary btn-sm">+ Nouveau voyage</button>
+          <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">+ Nouveau voyage</button>
         </div>
         <div class="grid gap-md" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
           <div class="card">
@@ -2191,7 +2176,7 @@ const pages = {
               <div class="flex items-center gap-sm"><span class="material-symbols-outlined text-muted">hotel</span><span class="text-sm text-muted">Pas encore réservé</span></div>
               <div class="flex items-center gap-sm"><span class="material-symbols-outlined text-muted">directions_car</span><span class="text-sm text-muted">Non défini</span></div>
             </div>
-            <button class="btn btn-primary btn-sm mt-3 w-full">Planifier le voyage</button>
+            <button class="btn btn-primary btn-sm mt-3 w-full" onclick="alert(&#39;Coming soon&#39;)">Planifier le voyage</button>
           </div>
         </div>
       </section>
@@ -2210,7 +2195,7 @@ const pages = {
               <h2 class="font-bold text-lg">Scuderia Italia Racing</h2>
               <p class="text-sm text-muted">GT World Challenge • Équipe fondée en 2012</p>
             </div>
-            <button class="ml-auto btn btn-secondary btn-sm">Modifier</button>
+            <button class="ml-auto btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Modifier</button>
           </div>
           <div class="grid grid-2 gap-md">
             <div><label class="text-sm text-muted mb-sm block">Email</label><input class="input-field" value="contact@scuderiaitalia.com"></div>
@@ -2231,7 +2216,7 @@ const pages = {
               <p class="font-bold text-sm">Visa se terminant par 4242</p>
               <p class="text-xs text-muted">Expire 12/2027</p>
             </div>
-            <button class="btn btn-secondary btn-sm">Modifier</button>
+            <button class="btn btn-secondary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Modifier</button>
           </div>
         </div>
       </section>
@@ -2244,7 +2229,7 @@ const pages = {
       <section class="page-section">
         <div class="section-header">
           <h1 class="section-title">Finance</h1>
-          <button class="btn btn-primary btn-sm">Nouvelle facture</button>
+          <button class="btn btn-primary btn-sm" onclick="alert(&#39;Coming soon&#39;)">Nouvelle facture</button>
         </div>
         <div class="stats-row mb-lg">
           <div class="stat-card"><span class="stat-value">€89,000</span><span class="stat-label">Budget total</span></div>

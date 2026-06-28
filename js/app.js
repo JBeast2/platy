@@ -264,125 +264,138 @@
     if (msgBadge) msgBadge.textContent = msgCount;
   }
 
-  window._initEventWizard = function () {
-    var prevStep = parseInt(sessionStorage.getItem('platy-wiz-step')) || 0;
-    if (prevStep) {
-      Store.set('eventDraft.step', prevStep);
-      sessionStorage.removeItem('platy-wiz-step');
-    }
-  };
-
-  window._saveWizardFields = function () {
-    var els = document.querySelectorAll('.event-wiz');
-    var draft = Store.get('eventDraft') || { step: 1, data: {} };
-    if (!draft.data) draft.data = {};
-    for (var i = 0; i < els.length; i++) {
-      var el = els[i];
-      var field = el.getAttribute('data-field');
-      if (el.type === 'checkbox') {
-        draft.data[field] = el.checked;
-      } else {
-        draft.data[field] = el.value;
+  // EventWizard - encapsulated class replacing global _wizard* functions
+  window.EventWizard = {
+    init: function() {
+      var prevStep = parseInt(sessionStorage.getItem('platy-wiz-step')) || 0;
+      if (prevStep) {
+        Store.set('eventDraft.step', prevStep);
+        sessionStorage.removeItem('platy-wiz-step');
       }
+    },
+
+    saveFields: function() {
+      var els = document.querySelectorAll('.event-wiz');
+      var draft = Store.get('eventDraft') || { step: 1, data: {} };
+      if (!draft.data) draft.data = {};
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        var field = el.getAttribute('data-field');
+        if (el.type === 'checkbox') {
+          draft.data[field] = el.checked;
+        } else {
+          draft.data[field] = el.value;
+        }
+      }
+      draft.data.travel = draft.data.travel || {};
+      var travelFields = ['travelFlight', 'travelHotel', 'travelNights', 'travelTransfer'];
+      for (var ti = 0; ti < travelFields.length; ti++) {
+        var tf = travelFields[ti];
+        var key = tf.replace('travel', '').toLowerCase();
+        draft.data.travel[key] = draft.data[tf] || '';
+      }
+      Store.set('eventDraft', draft);
+      return draft;
+    },
+
+    nextStep: function() {
+      var draft = this.saveFields();
+      draft.step = Math.min(draft.step + 1, 4);
+      Store.set('eventDraft', draft);
+      sessionStorage.setItem('platy-wiz-step', draft.step);
+      router.navigate('/e-event-create', true);
+    },
+
+    prevStep: function() {
+      var draft = Store.get('eventDraft');
+      draft.step = Math.max(draft.step - 1, 1);
+      Store.set('eventDraft', draft);
+      sessionStorage.setItem('platy-wiz-step', draft.step);
+      router.navigate('/e-event-create', true);
+    },
+
+    saveDraft: function() {
+      this.saveFields();
+      Store.set('eventDraft.step', 1);
+      var draft = Store.get('eventDraft');
+      var events = Store.get('events');
+      events.push({
+        id: Date.now(),
+        title: draft.data.name || 'Nouvel événement',
+        circuit: draft.data.location || '—',
+        location: draft.data.location || '—',
+        startDate: draft.data.startDate || '',
+        endDate: draft.data.endDate || '',
+        type: draft.data.type || 'Endurance 24H',
+        series: 'Personnalisé',
+        budget: parseInt(draft.data.budget) || 0,
+        status: 'Brouillon',
+        recruited: 0,
+        totalNeeded: (draft.data.jobs || []).reduce(function(a, b) { return a + (parseInt(b.count) || 0); }, 0),
+        color: 'muted'
+      });
+      Store.set('events', events);
+      Store.set('eventDraft', { step: 1, data: {} });
+      router.navigate('/e-events');
+    },
+
+    publish: function() {
+      this.saveFields();
+      var draft = Store.get('eventDraft');
+      var events = Store.get('events');
+      events.push({
+        id: Date.now(),
+        title: draft.data.name || 'Nouvel événement',
+        circuit: draft.data.location || '—',
+        location: draft.data.location || '—',
+        startDate: draft.data.startDate || '',
+        endDate: draft.data.endDate || '',
+        type: draft.data.type || 'Endurance 24H',
+        series: 'Personnalisé',
+        budget: parseInt(draft.data.budget) || 0,
+        status: 'Actif',
+        recruited: 0,
+        totalNeeded: (draft.data.jobs || []).reduce(function(a, b) { return a + (parseInt(b.count) || 0); }, 0),
+        color: 'primary'
+      });
+      Store.set('events', events);
+      Store.set('eventDraft', { step: 1, data: {} });
+      router.navigate('/e-events');
+    },
+
+    addJob: function() {
+      var title = document.getElementById('wiz-job-title');
+      var count = document.getElementById('wiz-job-count');
+      var rate = document.getElementById('wiz-job-rate');
+      if (!title.value) return;
+      var draft = Store.get('eventDraft');
+      draft.data.jobs = draft.data.jobs || [];
+      draft.data.jobs.push({ title: title.value, count: count.value || 1, rate: rate.value || '0' });
+      Store.set('eventDraft', draft);
+      title.value = '';
+      count.value = 1;
+      rate.value = '';
+      router.navigate('/e-event-create', true);
+    },
+
+    removeJob: function(index) {
+      var draft = Store.get('eventDraft');
+      draft.data.jobs = draft.data.jobs || [];
+      draft.data.jobs.splice(index, 1);
+      Store.set('eventDraft', draft);
+      router.navigate('/e-event-create', true);
     }
-    draft.data.travel = draft.data.travel || {};
-    var travelFields = ['travelFlight', 'travelHotel', 'travelNights', 'travelTransfer'];
-    for (var ti = 0; ti < travelFields.length; ti++) {
-      var tf = travelFields[ti];
-      var key = tf.replace('travel', '').toLowerCase();
-      draft.data.travel[key] = draft.data[tf] || '';
-    }
-    Store.set('eventDraft', draft);
-    return draft;
   };
 
-  window._wizardNextStep = function () {
-    var draft = window._saveWizardFields();
-    draft.step = Math.min(draft.step + 1, 4);
-    Store.set('eventDraft', draft);
-    sessionStorage.setItem('platy-wiz-step', draft.step);
-    router.navigate('/e-event-create', true);
-  };
-
-  window._wizardPrevStep = function () {
-    var draft = Store.get('eventDraft');
-    draft.step = Math.max(draft.step - 1, 1);
-    Store.set('eventDraft', draft);
-    sessionStorage.setItem('platy-wiz-step', draft.step);
-    router.navigate('/e-event-create', true);
-  };
-
-  window._saveWizardDraft = function () {
-    window._saveWizardFields();
-    Store.set('eventDraft.step', 1);
-    var draft = Store.get('eventDraft');
-    var events = Store.get('events');
-    events.push({
-      id: Date.now(),
-      title: draft.data.name || 'Nouvel événement',
-      circuit: draft.data.location || '—',
-      location: draft.data.location || '—',
-      startDate: draft.data.startDate || '',
-      endDate: draft.data.endDate || '',
-      type: draft.data.type || 'Endurance 24H',
-      series: 'Personnalisé',
-      budget: parseInt(draft.data.budget) || 0,
-      status: 'Brouillon',
-      recruited: 0,
-      totalNeeded: (draft.data.jobs || []).reduce(function (a, b) { return a + (parseInt(b.count) || 0); }, 0),
-      color: 'muted'
-    });
-    Store.set('events', events);
-    Store.set('eventDraft', { step: 1, data: {} });
-    router.navigate('/e-events');
-  };
-
-  window._publishEvent = function () {
-    window._saveWizardFields();
-    var draft = Store.get('eventDraft');
-    var events = Store.get('events');
-    events.push({
-      id: Date.now(),
-      title: draft.data.name || 'Nouvel événement',
-      circuit: draft.data.location || '—',
-      location: draft.data.location || '—',
-      startDate: draft.data.startDate || '',
-      endDate: draft.data.endDate || '',
-      type: draft.data.type || 'Endurance 24H',
-      series: 'Personnalisé',
-      budget: parseInt(draft.data.budget) || 0,
-      status: 'Actif',
-      recruited: 0,
-      totalNeeded: (draft.data.jobs || []).reduce(function (a, b) { return a + (parseInt(b.count) || 0); }, 0),
-      color: 'primary'
-    });
-    Store.set('events', events);
-    Store.set('eventDraft', { step: 1, data: {} });
-    router.navigate('/e-events');
-  };
-
-  window._addWizardJob = function () {
-    var title = document.getElementById('wiz-job-title');
-    var count = document.getElementById('wiz-job-count');
-    var rate = document.getElementById('wiz-job-rate');
-    if (!title.value) return;
-    var draft = Store.get('eventDraft');
-    draft.data.jobs = draft.data.jobs || [];
-    draft.data.jobs.push({ title: title.value, count: count.value || 1, rate: rate.value || '0' });
-    Store.set('eventDraft', draft);
-    title.value = '';
-    count.value = 1;
-    rate.value = '';
-    router.navigate('/e-event-create', true);
-  };
-
-  window._removeWizardJob = function (index) {
-    var draft = Store.get('eventDraft');
-    draft.data.jobs = draft.data.jobs || [];
-    draft.data.jobs.splice(index, 1);
-    Store.set('eventDraft', draft);
-    router.navigate('/e-event-create', true);
-  };
+  // Backward-compatible aliases
+  window._initEventWizard = EventWizard.init;
+  window._saveWizardFields = EventWizard.saveFields;
+  window._wizardNextStep = EventWizard.nextStep;
+  window._wizardPrevStep = EventWizard.prevStep;
+  window._saveWizardDraft = EventWizard.saveDraft;
+  window._publishEvent = EventWizard.publish;
+  window._addWizardJob = EventWizard.addJob;
+  window._removeWizardJob = EventWizard.removeJob;
 
   document.addEventListener('DOMContentLoaded', function () {
     if (isLoggedIn()) {
